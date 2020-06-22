@@ -22,9 +22,17 @@ $router->group(['prefix' => 'auth'], function () use ($router) {
     );
 
     $router->post(
-        'register', 
-        ['uses' => 'AuthController@register']
+        'register', ['uses' => 'AuthController@register']
     );
+
+    $router->group(['middleware' => 'jwt.refresh'], function () use ($router) {
+        $router->post(
+            'refresh-token', ['uses' => 'AuthController@refreshToken']
+        );
+        $router->get(
+            'refresh-token', ['uses' => 'AuthController@refreshToken']
+        );
+    });
 });
 
 $router->group(
@@ -44,7 +52,6 @@ $router->group(
             $router->get('/', 'BookController@getList');
             $router->get('/{id}', 'BookController@getBook');
             $router->get('/{id}/classes', 'BookController@getBookClasses');
-            $router->get('/user', 'BookController@user');
         });
 
         $router->group(['prefix' => 'offers'], function () use ($router) {

@@ -40,7 +40,26 @@ class AuthController extends BaseController
             'iss' => "lumen-jwt", // Issuer of the token
             'sub' => $user->id, // Subject of the token
             'iat' => time(), // Time when JWT was issued. 
-            'exp' => time() + 60*60 // Expiration time
+            'exp' => time() + 1//60*60 // Expiration time
+        ];
+        
+        // As you can see we are passing `JWT_SECRET` as the second parameter that will 
+        // be used to decode the token in the future.
+        return JWT::encode($payload, env('JWT_SECRET'));
+    } 
+
+    /**
+     * Create a new refresh token.
+     * 
+     * @param  \App\User   $user
+     * @return string
+     */
+    protected function refreshJwt(User $user) {
+        $payload = [
+            'iss' => "lumen-jwt", // Issuer of the token
+            'sub' => $user->id, // Subject of the token
+            'iat' => time(), // Time when JWT was issued. 
+            'exp' => time() + 60*60*24*30 // Expiration time -> 30 days
         ];
         
         // As you can see we are passing `JWT_SECRET` as the second parameter that will 
@@ -75,8 +94,15 @@ class AuthController extends BaseController
 
         // Verify the password and generate the token
         if (Hash::check($this->request->input('password'), $user->password)) {
+            // Check if refresh-token exists
+            if (!$user->refresh_token) {
+                $user->refresh_token = $this->refreshJwt($user);
+                $user->save();
+            }
+
             return response()->json([
-                'token' => $this->jwt($user)
+                'token' => $this->jwt($user),
+                'refresh-token' => $user->refresh_token
             ], 200);
         }
 
@@ -137,5 +163,25 @@ class AuthController extends BaseController
             'success' => 'Successfully registered.',
             'token' => $this->jwt($user)
         ], 400);
+    }
+
+    /**
+     * Refresh the user token if middleware validate the provided refresh token.
+     * 
+     * @param  \App\User   $user 
+     * @return mixed
+     */
+    public function refreshToken(Request $request) {
+        $user = $refresh->auth;
+
+        // Update the refresh token
+        $user->refresh_token = $this->refreshJwt($user);
+        $user->save();
+
+        return response()->json([
+            'token' => $this->jwt($user),
+            'refresh-token' => $user->refresh_token
+        ], 200);
+
     }
 }
