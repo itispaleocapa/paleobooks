@@ -40,7 +40,7 @@ class AuthController extends BaseController
             'iss' => "lumen-jwt", // Issuer of the token
             'sub' => $user->id, // Subject of the token
             'iat' => time(), // Time when JWT was issued. 
-            'exp' => time() + 1//60*60 // Expiration time
+            'exp' => time() + 60*60 // Expiration time
         ];
         
         // As you can see we are passing `JWT_SECRET` as the second parameter that will 
@@ -94,15 +94,9 @@ class AuthController extends BaseController
 
         // Verify the password and generate the token
         if (Hash::check($this->request->input('password'), $user->password)) {
-            // Check if refresh-token exists
-            if (!$user->refresh_token) {
-                $user->refresh_token = $this->refreshJwt($user);
-                $user->save();
-            }
-
             return response()->json([
                 'token' => $this->jwt($user),
-                'refresh-token' => $user->refresh_token
+                'refresh-token' => $this->refreshJwt($user)
             ], 200);
         }
 
@@ -161,7 +155,8 @@ class AuthController extends BaseController
         
         return response()->json([
             'success' => 'Successfully registered.',
-            'token' => $this->jwt($user)
+            'token' => $this->jwt($user),
+            'refresh-token' => $this->refreshJwt($user)
         ], 400);
     }
 
@@ -172,16 +167,14 @@ class AuthController extends BaseController
      * @return mixed
      */
     public function refreshToken(Request $request) {
-        $user = $refresh->auth;
+        $user = $request->auth;
 
-        // Update the refresh token
-        $user->refresh_token = $this->refreshJwt($user);
-        $user->save();
+        $request->user()->token()->revoke();
+
+        return null;
 
         return response()->json([
-            'token' => $this->jwt($user),
-            'refresh-token' => $user->refresh_token
+            'token' => $this->jwt($user)
         ], 200);
-
     }
 }

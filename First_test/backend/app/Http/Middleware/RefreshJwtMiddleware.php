@@ -12,7 +12,7 @@ class RefreshJwtMiddleware
 {
     public function handle($request, Closure $next, $guard = null)
     {
-        $refresh_token = $request->get('refresh-token');
+        $refresh_token = $request->get('refresh_token');
         
         if(!$refresh_token) {
             // Unauthorized response if token not there
@@ -24,6 +24,7 @@ class RefreshJwtMiddleware
         try {
             $credentials = JWT::decode($refresh_token, env('JWT_SECRET'), ['HS256']);
         } catch(ExpiredException $e) {
+            // Need to logout
             return response()->json([
                 'error' => 'Provided refresh token is expired.'
             ], 400);

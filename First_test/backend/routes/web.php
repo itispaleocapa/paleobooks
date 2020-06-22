@@ -29,9 +29,6 @@ $router->group(['prefix' => 'auth'], function () use ($router) {
         $router->post(
             'refresh-token', ['uses' => 'AuthController@refreshToken']
         );
-        $router->get(
-            'refresh-token', ['uses' => 'AuthController@refreshToken']
-        );
     });
 });
 
