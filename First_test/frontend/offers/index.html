@@ -25,6 +25,7 @@
 			$.ajax({
 				dataType: 'json',
 				url: 'http://localhost:8000/books',
+				data: {"token": sessionStorage.getItem('access_token')},
 				success: (books) => {
 					var x = document.getElementById("books");
 					$.each(books, (i, book) => {

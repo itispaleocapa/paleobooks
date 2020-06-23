@@ -37,15 +37,15 @@ class AuthController extends BaseController
      */
     protected function jwt(User $user) {
         $payload = [
-            'iss' => "lumen-jwt", // Issuer of the token
-            'sub' => $user->id, // Subject of the token
+            'iss' => "lumen-jwt", // Issuer of the token 
+            'sub' => $user->id, // Subject of the token 
             'iat' => time(), // Time when JWT was issued. 
-            'exp' => time() + 60*60 // Expiration time
+            'exp' => time() + 60*60 // Expiration time 
         ];
         
         // As you can see we are passing `JWT_SECRET` as the second parameter that will 
-        // be used to decode the token in the future.
-        return JWT::encode($payload, env('JWT_SECRET'));
+        // be used to decode the token in the future. 
+        return JWT::encode($payload, env('JWT_SECRET')); 
     } 
 
     /**
@@ -96,7 +96,7 @@ class AuthController extends BaseController
         if (Hash::check($this->request->input('password'), $user->password)) {
             return response()->json([
                 'token' => $this->jwt($user),
-                'refresh-token' => $this->refreshJwt($user)
+                'refresh_token' => $this->refreshJwt($user)
             ], 200);
         }
 
@@ -156,7 +156,7 @@ class AuthController extends BaseController
         return response()->json([
             'success' => 'Successfully registered.',
             'token' => $this->jwt($user),
-            'refresh-token' => $this->refreshJwt($user)
+            'refresh_token' => $this->refreshJwt($user)
         ], 400);
     }
 
@@ -168,10 +168,6 @@ class AuthController extends BaseController
      */
     public function refreshToken(Request $request) {
         $user = $request->auth;
-
-        $request->user()->token()->revoke();
-
-        return null;
 
         return response()->json([
             'token' => $this->jwt($user)

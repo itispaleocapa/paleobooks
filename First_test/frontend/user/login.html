@@ -29,7 +29,14 @@
                     console.log(err);
                 },
                 success: (response) => {
-                    console.log(response);
+                    //console.log(response);
+                    
+                    var expiration_date = new Date();
+                    expiration_date.setFullYear(expiration_date.getFullYear() + 1);
+
+                    sessionStorage.setItem('access_token', response.token);
+                    document.cookie = "refresh_token=" + response.refresh_token + "; expires=" + expiration_date.toUTCString() + "; path=/";
+                    
                 }
             });
         });
