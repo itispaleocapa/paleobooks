@@ -16,18 +16,44 @@ use App\Models\SchoolClass;
 
 /** @var $router */
 
-$router->group(['prefix' => 'classes'], function () use ($router) {
-    $router->get('/', 'ClassController@getList');
-    $router->get('/{id}', 'ClassController@getClass');
-    $router->get('/{id}/books', 'ClassController@getClassBooks');
+$router->group(['prefix' => 'auth'], function () use ($router) {
+    $router->post(
+        'login', ['uses' => 'AuthController@authenticate']
+    );
+
+    $router->post(
+        'register', ['uses' => 'AuthController@register']
+    );
+
+    $router->group(['middleware' => 'jwt.refresh'], function () use ($router) {
+        $router->post(
+            'refresh-token', ['uses' => 'AuthController@refreshToken']
+        );
+    });
 });
 
-$router->group(['prefix' => 'books'], function () use ($router) {
-    $router->get('/', 'BookController@getList');
-    $router->get('/{id}', 'BookController@getBook');
-    $router->get('/{id}/classes', 'BookController@getBookClasses');
-});
+$router->group(
+    ['middleware' => 'jwt.auth'], 
+    function() use ($router) {
+        $router->group(['prefix' => 'users'], function () use ($router) {
+            $router->get('/profile', 'UserController@show');
+        });
 
-$router->group(['prefix' => 'offers'], function () use ($router) {
-    $router->get('/', 'OfferController@getList');
-});
+        $router->group(['prefix' => 'classes'], function () use ($router) {
+            $router->get('/', 'ClassController@getList');
+            $router->get('/{id}', 'ClassController@getClass');
+            $router->get('/{id}/books', 'ClassController@getClassBooks');
+        });
+
+        $router->group(['prefix' => 'books'], function () use ($router) {
+            $router->get('/', 'BookController@getList');
+            $router->get('/{id}', 'BookController@getBook');
+            $router->get('/{id}/classes', 'BookController@getBookClasses');
+        });
+
+        $router->group(['prefix' => 'offers'], function () use ($router) {
+            $router->get('/', 'OfferController@getList');
+            $router->post('/', 'OfferController@create');
+        });
+    }
+);

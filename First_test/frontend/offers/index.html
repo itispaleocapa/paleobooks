@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>PaleoBooks</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+</head>
+<body style="margin: 10px">
+    <h1>PaleoBooks</h1>
+    <h2>Crea offerta</h2>
+	<form action="/action_page.php">
+	    <label for="fname">First name:</label><br>
+		<!--<input type="text" id="fname" name="fname" value="John"><br>-->
+		<select name="books" id="books">
+			<option selected>Select a book...</option>
+		</select>
+		<br>
+		<!--<label for="lname">Last name:</label><br>
+		<input type="text" id="lname" name="lname" value="Doe"><br><br>-->
+		<input type="submit" value="Submit">
+	</form> 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script>
+		$(document).ready(function () {
+			$.ajax({
+				dataType: 'json',
+				url: 'http://localhost:8000/books',
+				data: {"token": sessionStorage.getItem('access_token')},
+				success: (books) => {
+					var x = document.getElementById("books");
+					$.each(books, (i, book) => {
+						var option = document.createElement("option");
+						var string = book.title;
+						string = string.substring(0,60);
+						option.text =  string;
+						option.value =  book.id;
+						//var row = $('<option value="' + book.id + '">' + book.title + '</option>');
+						//$('#books').append(row);
+						x.add(option);
+					});
+				}
+			});
+		});
+	</script>
+</body>
+</html>
