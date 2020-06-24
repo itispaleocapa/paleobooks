@@ -3,43 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <title>PaleoBooks</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 </head>
 <body style="margin: 10px">
-    <h1>PaleoBooks</h1>
-    <h2>Login</h2>
-	<form id="form">
-	    <label for="email">Email</label><br>
-		<input type="email" id="email" name="email"><br>
-		<label for="password">Password</label><br>
-		<input type="password" id="password" name="password"><br>
-		<br>
-		<input type="submit" value="Login">
-	</form> 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-	<script>
-        $( "#form" ).submit(function( event ) {
-            event.preventDefault();
-            $.ajax({
-                type: 'POST',
-                dataType: 'json',
-                url: 'http://localhost:8000/auth/login',
-                data: $(this).serialize(),// 'andres84@waelchi.com', '12345'
-                error: (err) => {
-                    console.log(err);
-                },
-                success: (response) => {
-                    //console.log(response);
-                    
-                    var expiration_date = new Date();
-                    expiration_date.setFullYear(expiration_date.getFullYear() + 1);
+<h1>PaleoBooks</h1>
+<h2>Login</h2>
+<form id="form">
+    <label for="email">Email</label><br>
+    <input type="email" id="email" name="email"><br>
+    <label for="password">Password</label><br>
+    <input type="password" id="password" name="password"><br>
+    <br>
+    <input type="submit" value="Login">
+    <a href="https://id.paleo.bg.it/oauth/authorize?client_id=0cfa9278e6d017629b9dc26bffbd8335&response_type=code&state=paleobooks&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fuser%2Flogin.html"
+       style="display: block; margin-top: 10px">Accedi con PaleoID</a>
+    <p>(per accedere con PaleoID è necessario che questa pagina sia accessibile da
+        http://localhost:3000/user/login.html)</p>
+</form>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $("#form").submit(function (event) {
+        event.preventDefault();
+        login('http://localhost:8000/auth/login', $(this).serialize());
+    });
 
-                    sessionStorage.setItem('access_token', response.token);
-                    document.cookie = "refresh_token=" + response.refresh_token + "; expires=" + expiration_date.toUTCString() + "; path=/";
-                    
-                }
-            });
+    $(document).ready(function () {
+        if (getUrlParameter('state')=='paleobooks') {
+            login('http://localhost:8000/auth/paleoid', {'code': getUrlParameter('code')});
+        }
+    });
+
+    function login(url, data) {
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            url: url,
+            data: data,
+            error: (err) => {
+                console.log(err);
+            },
+            success: (response) => {
+                //console.log(response);
+
+                var expiration_date = new Date();
+                expiration_date.setFullYear(expiration_date.getFullYear() + 1);
+
+                sessionStorage.setItem('access_token', response.token);
+                document.cookie = "refresh_token=" + response.refresh_token + "; expires=" + expiration_date.toUTCString() + "; path=/";
+
+                window.location.href = "../";
+            }
         });
-	</script>
+    }
+
+    var getUrlParameter = function getUrlParameter(sParam) {
+        var sPageURL = window.location.search.substring(1),
+            sURLVariables = sPageURL.split('&'),
+            sParameterName,
+            i;
+
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
+
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+            }
+        }
+    };
+</script>
 </body>
 </html>

@@ -25,6 +25,10 @@ $router->group(['prefix' => 'auth'], function () use ($router) {
         'register', ['uses' => 'AuthController@register']
     );
 
+    $router->post(
+        'paleoid', ['uses' => 'AuthController@authenticatePaleoID']
+    );
+
     $router->group(['middleware' => 'jwt.refresh'], function () use ($router) {
         $router->post(
             'refresh-token', ['uses' => 'AuthController@refreshToken']
@@ -33,7 +37,7 @@ $router->group(['prefix' => 'auth'], function () use ($router) {
 });
 
 $router->group(
-    ['middleware' => 'jwt.auth'], 
+    ['middleware' => 'jwt.auth'],
     function() use ($router) {
         $router->group(['prefix' => 'users'], function () use ($router) {
             $router->get('/profile', 'UserController@show');
