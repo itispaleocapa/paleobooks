@@ -5,20 +5,19 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Models\Book;
-use App\Models\Offer;
+use App\Models\Demand;
 use App\Models\SchoolClass;
 
-class OfferController extends Controller {
-    public function getList() {
-        return Offer::with(['book:id,title,isbn', 'user'])->get();
-    }
+class DemandController extends Controller {
+    /*public function getList() {
+        return Demand::with(['book:id,title,isbn', 'user'])->get();
+    }*/
 
     public function create(Request $request) {
         $book = Book::where('id', $request->input('book'))->get();
 
         $this->validate($request, [
             'book' => 'required',
-            //'email' => 'required|email|unique:users'
         ]);
 
         if(!empty($book[0])) {
@@ -27,10 +26,11 @@ class OfferController extends Controller {
         } else {
             echo "Book doesn't exists";
         }
+        print_r($request->all());
         die();
 
-        $offer = Offer::create($request->all());
+        $demand = Demand::create($request->all());
 
-        return response()->json($offer, 201);
+        return response()->json($demand, 201);
     }
 }

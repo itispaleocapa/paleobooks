@@ -51,9 +51,9 @@ $router->group(
             $router->get('/{id}/classes', 'BookController@getBookClasses');
         });
 
-        $router->group(['prefix' => 'offers'], function () use ($router) {
-            $router->get('/', 'OfferController@getList');
-            $router->post('/', 'OfferController@create');
+        $router->group(['prefix' => 'supplies'], function () use ($router) {
+            $router->get('/', 'SupplyController@getList');
+            $router->post('/', 'SupplyController@create');
         });
     }
 );
