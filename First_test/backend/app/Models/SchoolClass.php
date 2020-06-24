@@ -11,6 +11,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class SchoolClass extends Model {
     public $timestamps = false;
+
+    protected $table = 'classes';
+
     protected $hidden = ['pivot'];
 
     protected $attributes = [
