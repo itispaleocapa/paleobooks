@@ -45,15 +45,16 @@ $router->group(
         });
 
         $router->group(['prefix' => 'classes'], function () use ($router) {
-            $router->get('/', 'ClassController@getList');
-            $router->get('/{id}', 'ClassController@getClass');
+            /*$router->get('/', 'ClassController@getList');
+            $router->get('/{id}', 'ClassController@getClass');*/
             $router->get('/{id}/books', 'ClassController@getClassBooks');
+            $router->get('/{id}/supplies', 'ClassController@getClassSupplies');
+            $router->get('/{id}/demands', 'ClassController@getClassDemands');
         });
 
         $router->group(['prefix' => 'books'], function () use ($router) {
             $router->get('/', 'BookController@index');
             $router->get('/{id}', 'BookController@show');
-            $router->get('/{id}/classes', 'BookController@getBookClasses');
             $router->get('/{id}/supplies', 'BookController@getBookSupplies');
             $router->get('/{id}/demands', 'BookController@getBookDemands');
         });

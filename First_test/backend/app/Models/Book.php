@@ -4,8 +4,6 @@
 namespace App\Models;
 
 use DB;
-use App\Models\Adoption;
-
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -21,31 +19,21 @@ class Book extends Model {
         'price' => 0.00
     ];
 
-    public function classes($id) {
-        $data = DB::table('adoptions')
-        ->join('classes', 'adoptions.class_id', '=', 'classes.id')
-        ->where('book_id', $id)
-        ->select('classes.name', 'classes.school_year')
-        ->get();
-
-        return $data; // $this->belongsToMany('App\Models\SchoolClass');
-    }
-
     public function supplies($id) {
-        $data = DB::table('supplies')
-        ->join('books', 'supplies.book_id', '=', 'books.id')
-        ->where('book_id', $id)
-        ->select('books.title', 'supplies.*'/*, 'classes.school_year'*/)
+        $data = DB::table('books')
+        ->join('supplies', 'books.id', '=', 'supplies.book_id')
+        ->where('books.id', $id)
+        ->select('books.id', 'books.title', 'supplies.*')
         ->get();
 
         return $data; // $this->belongsToMany('App\Models\SchoolClass');
     }
 
     public function demands($id) {
-        $data = DB::table('demands')
-        ->join('books', 'demands.book_id', '=', 'books.id')
-        ->where('book_id', $id)
-        ->select('books.title', 'demands.*'/*, 'classes.school_year'*/)
+        $data = DB::table('books')
+        ->join('demands', 'books.id', '=', 'demands.book_id')
+        ->where('books.id', $id)
+        ->select('books.id', 'books.title', 'demands.*')
         ->get();
 
         return $data; // $this->belongsToMany('App\Models\SchoolClass');

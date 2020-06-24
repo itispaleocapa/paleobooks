@@ -128,13 +128,13 @@ class AuthController extends BaseController {
         }
 
         //verify if username is unique
-        $user = User::where('name', '=', $this->request->input('name'))->first();
+        /*$user = User::where('name', '=', $this->request->input('name'))->first();
 
         if ($user) {
             return response()->json([
                 'error' => 'Name already exists.'
             ], 400);
-        }
+        }*/
 
         $hashed_password = Hash::make($this->request->input('password'));
 
@@ -156,7 +156,7 @@ class AuthController extends BaseController {
             'success' => 'Successfully registered.',
             'token' => $this->jwt($user),
             'refresh_token' => $this->refreshJwt($user)
-        ], 400);
+        ], 201);
     }
 
     public function authenticatePaleoID(Request $request) {
