@@ -1202,20 +1202,20 @@ INSERT INTO `book_school_class` (`school_class_id`, `book_id`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `offers`
+-- Struttura della tabella `supplies`
 --
 
-CREATE TABLE `offers` (
+CREATE TABLE `supplies` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `book_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dump dei dati per la tabella `offers`
+-- Dump dei dati per la tabella `supplies`
 --
 
-INSERT INTO `offers` (`id`, `user_id`, `book_id`) VALUES
+INSERT INTO `supplies` (`id`, `user_id`, `book_id`) VALUES
 (1, 2, 14),
 (2, 1, 42),
 (3, 3, 75),

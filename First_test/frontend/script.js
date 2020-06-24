@@ -1,8 +1,8 @@
 $(document).ready(function () {
     $.ajax({
         dataType: 'json',
-        url: 'http://localhost:8000/offers',
-        data: {"token": sessionStorage.getItem('access_token')},
+        url: 'http://localhost:8000/supplies',
+        data: {"access_token": sessionStorage.getItem('access_token')},
         error: (response) => {
             if (response.status == '400' || response.status == '401') {
                refreshToken();
