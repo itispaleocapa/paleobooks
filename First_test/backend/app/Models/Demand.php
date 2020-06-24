@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Demand extends Model {
     public $timestamps = false;
-    protected $hidden = ['book_id', 'user_id', 'pivot', 'created_at', 'updated_at'];
+    protected $hidden = ['pivot', 'created_at', 'updated_at'];
 
     /**
      * The attributes that are mass assignable.
