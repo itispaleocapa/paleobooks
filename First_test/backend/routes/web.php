@@ -37,6 +37,7 @@ $router->group(
     function() use ($router) {
         $router->group(['prefix' => 'users'], function () use ($router) {
             $router->get('/profile', 'UserController@show');
+            $router->put('/', 'UserController@update');
         });
 
         $router->group(['prefix' => 'classes'], function () use ($router) {
@@ -52,8 +53,19 @@ $router->group(
         });
 
         $router->group(['prefix' => 'supplies'], function () use ($router) {
-            $router->get('/', 'SupplyController@getList');
+            $router->get('/', 'SupplyController@index');
+            $router->get('/{id}', 'SupplyController@show');
             $router->post('/', 'SupplyController@create');
+            $router->put('/{id}', 'SupplyController@update');
+            $router->delete('/{id}', 'SupplyController@destroy');
+        });
+
+        $router->group(['prefix' => 'demands'], function () use ($router) {
+            $router->get('/', 'DemandController@index');
+            $router->get('/{id}', 'DemandController@show');
+            $router->post('/', 'DemandController@create');
+            $router->put('/{id}', 'DemandController@update');
+            $router->delete('/{id}', 'DemandController@destroy');
         });
     }
 );

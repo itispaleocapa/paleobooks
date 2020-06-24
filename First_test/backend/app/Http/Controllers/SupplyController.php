@@ -9,8 +9,15 @@ use App\Models\Supply;
 use App\Models\SchoolClass;
 
 class SupplyController extends Controller {
-    public function getList() {
+    public function index() {
         return Supply::with(['book:id,title,isbn', 'user'])->get();
+    }
+
+    public function show(Request $request, $id) {
+
+        $supply = Supply::find($id);
+
+        return $supply ? Supply::with(['book:id,title,isbn', 'user'])->where('id', $supply->id)->first() : Response()->json([], 404);
     }
 
     public function create(Request $request) {
@@ -33,5 +40,13 @@ class SupplyController extends Controller {
         return response()->json([
             'success' => 'Supply created successfully'
         ], 201);
+    }
+
+    public function update() {
+        return 'to be implemented';
+    }
+
+    public function destroy() {
+        return 'to be implemented';
     }
 }
