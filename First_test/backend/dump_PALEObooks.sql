@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Creato il: Giu 24, 2020 alle 14:19
+-- Creato il: Giu 25, 2020 alle 19:10
 -- Versione del server: 10.3.22-MariaDB-log
 -- Versione PHP: 7.1.14
 
@@ -39,6 +39,15 @@ CREATE TABLE `adoptions` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dump dei dati per la tabella `adoptions`
+--
+
+INSERT INTO `adoptions` (`id`, `book_id`, `class_id`, `subject_id`, `must_buy`, `recommended`, `new_adoption`, `created_at`, `updated_at`) VALUES
+(1, 56, 2, 2, 1, 1, 1, NULL, NULL),
+(2, 55, 2, 2, 1, 1, 1, NULL, NULL),
+(3, 54, 2, 2, 1, 1, 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -158,10 +167,17 @@ INSERT INTO `books` (`id`, `title`, `isbn`, `price`, `autors`, `photo`, `publish
 CREATE TABLE `classes` (
   `id` int(10) UNSIGNED NOT NULL,
   `name` varchar(100) NOT NULL,
-  `school_year` int(10) UNSIGNED NOT NULL,
+  `school_year` varchar(20) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dump dei dati per la tabella `classes`
+--
+
+INSERT INTO `classes` (`id`, `name`, `school_year`, `created_at`, `updated_at`) VALUES
+(2, '1 IA', '2020', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -177,6 +193,15 @@ CREATE TABLE `demands` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Dump dei dati per la tabella `demands`
+--
+
+INSERT INTO `demands` (`id`, `book_id`, `user_id`, `created_at`, `updated_at`) VALUES
+(2, 55, 6, NULL, NULL),
+(3, 56, 6, NULL, NULL),
+(4, 57, 6, NULL, NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -187,7 +212,7 @@ CREATE TABLE `subjects` (
   `id` int(10) UNSIGNED NOT NULL,
   `name` varchar(100) NOT NULL,
   `course` varchar(100) NOT NULL,
-  `course_year` int(10) UNSIGNED NOT NULL,
+  `course_year` varchar(20) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -202,9 +227,24 @@ CREATE TABLE `supplies` (
   `id` int(10) UNSIGNED NOT NULL,
   `book_id` int(10) UNSIGNED NOT NULL,
   `user_id` int(10) UNSIGNED NOT NULL,
+  `price` decimal(10,0) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dump dei dati per la tabella `supplies`
+--
+
+INSERT INTO `supplies` (`id`, `book_id`, `user_id`, `price`, `created_at`, `updated_at`) VALUES
+(1, 56, 7, '0', NULL, NULL),
+(2, 56, 7, '0', NULL, NULL),
+(3, 56, 7, '0', NULL, NULL),
+(5, 56, 7, '0', NULL, NULL),
+(7, 56, 7, '0', NULL, NULL),
+(9, 55, 6, '0', NULL, NULL),
+(10, 53, 6, '0', NULL, NULL),
+(11, 56, 6, '0', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -243,7 +283,8 @@ INSERT INTO `users` (`id`, `name`, `email`, `password`, `created_at`, `updated_a
 (15, 'Prof. Rylee Wisozk MD', 'stamm.celestino@hotmail.com', '$2y$10$1DsarARHMZ9hPdNYlXINneW08o5Oj25gxjGYNO8IMJuSnGqp3mAW.', '2020-06-22 17:40:42', '2020-06-22 22:31:00'),
 (16, 'prova', 'prova@prova.prova', '$2y$10$9ovNRsrneFyr7ZXt2lLGvuOJnygpxGmBkj5Ta7WbVvYfBYmeNt6wy', '2020-06-22 18:26:55', '2020-06-22 18:26:55'),
 (17, 'Prova2', 'prova@prova.it', '$2y$10$XFTwYhg2MudgNjQSpJ9eMOEmmVX0k3PbIFoHJwFaFZU8yh1/yEK1O', '2020-06-23 11:50:49', '2020-06-23 11:50:49'),
-(18, 'Prova4', 'prova4@prova.it', '$2y$10$RHZJIf36RTHmN0VSxeRzFOU9TPs/0LqB7cO4BCi2LGFHRu213.gP2', '2020-06-23 11:51:45', '2020-06-23 11:51:45');
+(18, 'Prova4', 'prova4@prova.it', '$2y$10$RHZJIf36RTHmN0VSxeRzFOU9TPs/0LqB7cO4BCi2LGFHRu213.gP2', '2020-06-23 11:51:45', '2020-06-23 11:51:45'),
+(19, 'Cristian Livella', 'cristian@cristianlivella.com', 'paleoid', '2020-06-24 14:40:27', '2020-06-24 14:40:27');
 
 --
 -- Indici per le tabelle scaricate
@@ -299,7 +340,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT per la tabella `adoptions`
 --
 ALTER TABLE `adoptions`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT per la tabella `books`
@@ -311,13 +352,13 @@ ALTER TABLE `books`
 -- AUTO_INCREMENT per la tabella `classes`
 --
 ALTER TABLE `classes`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT per la tabella `demands`
 --
 ALTER TABLE `demands`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT per la tabella `subjects`
@@ -329,13 +370,13 @@ ALTER TABLE `subjects`
 -- AUTO_INCREMENT per la tabella `supplies`
 --
 ALTER TABLE `supplies`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT per la tabella `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
