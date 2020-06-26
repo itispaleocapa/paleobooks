@@ -13,6 +13,11 @@ class BookController extends Controller {
         // Check if user used the search form
         if ($filter) {
             $book = Book::where('title', 'like', '%' . $filter . '%')->get();
+
+            if (!$book) {
+                $book = Book::where('isbn', 'like', '%' . $filter . '%')->get();
+            }
+
             return $book;
         }
 

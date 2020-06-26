@@ -67,6 +67,24 @@ class DemandController extends Controller {
                 'book_id' => 'required',
             ]);
 
+            // Check if the book exists and if the user has not already a demand with the updated book
+            $check_book = Book::find($book);
+            if ($check_book) {
+                $check_demand = Demand::where('book_id', $book)
+                    ->where('user_id', $request->auth->id)
+                    ->first();
+                // Return error 400 if exists
+                if ($check_demand) {
+                    return response()->json([
+                        'error' => 'You already have a demand for this book.'
+                    ], 400);
+                } 
+            } else {
+                return response()->json([
+                    'error' => 'Provided book doesn\'t exist.'
+                ], 400);
+            }
+
             //Update the name
             $demand->book_id = $book;
         }
