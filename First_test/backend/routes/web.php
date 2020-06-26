@@ -34,6 +34,16 @@ $router->group(['prefix' => 'auth'], function () use ($router) {
             'refresh-token', ['uses' => 'AuthController@refreshToken']
         );
     });
+
+    $router->group(['prefix' => 'password-reset'], function () use ($router) {
+        $router->post(
+            '/', ['uses' => 'AuthController@sendResetPassword']
+        );
+
+        $router->post(
+            '/{reset_token}', ['uses' => 'AuthController@resetPassword']
+        );
+    });
 });
 
 $router->group(

@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use Validator;
 use App\User;
+use App\Models\PasswordReset;
 use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
 use Firebase\JWT\ExpiredException;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Mailer;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
 class AuthController extends BaseController {
@@ -59,6 +62,25 @@ class AuthController extends BaseController {
             'sub' => $user->id, // Subject of the token
             'iat' => time(), // Time when JWT was issued.
             'exp' => time() + 60 * 60 * 24 * 30 // Expiration time -> 30 days
+        ];
+
+        // As you can see we are passing `JWT_SECRET` as the second parameter that will
+        // be used to decode the token in the future.
+        return JWT::encode($payload, env('JWT_SECRET'));
+    }
+
+    /**
+     * Create a new reset password token.
+     *
+     * @param \App\User $user
+     * @return string
+     */
+    protected function resetJwt(User $user) {
+        $payload = [
+            'iss' => "lumen-jwt", // Issuer of the token
+            'sub' => $user->id, // Subject of the token
+            'iat' => time(), // Time when JWT was issued.
+            'exp' => time() + 60 * 10 // Expiration time -> 30 days
         ];
 
         // As you can see we are passing `JWT_SECRET` as the second parameter that will
@@ -235,5 +257,113 @@ class AuthController extends BaseController {
         return response()->json([
             'token' => $this->jwt($user)
         ], 200);
+    }
+
+    /**
+     * Send an email with the link for the password reset.
+     *
+     * @param \App\User $user
+     * @return mixed
+     */
+    public function sendResetPassword(Request $request) {
+        $this->validate($this->request, [
+            'email' => 'required|email'
+        ]);
+
+        $email = $request->input('email');
+
+        $user = User::where('email', $email)->first();
+
+        if (!$user) {
+            return response()->json([
+                'error' => 'Email does not exist.'
+            ], 400);
+        }
+
+        // Check if user already has a reset password request
+        $password_reset = PasswordReset::where('email', $email)->first();
+        $reset_token = $this->resetJwt($user);
+
+        if ($password_reset) {
+            $password_reset->reset_token = $reset_token;
+            
+            $password_reset->save();
+        } else {
+            $request->merge(['reset_token' => $reset_token]);
+
+            $password_reset = PasswordReset::create($request->all());
+        }
+
+        $this->sendEmail($email, $reset_token);
+
+        return response()->json([
+            'success' => 'Email sent.'
+        ], 200);
+    }
+
+    /**
+     * Reset the password using the provided password_reset_token.
+     *
+     * @param \App\User $user
+     * @return mixed
+     */
+    public function resetPassword(Request $request, $reset_token) {
+        //$reset_token = str_replace("_", ".", $reset_token);
+
+        if (!$reset_token) {
+            return response()->json([
+                'error' => 'Reset token is required.'
+            ], 400);
+        }
+
+        $reset_token[36] = '.';
+        $reset_token[120] = '.';
+
+        $password_reset = PasswordReset::where('reset_token', $reset_token)->first();
+
+        if (!$password_reset) {
+            return response()->json([
+                'error' => 'This request is not valid.'
+            ], 400);
+        }
+
+        $user = User::where('email', $password_reset->email)->first();
+
+        $this->validate($this->request, [
+            'new_password' => 'required'
+        ]);
+
+        // Save the hashed password
+        $hashed_password = Hash::make($this->request->input('new_password'));
+        $user->password = $hashed_password;
+
+        try {
+            $user->save();
+        } catch (Exception $e) {
+            return response()->json([
+                'error' => 'An error while updating password.' // To get the error message use this: $e->getMessage()
+            ], 400);
+        }
+
+        $password_reset->delete();
+
+        return response()->json([
+            'success' => 'Password successfully updated.'
+        ], 200);
+    }
+
+    public function sendEmail($email, $reset_token) {
+        $data = ['message' => 'ciao questo è il token: ' . $reset_token];
+
+        //echo $reset_token . '<br><br>';
+
+        $reset_token[36] = '_';
+        $reset_token[120] = '_';
+
+        //$reset_token = str_replace(".", "_", $reset_token);
+
+        //echo $reset_token;die();
+
+        Mail::to($email)->send(new Mailer($reset_token));
     }
 }
