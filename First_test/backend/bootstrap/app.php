@@ -98,6 +98,10 @@ $app->routeMiddleware([
     'jwt.refresh' => App\Http\Middleware\RefreshJwtMiddleware::class,
 ]);
 
+$app->routeMiddleware([
+    'guest.auth' => App\Http\Middleware\GuestMiddleware::class,
+]);
+
 /*
 |--------------------------------------------------------------------------
 | Register Service Providers

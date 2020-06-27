@@ -60,6 +60,12 @@ class SupplyController extends Controller {
             Response()->json([], 404);
         }
 
+        if ($request->auth->id != $supply->user_id) {
+            return response()->json([
+                'error' => 'You are not authorized to edit this supply.'
+            ], 401);
+        }
+
         // Check and validate the updated book
         $book = $request->input('book_id');
         if ($book) {

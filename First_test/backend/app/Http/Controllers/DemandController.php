@@ -60,6 +60,12 @@ class DemandController extends Controller {
             Response()->json([], 404);
         }
 
+        if ($request->auth->id != $demand->user_id) {
+            return response()->json([
+                'error' => 'You are not authorized to edit this demand.'
+            ], 401);
+        }
+
         // Check and validate the updated book
         $book = $request->input('book_id');
         if ($book) {

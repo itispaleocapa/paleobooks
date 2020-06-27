@@ -17,31 +17,34 @@ use App\Models\SchoolClass;
 /** @var $router */
 
 $router->group(['prefix' => 'auth'], function () use ($router) {
-    $router->post(
-        'login', ['uses' => 'AuthController@authenticate']
-    );
+    // Guest accessible requests
+    $router->group(['middleware' => 'guest.auth'], function () use ($router) {
+        $router->post(
+            'login', ['uses' => 'AuthController@authenticate']
+        );
+    
+        $router->post(
+            'register', ['uses' => 'AuthController@register']
+        );
+    
+        $router->post(
+            'paleoid', ['uses' => 'AuthController@authenticatePaleoID']
+        );
 
-    $router->post(
-        'register', ['uses' => 'AuthController@register']
-    );
-
-    $router->post(
-        'paleoid', ['uses' => 'AuthController@authenticatePaleoID']
-    );
+        $router->group(['prefix' => 'password-reset'], function () use ($router) {
+            $router->post(
+                '/', ['uses' => 'AuthController@sendResetPassword']
+            );
+    
+            $router->post(
+                '/{reset_token}', ['uses' => 'AuthController@resetPassword']
+            );
+        });
+    });
 
     $router->group(['middleware' => 'jwt.refresh'], function () use ($router) {
         $router->post(
             'refresh-token', ['uses' => 'AuthController@refreshToken']
-        );
-    });
-
-    $router->group(['prefix' => 'password-reset'], function () use ($router) {
-        $router->post(
-            '/', ['uses' => 'AuthController@sendResetPassword']
-        );
-
-        $router->post(
-            '/{reset_token}', ['uses' => 'AuthController@resetPassword']
         );
     });
     
