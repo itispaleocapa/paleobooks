@@ -29,4 +29,14 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $hidden = [
         'password', 'created_at', 'updated_at'
     ];
+
+    /*
+     * Append paleoid attribute, true if the user is authenticated with PaleoID, false otherwise
+     */
+    protected $appends = ['paleoid'];
+
+    public function getPaleoidAttribute() {
+        return $this->attributes['password'] === "paleoid";
+    }
+
 }
