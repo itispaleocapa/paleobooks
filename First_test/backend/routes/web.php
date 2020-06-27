@@ -44,6 +44,12 @@ $router->group(['prefix' => 'auth'], function () use ($router) {
             '/{reset_token}', ['uses' => 'AuthController@resetPassword']
         );
     });
+    
+    $router->group(['middleware' => 'jwt.auth'], function() use ($router) {
+        $router->post(
+            '/logout', ['uses' => 'AuthController@logout'] 
+        );
+    });
 });
 
 $router->group(
@@ -63,7 +69,7 @@ $router->group(
         });
 
         $router->group(['prefix' => 'books'], function () use ($router) {
-            $router->get('/', 'BookController@index');
+            $router->get('/', 'BookController@index'); // Can add 'search' param in header request to filter by title or isbn
             $router->get('/{id}', 'BookController@show');
             $router->get('/{id}/supplies', 'BookController@getBookSupplies');
             $router->get('/{id}/demands', 'BookController@getBookDemands');

@@ -24,10 +24,21 @@ class RefreshJwtMiddleware
             ], 401);
         }
 
+        $authenticate = User::where('refresh_token', $refresh_token)->first();
+
+        if (!$authenticate) {
+            return response()->json([
+                'error' => 'Provided refresh token does not exist.'
+            ], 400);
+        }
+
         try {
             $credentials = JWT::decode($refresh_token, env('JWT_SECRET'), ['HS256']);
         } catch(ExpiredException $e) {
             // Need to logout
+            $authenticate->refresh_token = null;
+            $authenticate->save();
+            
             return response()->json([
                 'error' => 'Provided refresh token is expired.'
             ], 400);

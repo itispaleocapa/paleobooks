@@ -32,17 +32,17 @@ class AuthController extends BaseController {
     }
 
     /**
-     * Create a new token.
+     * Create a new token given the user and the expiration time.
      *
      * @param \App\User $user
      * @return string
      */
-    protected function jwt(User $user) {
+    protected function jwt(User $user, $expires) {
         $payload = [
             'iss' => "lumen-jwt", // Issuer of the token
             'sub' => $user->id, // Subject of the token
             'iat' => time(), // Time when JWT was issued.
-            'exp' => time() + 60 * 60 // Expiration time
+            'exp' => time() + $expires // Expiration time
         ];
 
         // As you can see we are passing `JWT_SECRET` as the second parameter that will
@@ -51,41 +51,20 @@ class AuthController extends BaseController {
     }
 
     /**
-     * Create a new refresh token.
+     * Try to decode the reset token used to reset the password.
      *
-     * @param \App\User $user
-     * @return string
+     * @param $reset_token
+     * @return bool
      */
-    protected function refreshJwt(User $user) {
-        $payload = [
-            'iss' => "lumen-jwt", // Issuer of the token
-            'sub' => $user->id, // Subject of the token
-            'iat' => time(), // Time when JWT was issued.
-            'exp' => time() + 60 * 60 * 24 * 30 // Expiration time -> 30 days
-        ];
-
-        // As you can see we are passing `JWT_SECRET` as the second parameter that will
-        // be used to decode the token in the future.
-        return JWT::encode($payload, env('JWT_SECRET'));
-    }
-
-    /**
-     * Create a new reset password token.
-     *
-     * @param \App\User $user
-     * @return string
-     */
-    protected function resetJwt(User $user) {
-        $payload = [
-            'iss' => "lumen-jwt", // Issuer of the token
-            'sub' => $user->id, // Subject of the token
-            'iat' => time(), // Time when JWT was issued.
-            'exp' => time() + 60 * 10 // Expiration time -> 30 days
-        ];
-
-        // As you can see we are passing `JWT_SECRET` as the second parameter that will
-        // be used to decode the token in the future.
-        return JWT::encode($payload, env('JWT_SECRET'));
+    public function decodeResetToken($reset_token) {
+        try {
+            JWT::decode($reset_token, env('JWT_SECRET'), ['HS256']);
+        } catch(ExpiredException $e) {
+            return false;
+        } catch(Exception $e) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -115,10 +94,19 @@ class AuthController extends BaseController {
 
         // Verify the password and generate the token
         if (Hash::check($this->request->input('password'), $user->password)) {
+            if (!$user->refresh_token) {
+                $refresh_token = $this->jwt($user, 60 * 60 * 24 * 30);
+            
+                $user->refresh_token = $refresh_token;
+                $user->save();
+            } else {
+                $refresh_token = $user->refresh_token;
+            }
+
             return response()->json([
                 'success' => 'Successfully logged in.',
-                'token' => $this->jwt($user),
-                'refresh_token' => $this->refreshJwt($user)
+                'access_token' => $this->jwt($user, 60 * 60),
+                'refresh_token' => $refresh_token
             ], 200);
         }
 
@@ -150,15 +138,6 @@ class AuthController extends BaseController {
             ], 400);
         }
 
-        //verify if username is unique
-        /*$user = User::where('name', '=', $this->request->input('name'))->first();
-
-        if ($user) {
-            return response()->json([
-                'error' => 'Name already exists.'
-            ], 400);
-        }*/
-
         $hashed_password = Hash::make($this->request->input('password'));
 
         $user = new User;
@@ -166,6 +145,7 @@ class AuthController extends BaseController {
         $user->name = $this->request->input('name');
         $user->email = $this->request->input('email');
         $user->password = $hashed_password;
+        $user->refresh_token = $this->jwt($user, 60 * 60 * 24 * 30);
 
         try {
             $user->save();
@@ -177,8 +157,8 @@ class AuthController extends BaseController {
 
         return response()->json([
             'success' => 'Successfully registered.',
-            'token' => $this->jwt($user),
-            'refresh_token' => $this->refreshJwt($user)
+            'access_token' => $this->jwt($user, 60 * 60),
+            'refresh_token' => $user->refresh_token
         ], 201);
     }
 
@@ -247,6 +227,30 @@ class AuthController extends BaseController {
     }
 
     /**
+     * Logout and delete the refresh_token
+     *
+     * @param \App\User $user
+     * @return mixed
+     */
+    public function logout(Request $request) {
+        $user = $request->auth;
+
+        $user->refresh_token = null;
+
+        try {
+            $user->save();
+        } catch (Exception $e) {
+            return response()->json([
+                'error' => 'An error while logging out.' // To get the error message use this: $e->getMessage()
+            ], 400);
+        }
+
+        return response()->json([
+            'success' => 'Successfully logged out.'
+        ], 200);
+    }
+
+    /**
      * Refresh the user token if middleware validate the provided refresh token.
      *
      * @param \App\User $user
@@ -256,14 +260,14 @@ class AuthController extends BaseController {
         $user = $request->auth;
 
         return response()->json([
-            'token' => $this->jwt($user)
+            'access_token' => $this->jwt($user, 60 * 60)
         ], 200);
     }
 
     /**
      * Send an email with the link for the password reset.
      *
-     * @param \App\User $user
+     * @param $email, $reset_token, $new_password
      * @return mixed
      */
     public function sendResetPassword(Request $request) {
@@ -289,7 +293,7 @@ class AuthController extends BaseController {
 
         // Check if user already has a reset password request
         $password_reset = PasswordReset::where('email', $email)->first();
-        $reset_token = $this->resetJwt($user);
+        $reset_token = $this->jwt($user, 60 * 15);
 
         if ($password_reset) {
             $password_reset->reset_token = $reset_token;
@@ -315,8 +319,6 @@ class AuthController extends BaseController {
      * @return mixed
      */
     public function resetPassword(Request $request, $reset_token) {
-        //$reset_token = str_replace("_", ".", $reset_token);
-
         if (!$reset_token) {
             return response()->json([
                 'error' => 'Reset token is required.'
@@ -329,6 +331,13 @@ class AuthController extends BaseController {
         $password_reset = PasswordReset::where('reset_token', $reset_token)->first();
 
         if (!$password_reset) {
+            return response()->json([
+                'error' => 'This request is not valid.'
+            ], 400);
+        }
+
+        // Try to decode the reset token
+        if (!$this->decodeResetToken($reset_token)) {
             return response()->json([
                 'error' => 'This request is not valid.'
             ], 400);
@@ -360,16 +369,11 @@ class AuthController extends BaseController {
     }
 
     public function sendEmail($email, $reset_token) {
-        $data = ['message' => 'ciao questo è il token: ' . $reset_token];
-
-        //echo $reset_token . '<br><br>';
-
+        // Replace the '.' in token with the '_', to create a valid url using the JWT token
         $reset_token[36] = '_';
         $reset_token[120] = '_';
 
         //$reset_token = str_replace(".", "_", $reset_token);
-
-        //echo $reset_token;die();
 
         Mail::to($email)->send(new Mailer($reset_token));
     }

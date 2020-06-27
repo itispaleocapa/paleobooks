@@ -14,7 +14,7 @@ class BookController extends Controller {
         if ($filter) {
             $book = Book::where('title', 'like', '%' . $filter . '%')->get();
 
-            if (!$book) {
+            if ($book->isEmpty()) {
                 $book = Book::where('isbn', 'like', '%' . $filter . '%')->get();
             }
 
