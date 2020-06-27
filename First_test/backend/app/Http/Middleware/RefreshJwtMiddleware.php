@@ -14,7 +14,7 @@ class RefreshJwtMiddleware
     {
         $refresh_token = $request->bearerToken();
 
-        if ($refresh_token === null)
+        if (!$refresh_token)
             $refresh_token = $request->get('refresh_token');
 
         if(!$refresh_token) {
