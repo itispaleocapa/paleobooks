@@ -12,8 +12,11 @@ class RefreshJwtMiddleware
 {
     public function handle($request, Closure $next, $guard = null)
     {
-        $refresh_token = $request->get('refresh_token');
-        
+        $refresh_token = $request->bearerToken();
+
+        if ($refresh_token === null)
+            $refresh_token = $request->get('refresh_token');
+
         if(!$refresh_token) {
             // Unauthorized response if token not there
             return response()->json([
