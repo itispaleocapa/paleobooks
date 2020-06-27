@@ -61,8 +61,8 @@ $router->group(
         });
 
         $router->group(['prefix' => 'classes'], function () use ($router) {
-            /*$router->get('/', 'ClassController@getList');
-            $router->get('/{id}', 'ClassController@getClass');*/
+            $router->get('/', 'ClassController@index');
+            // $router->get('/{id}', 'ClassController@getClass');
             $router->get('/{id}/books', 'ClassController@getClassBooks');
             $router->get('/{id}/supplies', 'ClassController@getClassSupplies');
             $router->get('/{id}/demands', 'ClassController@getClassDemands');

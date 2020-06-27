@@ -6,7 +6,7 @@ use App\Models\SchoolClass;
 use Illuminate\Http\Response;
 
 class ClassController extends Controller {
-    public function getList() {
+    public function index() {
         return SchoolClass::all();
     }
 
