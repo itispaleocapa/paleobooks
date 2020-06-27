@@ -1,7 +1,7 @@
 $(document).ready(function () {
     $.ajax({
         dataType: 'json',
-        url: 'http://localhost:8000/offers',
+        url: 'https://www.paleobooks.it/pbapi/public/offers',
         data: {"token": sessionStorage.getItem('access_token')},
         error: (response) => {
             if (response.status == '400' || response.status == '401') {
@@ -28,11 +28,11 @@ function refreshToken() {
         $.ajax({
             type: 'POST',
             dataType: 'json',
-            url: 'http://localhost:8000/auth/refresh-token',
+            url: 'https://www.paleobooks.it/pbapi/public/auth/refresh-token',
             data: {"refresh_token": refresh_token},
             error: (err) => {
                 //console.log(err);
-                window.location.href = "/user/login.html";
+                window.location.href = "user/login.html";
             },
             success: (response) => {
                 sessionStorage.setItem('access_token', response.token);
@@ -42,7 +42,7 @@ function refreshToken() {
     }
     else {
         // Need to logout
-        window.location.href = "/user/login.html";
+        window.location.href = "user/login.html";
     }
         
 }
@@ -66,6 +66,6 @@ function getRefreshCookie(cname) {
 function logout() {
     document.cookie = "refresh_token=; path=/;";
     sessionStorage.removeItem('access_token');
-    window.location.href = "/user/login.html";
+    window.location.href = "user/login.html";
     //location.reload();
 }

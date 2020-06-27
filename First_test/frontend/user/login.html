@@ -23,7 +23,7 @@
             $.ajax({
                 type: 'POST',
                 dataType: 'json',
-                url: 'http://localhost:8000/auth/login',
+                url: 'https://www.paleobooks.it/pbapi/public/auth/login',
                 data: $(this).serialize(),// 'andres84@waelchi.com', '12345'
                 error: (err) => {
                     console.log(err);
