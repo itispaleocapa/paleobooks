@@ -233,11 +233,12 @@ class AuthController extends BaseController {
 
         if (!$user) {
             $user = new User;
-            $user->name = $response['nome'] . " " . $response['cognome'];
-            $user->email = $response['email'];
             $user->password = 'paleoid';
-            $user->save();
         }
+
+        $user->name = $response['nome'] . " " . $response['cognome'];
+        $user->email = $response['email'];
+        $user->save();
 
         return response()->json([
             'token' => $this->jwt($user),
@@ -280,13 +281,19 @@ class AuthController extends BaseController {
             ], 400);
         }
 
+        if ($user->password === "paleoid") {
+            return response()->json([
+                'error' => 'Authentication managed by PaleoID.'
+            ], 400);
+        }
+
         // Check if user already has a reset password request
         $password_reset = PasswordReset::where('email', $email)->first();
         $reset_token = $this->resetJwt($user);
 
         if ($password_reset) {
             $password_reset->reset_token = $reset_token;
-            
+
             $password_reset->save();
         } else {
             $request->merge(['reset_token' => $reset_token]);
