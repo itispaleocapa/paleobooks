@@ -96,7 +96,7 @@ class AuthController extends BaseController {
         if (Hash::check($this->request->input('password'), $user->password)) {
             if (!$user->refresh_token) {
                 $refresh_token = $this->jwt($user, 60 * 60 * 24 * 30);
-            
+
                 $user->refresh_token = $refresh_token;
                 $user->save();
             } else {
@@ -220,9 +220,18 @@ class AuthController extends BaseController {
         $user->email = $response['email'];
         $user->save();
 
+        if (!$user->refresh_token) {
+            $refresh_token = $this->jwt($user, 60 * 60 * 24 * 30);
+
+            $user->refresh_token = $refresh_token;
+            $user->save();
+        } else {
+            $refresh_token = $user->refresh_token;
+        }
+
         return response()->json([
-            'token' => $this->jwt($user),
-            'refresh_token' => $this->refreshJwt($user)
+            'access_token' => $this->jwt($user, 60 * 60),
+            'refresh_token' => $refresh_token
         ], 200);
     }
 
