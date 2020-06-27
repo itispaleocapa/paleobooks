@@ -44,6 +44,12 @@ $router->group(['prefix' => 'auth'], function () use ($router) {
             '/{reset_token}', ['uses' => 'AuthController@resetPassword']
         );
     });
+    
+    $router->group(['middleware' => 'jwt.auth'], function() use ($router) {
+        $router->post(
+            '/logout', ['uses' => 'AuthController@logout'] 
+        );
+    });
 });
 
 $router->group(
