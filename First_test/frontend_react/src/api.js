@@ -24,7 +24,7 @@ const api = {
             api.request('/auth/login', 'POST', JSON.stringify({email: email, password: password})).then(res => {
                 var expiration_date = new Date();
                 expiration_date.setFullYear(expiration_date.getFullYear() + 1);
-                sessionStorage.setItem('access_token', res.token);
+                sessionStorage.setItem('access_token', res.access_token);
                 document.cookie = "refresh_token=" + res.refresh_token + "; expires=" + expiration_date.toUTCString() + "; path=/";
                 resolve();
             }).catch(() => {
