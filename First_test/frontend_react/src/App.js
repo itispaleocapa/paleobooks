@@ -13,15 +13,21 @@ import api from "./api";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import PrivateRoute from "./PrivateRoute";
 import HomePage from "./pages/HomePage";
+import PageContainer from "./PageContainer";
 
 class App extends React.Component {
     constructor() {
         super();
-        this.state = {isLoggedIn: null, wasInitialized: false}
+        this.state = {error: false, isLoggedIn: null, wasInitialized: false}
     }
 
     componentDidMount = () => {
         this.chechLogin();
+        setTimeout(() => {
+            if (this.state.isLoggedIn === null) {
+                this.setState({error: true})
+            }
+        }, 5000);
     }
 
     chechLogin = () => {
@@ -35,23 +41,17 @@ class App extends React.Component {
     }
 
     render = () => {
+        if (this.state.error === true) return <div style={{textAlign: 'center'}}><h1>Impossibile comunicare con il server</h1><h2>Riprova più tardi</h2><h4>PaleoBooks</h4></div>
         if (this.state.isLoggedIn === null) return <div style={{margin: '20px auto', width: 'fit-content'}}><CircularProgress /></div>;
         return (
             <BrowserRouter>
-                <AppBar position="static" style={{alignItems: 'center'}}>
-                    <Toolbar>
-                        <Typography variant="h6">
-                            PaleoBooks
-                        </Typography>
-                    </Toolbar>
-                </AppBar>
                 <Switch>
-                    <PrivateRoute auth={this.state.isLoggedIn} wasInitialized={this.state.wasInitialized} exact component={() => <HomePage checkLogin={this.chechLogin} />} path="/"/>
                     <Route exact path="/login">
                         {this.state.isLoggedIn
                             ? <Redirect to=""/>
                             : <LoginPage checkLogin={this.chechLogin}/>}
                     </Route>
+                    <PrivateRoute auth={this.state.isLoggedIn} wasInitialized={this.state.wasInitialized} exact component={() => <PageContainer checkLogin={this.chechLogin} />} path="*"/>
                     <Route path="*">
                         <Redirect to=""/>
                     </Route>
