@@ -1,8 +1,5 @@
 import React from "react";
 import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
-import api from "../api";
-import TestPage from "../TestPage";
 
 class ProfilePage extends React.Component {
     constructor(props) {
