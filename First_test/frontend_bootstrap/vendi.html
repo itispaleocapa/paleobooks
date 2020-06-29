@@ -52,28 +52,6 @@
 		<input type="submit" class="btn btn-danger" value="Carica">
 	</form> 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-	<script>
-		$(document).ready(function () {
-			$.ajax({
-				dataType: 'json',
-				url: 'https://www.paleobooks.it/pbapi/public/books',
-				data: {"access_token": sessionStorage.getItem('access_token')},
-				success: (books) => {
-					var x = document.getElementById("books");
-					$.each(books, (i, book) => {
-						var option = document.createElement("option");
-						var string = book.title;
-						string = string.substring(0,60);
-						option.text =  string;
-						option.value =  book.id;
-						//var row = $('<option value="' + book.id + '">' + book.title + '</option>');
-						//$('#books').append(row);
-						x.add(option);
-					});
-				}
-			});
-		});
-	</script>
 </body>
 </html>
 
@@ -81,3 +59,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+<script src="assets/js/resetpassword.js"></script>
+<script src="assets/js/app.js"></script>
