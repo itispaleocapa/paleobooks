@@ -203,6 +203,12 @@ class AuthController extends BaseController {
             ], 401);
         }*/
 
+        $class = '';
+
+        if (isset($response['info_studente']['classe'])) {
+            $class = $response['info_studente']['classe'];
+        }
+
         $user = User::where('email', $response['email'])->first();
 
         if ($user && $user->password !== "paleoid") {
@@ -231,7 +237,8 @@ class AuthController extends BaseController {
 
         return response()->json([
             'access_token' => $this->jwt($user, 60 * 60),
-            'refresh_token' => $refresh_token
+            'refresh_token' => $refresh_token,
+            'class' => $class
         ], 200);
     }
 
