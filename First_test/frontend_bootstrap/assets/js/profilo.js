@@ -14,9 +14,9 @@ function profile_update(url, data){
         url: url,
         data:  {"access_token": sessionStorage.getItem('access_token')},
         error: (err) => {
-            if (response.status == '401'
-                    || response.text == 'Provided access token is expired.'
-                    || response.text == 'An error while decoding access token.') {
+            if (err.status == '401'
+                    || err.text == 'Provided access token is expired.'
+                    || err.text == 'An error while decoding access token.') {
                 refreshToken();
             }
         },
@@ -44,9 +44,9 @@ function profile() {
         url: 'https://www.paleobooks.it/pbapi/public/users/profile',
         data: {"access_token": sessionStorage.getItem('access_token')},
         error: (err) => {
-            if (response.status == '401'
-                    || response.text == 'Provided access token is expired.'
-                    || response.text == 'An error while decoding access token.') {
+            if (err.status == '401'
+                    || err.text == 'Provided access token is expired.'
+                    || err.text == 'An error while decoding access token.') {
                 refreshToken();
             }
         },
