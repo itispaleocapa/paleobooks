@@ -11,6 +11,8 @@ function logout(onlyDestroyMemory) {
             url: 'https://www.paleobooks.it/pbapi/public/auth/logout',
             data: {"access_token": getAccessToken()},
             error: (err) => {
+                refreshToken();
+                this.logout();
                 console.log(err);
             },
             success: (response) => {
@@ -80,4 +82,8 @@ function getAccessToken() {
 
 function sendAccessToken() {
     return '&access_token=' + sessionStorage.getItem('access_token');
+}
+
+function clearFeedback() {
+    document.getElementById('feedback').innerHTML = "";
 }

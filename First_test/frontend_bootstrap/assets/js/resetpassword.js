@@ -10,7 +10,7 @@ function resetpassword(url, data) {
         url: url,
         data: data,
         error: (err) => {
-            console.log(err);
+            $("#feedback").add("<p>" + err.responseJSON['error'] + "</p>").css( "background-color", "red" ).appendTo('#feedback');
         },
         success: (response) => {
             alert(response['success'] + ' Check the link.');

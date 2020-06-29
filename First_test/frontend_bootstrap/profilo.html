@@ -19,7 +19,7 @@
 </head>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: chocolate;">
-  <img src="./LOGO1.png" img src="img_girl.jpg" style="max-width:10%; height:auto;" alt="logo-navbar">
+  <img src="img/LOGO1.png" img src="img_girl.jpg" style="max-width:10%; height:auto;" alt="logo-navbar">
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav"
     aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
@@ -38,6 +38,12 @@
       <li class="nav-item">
         <a class="nav-link" href="login.html"> LOGIN </a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" href="offerte.html"> OFFERTE </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="domande.html"> DOMANDE </a>
+      </li>
 
       <!--<li class="nav-item">
             <a class="nav-link" href="registrati.html"> REGISTRATI </a>
@@ -49,6 +55,7 @@
 </nav>
 
 <body style="margin: 10px; text-align: center;">
+  <div id="feedback" class="container-fluid"></div>
   <h2> Profilo </h2>
 
   <div id="out" class="container-fluid">
@@ -66,17 +73,21 @@
 
   <form id="form" style="display: none;">
     <label for="name">Nome</label><br>
-    <input type="name" id="name" name="name" placeholder="Inserisci nome" style="text-align: center;"><br>
+    <input class="rounded border " type="name" id="name" name="name" placeholder="Inserisci nome"
+      style="text-align: center;"><br>
     <label for="email">Email</label><br>
-    <input type="email" id="email" name="email" placeholder="Inserisci email" style="text-align: center;"><br>
+    <input class="rounded border " type="email" id="email" name="email" placeholder="Inserisci email"
+      style="text-align: center;"><br>
     <label for="password">Password</label><br>
-    <input type="password" id="password" name="password" placeholder="inserisci password"
+    <input class="rounded border " type="password" id="password" name="password" placeholder="inserisci password"
       style="text-align: center;"><br>
     <br>
-    <input type="submit" value="Modifica" class="btn btn-danger">
+    <input type="submit" value="Modifica" class="btn btn-danger">  
+    <br>
+    <br>
   </form>
 
-
+  <button type="button" class="btn btn-waring" id="logout">LOGOUT</button>
 
 
 
@@ -99,7 +110,7 @@
 
 
 <footer>
-  <button type="button" class="btn btn-danger" id="logout">LOGOUT</button>
+ 
 </footer>
 
 </html>

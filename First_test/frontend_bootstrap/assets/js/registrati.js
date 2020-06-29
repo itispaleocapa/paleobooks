@@ -10,7 +10,10 @@ function registration(url, data) {
         url: url,
         data: data,
         error: (err) => {
-            console.log(err);
+            if (err.status == 400) {
+                clearFeedback();
+                $("#feedback").add("<p>" + err.responseJSON['error'] + "</p>").css( "background-color", "red" ).appendTo('#feedback');
+            }
 
             var keyNames = Object.keys(err.responseJSON);
 

@@ -7,7 +7,7 @@ $("#form").submit(function (event) {
     profile_update('https://www.paleobooks.it/pbapi/public/users', $(this).serialize());
 });
 
-function profile_update(url, data){
+function profile_update(url, data, onlyRefresh){
     $.ajax({
         type: 'PUT',
         dataType: 'json',
@@ -18,10 +18,12 @@ function profile_update(url, data){
                 refreshToken();
                 this.profile_update('https://www.paleobooks.it/pbapi/public/users', $(this).serialize());
             }
-            console.log(err.responseJSON);
+            if (err.status == 400) {
+                clearFeedback();
+                $("#feedback").add("<p>" + err.responseJSON['error'] + "</p>").css( "background-color", "red" ).appendTo('#feedback');
+            }
         },
         success: (response) => {
-            alert(response['success']);
             location.reload();
         }
     });

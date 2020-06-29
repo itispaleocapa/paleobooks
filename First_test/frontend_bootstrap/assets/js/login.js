@@ -16,7 +16,10 @@ function login(url, data) {
         url: url,
         data: data,
         error: (err) => {
-            console.log(err);
+            if (err.status == 400) {
+                clearFeedback();
+                $("#feedback").add("<p>" + err.responseJSON['error'] + "</p>").css( "background-color", "red" ).appendTo('#feedback');
+            }
         },
         success: (response) => {
             var expiration_date = new Date();
@@ -25,7 +28,6 @@ function login(url, data) {
             sessionStorage.setItem('access_token', response.access_token);
             document.cookie = "refresh_token=" + response.refresh_token + "; expires=" + expiration_date.toUTCString() + "; path=/";
 
-            alert(response['success']);
             window.location.href = "profilo.html";
         }
     });
