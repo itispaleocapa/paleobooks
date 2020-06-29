@@ -12,6 +12,10 @@ class SupplyController extends Controller {
     public function index() {
         return Supply::with(['book:id,title,isbn', 'user'])->get();
     }
+	
+	public function getUserSupplies(Request $request) {
+        return Supply::with(['book:id,title,isbn'])->where('user_id', $request->auth->id)->get();
+    }
 
     public function show(Request $request, $id) {
         $supply = Supply::find($id);

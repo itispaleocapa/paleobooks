@@ -16,7 +16,7 @@
   </head>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: chocolate;">
-  <img src="img/LOGO1.png" img src="img_girl.jpg" style="max-width:10%; height:auto;" alt="logo-navbar">
+  <img src="assets/img/LOGO1.png" img src="img_girl.jpg" style="max-width:10%; height:auto;" alt="logo-navbar">
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav"
     aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
@@ -53,19 +53,42 @@
 
 <body style="margin: 10px; text-align: center;">
   <div id="feedback" class="container-fluid"></div>
-    <h2>Crea offerta</h2>
-	<form action="/action_page.php">
-	    <label for="fname">Titolo: </label><br>
+    <h2>Bazar</h2>
+	<form>
+	    <label for="fname">Classe: </label><br>
 		<!--<input type="text" id="fname" name="fname" value="John"><br>-->
-		<select name="books" id="books">
-			<option selected>Scegli un libro </option>
-		</select>
+		<select name="classes" id="classes" onchange="loadBooks(this.value);">
+      <option selected value="0">Scegli una classe</option>
+    </select>
+  </form>
+    <form id="form">
+	    <input type="text" id="search" name="search" placeholder="Titolo o ISBN"><br>
+        <br>
+  </form> 
+
+
+  
 		<br>
 		<!--<label for="lname">Last name:</label><br>
         <input type="text" id="lname" name="lname" value="Doe"><br><br>-->
         <br>
-		<input type="submit" class="btn btn-danger" value="Carica">
-	</form> 
+  
+
+  
+  <table id="table" class="table table-bordered table table-striped">
+    <thead>
+    <tr>
+        <th scope="col">Titolo libro</th>
+        <th scope="col">ISBN</th>
+        <th scope="col">Prezzo</th>
+        <th scope="col">Offri</th>
+        <th scope="col">Cerca</th>
+    </tr>
+    </thead>
+    <tbody id="booksTable"></tbody>
+  </table>
+
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
@@ -73,7 +96,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 
-<script src="assets/js/vendi.js"></script>
+<script src="assets/js/bazar.js"></script>
 <script src="assets/js/app.js"></script>
 
 </body>

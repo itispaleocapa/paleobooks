@@ -12,6 +12,10 @@ class DemandController extends Controller {
     public function index() {
         return Demand::with(['book:id,title,isbn', 'user'])->get();
     }
+	
+	public function getUserDemands(Request $request) {
+        return Demand::with(['book:id,title,isbn'])->where('user_id', $request->auth->id)->get();
+    }
 
     public function show(Request $request, $id) {
 

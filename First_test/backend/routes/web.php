@@ -82,6 +82,7 @@ $router->group(
         //$router->get('/supplies[/{filter}]', 'SupplyController@index');
         $router->group(['prefix' => 'supplies'], function () use ($router) {
             $router->get('/', 'SupplyController@index');
+			$router->get('/user', 'SupplyController@getUserSupplies');
             $router->get('/{id}', 'SupplyController@show');
             $router->post('/', 'SupplyController@create');
             $router->put('/{id}', 'SupplyController@update');
@@ -90,6 +91,7 @@ $router->group(
 
         $router->group(['prefix' => 'demands'], function () use ($router) {
             $router->get('/', 'DemandController@index');
+			$router->get('/user', 'DemandController@getUserDemands');
             $router->get('/{id}', 'DemandController@show');
             $router->post('/', 'DemandController@create');
             $router->put('/{id}', 'DemandController@update');
