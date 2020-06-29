@@ -17,11 +17,6 @@ function registration(url, data) {
             for(var i = 0; i < keyNames.length; i++){
                 document.getElementById(keyNames[i]).style.borderColor = "red";
             }
-            
-            if(err.status == 400){
-                //Email esistente
-                console.log("Errore");
-            }
         },
         success: (response) => {
             var expiration_date = new Date();
@@ -30,7 +25,8 @@ function registration(url, data) {
             sessionStorage.setItem('access_token', response.access_token);
             document.cookie = "refresh_token=" + response.refresh_token + "; expires=" + expiration_date.toUTCString() + "; path=/";
 
-            //window.location.href = "../";
+            alert(response['success']);
+            window.location.href = "profilo.html";
         }
     });
 }

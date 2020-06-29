@@ -1,11 +1,10 @@
 function logout(onlyDestroyMemory) {
     if (!onlyDestroyMemory) {
-        var refresh_token = getRefreshCookie("refresh_token");
         $.ajax({
             type: 'POST',
             dataType: 'json',
             url: 'https://www.paleobooks.it/pbapi/public/auth/logout',
-            data: {"refresh_token": refresh_token},
+            data: {"refresh_token": getRefreshCookie("refresh_token")},
             error: (err) => {
                 /*if (response.status == '400' || response.status == '401') {
                     refreshToken();
@@ -63,4 +62,20 @@ function getRefreshCookie(cname) {
         }
     }
     return "";
+}
+
+function checkUnauthorized(err) {
+    if (err.status == '401' || err.responseJSON['error'] == 'Provided access token is expired.' || err.responseJSON['error'] == 'An error while decoding access token.') {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function getAccessToken() {
+    return sessionStorage.getItem('access_token');
+}
+
+function sendAccessToken() {
+    return '&access_token=' + sessionStorage.getItem('access_token');
 }
