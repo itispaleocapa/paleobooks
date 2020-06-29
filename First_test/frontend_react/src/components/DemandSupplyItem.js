@@ -9,7 +9,7 @@ import api from "../api";
 class DemandSupplyItem extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {loading: true, name: '', email: '', md5email: '', price: 0.00};
+        this.state = {loading: true, name: '', email: '', emailmd5: '', price: 0.00};
     }
 
     componentDidMount() {
@@ -28,7 +28,7 @@ class DemandSupplyItem extends React.Component {
         return (
             <ListItem button onClick={()=> window.open('mailto:' + this.state.email, "_blank")} style={{padding: '6px 8px'}}>
                 <ListItemAvatar>
-                    <Avatar alt={this.state.name} src={"https://gravatar.com/avatar/" + '123456' + "?d=retro"}
+                    <Avatar alt={this.state.name} src={"https://gravatar.com/avatar/" + this.state.emailmd5 + "?d=retro"}
                     />
                 </ListItemAvatar>
                 <ListItemText primary={<ItemText name={this.state.name} price={this.state.price} email={this.state.email}/>}  />
