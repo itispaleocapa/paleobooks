@@ -21,7 +21,7 @@ class GuestMiddleware
                 'error' => 'You are already logged in.'
             ], 403);
         }
-            
+
         if ($access_token || $refresh_token) {
             return response()->json([
                 'error' => 'You are already logged in.'

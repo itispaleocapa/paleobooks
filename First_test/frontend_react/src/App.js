@@ -41,7 +41,7 @@ class App extends React.Component {
     }
 
     render = () => {
-        if (this.state.error === true) return <div style={{textAlign: 'center'}}><h1>Impossibile comunicare con il server</h1><h2>Riprova più tardi</h2><h4>PaleoBooks</h4></div>
+        if (this.state.error === true) return <div style={{textAlign: 'center'}}><h1>Impossibile comunicare con il server</h1><h2>Riprova più tardi</h2><h4>PALEObooks</h4></div>
         if (this.state.isLoggedIn === null) return <div style={{margin: '20px auto', width: 'fit-content'}}><CircularProgress /></div>;
         return (
             <BrowserRouter>

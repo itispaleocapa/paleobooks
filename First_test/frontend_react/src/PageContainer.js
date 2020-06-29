@@ -137,7 +137,7 @@ function PageContainer(props) {
                         <MenuIcon/>
                     </IconButton>
                     <Typography variant="h6" noWrap>
-                        PaleoBooks
+                        PALEObooks
                     </Typography>
                 </Toolbar>
             </AppBar>

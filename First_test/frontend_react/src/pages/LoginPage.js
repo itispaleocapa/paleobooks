@@ -75,7 +75,7 @@ class LoginPage extends React.Component {
                 <AppBar position="static" style={{alignItems: 'center'}}>
                     <Toolbar>
                         <Typography variant="h6">
-                            PaleoBooks
+                            PALEObooks
                         </Typography>
                     </Toolbar>
                 </AppBar>
