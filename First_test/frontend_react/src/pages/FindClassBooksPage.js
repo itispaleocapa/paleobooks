@@ -13,6 +13,8 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import Paper from "@material-ui/core/Paper";
+import Button from "@material-ui/core/Button";
+import BookTableRow from "../components/BookTableRow";
 
 class FindClassBooksPage extends React.Component {
     constructor(props) {
@@ -23,26 +25,35 @@ class FindClassBooksPage extends React.Component {
     componentDidMount() {
         api.request('/classes').then(res => {
             let classes = res.map((c) => c.name);
-            classes = [...new Set(classes)];
+            classes = [...new Set(classes)].sort();
             console.log(res);
             this.setState({rawClasses: res, classes: classes});
+            let userClass = localStorage.getItem('user_class');
+            if (userClass.length > 0 && classes.includes(userClass)) {
+                this.setState({_class: userClass});
+                this.updateYears(userClass);
+            }
         })
     }
 
     handleClassChange = (event) => {
         this.setState({_class: event.target.value});
-        let years = this.state.rawClasses.filter((c) => {
-            return c.name == event.target.value
-        }).map((c) => {
-            return c.school_year;
-        })
-        this.setState({years: years, year: years[0]})
-        this.updateBooksList(event.target.value, years[0]);
+        this.updateYears(event.target.value);
     }
 
     handleYearChange = (event) => {
         this.setState({year: event.target.value});
         this.updateBooksList(this.state._class, event.target.value);
+    }
+
+    updateYears = (_className) => {
+        let years = this.state.rawClasses.filter((c) => {
+            return c.name == _className;
+        }).map((c) => {
+            return c.school_year;
+        })
+        this.setState({years: years, year: years[0]})
+        this.updateBooksList(_className, years[0]);
     }
 
     updateBooksList = (_className, year) => {
@@ -56,7 +67,8 @@ class FindClassBooksPage extends React.Component {
     }
 
     render() {
-        if (this.state.classes.length == 0) return <div style={{margin: '20px auto', width: 'fit-content'}}><CircularProgress /></div>;
+        if (this.state.classes.length == 0)
+            return <div style={{margin: '20px auto', width: 'fit-content'}}><CircularProgress/></div>;
         return (
             <>
                 <Typography variant="h5" style={{textAlign: 'center', marginTop: '15px'}}>
@@ -83,7 +95,7 @@ class FindClassBooksPage extends React.Component {
                             value={this.state.year}
                         >
                             {this.state.years.map((item) => {
-                                return <MenuItem value={item}>{item}/{parseInt(item)+1}</MenuItem>
+                                return <MenuItem value={item}>{item}/{parseInt(item) + 1}</MenuItem>
                             })}
                         </Select>
                     </FormControl>
@@ -92,20 +104,12 @@ class FindClassBooksPage extends React.Component {
                     <Table aria-label="simple table">
                         <TableHead>
                             <TableRow>
-                                <TableCell align="center">Immagine</TableCell>
-                                <TableCell align="left">Titolo</TableCell>
-                                <TableCell align="left">ISBN</TableCell>
-                                <TableCell align="left">Prezzo</TableCell>
+                                <TableCell align="center">Azioni</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {this.state.books.map((book) => (
-                                <TableRow key={book.id}>
-                                    <TableCell align="center"><img src={book.photo} height='100px'/></TableCell>
-                                    <TableCell align="left">{book.title}</TableCell>
-                                    <TableCell align="left">{book.isbn}</TableCell>
-                                    <TableCell align="left">€{book.price}</TableCell>
-                                </TableRow>
+                                <BookTableRow key={book.id} book={book}/>
                             ))}
                         </TableBody>
                     </Table>

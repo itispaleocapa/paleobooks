@@ -9,21 +9,32 @@ const api = {
                 },
                 body: body
             }).then(res => {
-                if (res.status !== 200) {
+                if (res.status < 200 || res.status > 299) {
                     if (url !== '/auth/login' && url !== '/auth/paleoid' && url !== '/auth/refresh-token' && res.status === 400 && localStorage.getItem('refresh_token') != null) {
-                        api.request('/auth/refresh-token', 'POST', null, localStorage.getItem('refresh_token')).then((res) => {
-                            sessionStorage.setItem('access_token', res.access_token);
-                            api.request(url, method, body).then((res) => {
-                                resolve(res);
-                            }).catch(() => {
-                                reject();
-                            })
-                        }).catch(() => {
-                            reject();
+                        res.json().then(res => {
+                            if (res.error.includes('access token')) {
+                                api.request('/auth/refresh-token', 'POST', null, localStorage.getItem('refresh_token')).then((res) => {
+                                    sessionStorage.setItem('access_token', res.access_token);
+                                    api.request(url, method, body).then((res) => {
+                                        resolve(res);
+                                    }).catch(() => {
+                                        reject();
+                                    })
+                                }).catch(() => {
+                                    reject();
+                                })
+                            }
+                            else {
+                                reject(res);
+                            }
                         })
                     }
                     else {
-                        reject();
+                        res.json().then(res => {
+                            reject(res);
+                        }).catch(() => {
+                            reject();
+                        });
                     }
                 } else {
                     res.json().then(res => {
@@ -38,6 +49,7 @@ const api = {
             api.request('/auth/login', 'POST', JSON.stringify({email: email, password: password})).then(res => {
                 sessionStorage.setItem('access_token', res.access_token);
                 localStorage.setItem('refresh_token', res.refresh_token);
+                localStorage.setItem('user_class', '');
                 resolve();
             }).catch(() => {
                 reject();
@@ -49,6 +61,7 @@ const api = {
             api.request('/auth/paleoid', 'POST', JSON.stringify({code: code})).then(res => {
                 sessionStorage.setItem('access_token', res.access_token);
                 localStorage.setItem('refresh_token', res.refresh_token);
+                localStorage.setItem('user_class', res.class);
                 resolve();
             }).catch(() => {
                 reject();
@@ -62,6 +75,7 @@ const api = {
     isLoggedIn: () => {
         return new Promise((resolve, reject) => {
             api.request('/users/profile').then(res => {
+                localStorage.setItem('user_email', res.email);
                 resolve();
             }).catch(() => {
                 reject();

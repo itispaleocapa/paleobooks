@@ -19,7 +19,7 @@ class ProfileInfoDrawer extends React.Component {
 
     render() {
         return (<>
-                <Avatar alt="Remy Sharp" src={"https://gravatar.com/avatar/" + this.state.emailmd5 + "&d=identicon"}
+                <Avatar alt={this.state.name} src={"https://gravatar.com/avatar/" + this.state.emailmd5 + "?d=retro"}
                         style={{width: '56px', height: '56px'}}/>
                 <Typography variant="subtitle1" gutterBottom style={{marginTop: '0.4rem', marginBottom: '-0.3rem'}}>
                     {this.state.name}
