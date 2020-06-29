@@ -37,8 +37,8 @@ function refreshToken() {
                 window.location.href = "login.html";
             },
             success: (response) => {
-                sessionStorage.setItem('access_token', response.token);
-                location.reload();
+                sessionStorage.setItem('access_token', response.access_token);
+                //location.reload();
             }
         });
     }
@@ -47,7 +47,6 @@ function refreshToken() {
         logout(true);
         window.location.href = "login.html";
     }
-        
 }
 
 function getRefreshCookie(cname) {
