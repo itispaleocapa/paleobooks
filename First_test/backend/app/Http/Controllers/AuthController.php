@@ -4,14 +4,16 @@ namespace App\Http\Controllers;
 
 use Validator;
 use App\User;
+use App\Models\PasswordReset;
 use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
 use Firebase\JWT\ExpiredException;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Mailer;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
-class AuthController extends BaseController 
-{
+class AuthController extends BaseController {
     /**
      * The request instance.
      *
@@ -22,7 +24,7 @@ class AuthController extends BaseController
     /**
      * Create a new controller instance.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return void
      */
     public function __construct(Request $request) {
@@ -30,53 +32,51 @@ class AuthController extends BaseController
     }
 
     /**
-     * Create a new token.
-     * 
-     * @param  \App\User   $user
+     * Create a new token given the user and the expiration time.
+     *
+     * @param \App\User $user
      * @return string
      */
-    protected function jwt(User $user) {
-        $payload = [
-            'iss' => "lumen-jwt", // Issuer of the token 
-            'sub' => $user->id, // Subject of the token 
-            'iat' => time(), // Time when JWT was issued. 
-            'exp' => time() + 60*60 // Expiration time 
-        ];
-        
-        // As you can see we are passing `JWT_SECRET` as the second parameter that will 
-        // be used to decode the token in the future. 
-        return JWT::encode($payload, env('JWT_SECRET')); 
-    } 
-
-    /**
-     * Create a new refresh token.
-     * 
-     * @param  \App\User   $user
-     * @return string
-     */
-    protected function refreshJwt(User $user) {
+    protected function jwt(User $user, $expires) {
         $payload = [
             'iss' => "lumen-jwt", // Issuer of the token
             'sub' => $user->id, // Subject of the token
-            'iat' => time(), // Time when JWT was issued. 
-            'exp' => time() + 60*60*24*30 // Expiration time -> 30 days
+            'iat' => time(), // Time when JWT was issued.
+            'exp' => time() + $expires // Expiration time
         ];
-        
-        // As you can see we are passing `JWT_SECRET` as the second parameter that will 
+
+        // As you can see we are passing `JWT_SECRET` as the second parameter that will
         // be used to decode the token in the future.
         return JWT::encode($payload, env('JWT_SECRET'));
-    } 
+    }
+
+    /**
+     * Try to decode the reset token used to reset the password.
+     *
+     * @param $reset_token
+     * @return bool
+     */
+    public function decodeResetToken($reset_token) {
+        try {
+            JWT::decode($reset_token, env('JWT_SECRET'), ['HS256']);
+        } catch(ExpiredException $e) {
+            return false;
+        } catch(Exception $e) {
+            return false;
+        }
+        return true;
+    }
 
     /**
      * Authenticate a user and return the token if the provided credentials are correct.
-     * 
-     * @param  \App\User   $user 
+     *
+     * @param \App\User $user
      * @return mixed
      */
     public function authenticate(User $user) {
         $this->validate($this->request, [
-            'email'     => 'required|email',
-            'password'  => 'required'
+            'email' => 'required|email',
+            'password' => 'required'
         ]);
 
         // Find the user by email
@@ -85,7 +85,7 @@ class AuthController extends BaseController
         if (!$user) {
             // You wil probably have some sort of helpers or whatever
             // to make sure that you have the same response format for
-            // differents kind of responses. But let's return the 
+            // differents kind of responses. But let's return the
             // below respose for now.
             return response()->json([
                 'error' => 'Email does not exist.'
@@ -94,9 +94,19 @@ class AuthController extends BaseController
 
         // Verify the password and generate the token
         if (Hash::check($this->request->input('password'), $user->password)) {
+            if (!$user->refresh_token) {
+                $refresh_token = $this->jwt($user, 60 * 60 * 24 * 30);
+
+                $user->refresh_token = $refresh_token;
+                $user->save();
+            } else {
+                $refresh_token = $user->refresh_token;
+            }
+
             return response()->json([
-                'token' => $this->jwt($user),
-                'refresh_token' => $this->refreshJwt($user)
+                'success' => 'Successfully logged in.',
+                'access_token' => $this->jwt($user, 60 * 60),
+                'refresh_token' => $refresh_token
             ], 200);
         }
 
@@ -108,15 +118,15 @@ class AuthController extends BaseController
 
     /**
      * Validate the params and register a new user if those ones are correct.
-     * 
+     *
      * @param  //username, email, password
      * @return mixed
      */
     public function register(Request $request) {
         $this->validate($this->request, [
-            'name'  => 'required',
-            'email'     => 'required|email',
-            'password'  => 'required'
+            'name' => 'required',
+            'email' => 'required|email',
+            'password' => 'required'
         ]);
 
         // Find the user by email
@@ -128,15 +138,6 @@ class AuthController extends BaseController
             ], 400);
         }
 
-        //verify if username is unique
-        $user = User::where('name', '=', $this->request->input('name'))->first();
-
-        if ($user) {
-            return response()->json([
-                'error' => 'Name already exists.'
-            ], 400);
-        }
-
         $hashed_password = Hash::make($this->request->input('password'));
 
         $user = new User;
@@ -144,33 +145,245 @@ class AuthController extends BaseController
         $user->name = $this->request->input('name');
         $user->email = $this->request->input('email');
         $user->password = $hashed_password;
+        $user->refresh_token = $this->jwt($user, 60 * 60 * 24 * 30);
 
         try {
             $user->save();
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'error' => 'An error while signing up.' // To get the error message use this: $e->getMessage()
             ], 400);
         }
-        
+
         return response()->json([
             'success' => 'Successfully registered.',
-            'token' => $this->jwt($user),
-            'refresh_token' => $this->refreshJwt($user)
-        ], 400);
+            'access_token' => $this->jwt($user, 60 * 60),
+            'refresh_token' => $user->refresh_token
+        ], 201);
+    }
+
+    public function authenticatePaleoID(Request $request) {
+        $this->validate($this->request, [
+            'code' => 'required'
+        ]);
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, env('PALEOID_BASEURL') . "/oauth/token");
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(array("grant_type" => "authorization_code", "code" => $request->input('code'), "redirect_uri" => env('PALEOID_REDIRECT_URI'), "client_id" => env('PALEOID_CLIENT_ID'), "client_secret" => env('PALEOID_CLIENT_SECRET'))));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $serverOutput = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        if ($httpCode != 200) {
+            return response()->json([
+                'error' => 'PaleoID authentication failed.'
+            ], 401);
+        }
+        $serverOutput = json_decode($serverOutput, true);
+        $token = $serverOutput['access_token'];
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, env('PALEOID_BASEURL') . "/api/user");
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json", "Authorization: Bearer " . $token));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $serverOutput = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        if ($httpCode != 200) {
+            return response()->json([
+                'error' => 'PaleoID authentication failed.'
+            ], 401);
+        }
+        $response = json_decode($serverOutput, true);
+
+        /*  TODO: vogliamo restringere l'accesso solo agli studenti?
+        if ($response['tipo'] != "studente") {
+            return response()->json([
+                'error' => 'Only for students.'
+            ], 401);
+        }*/
+
+        $user = User::where('email', $response['email'])->first();
+
+        if ($user && $user->password !== "paleoid") {
+            return response()->json([
+                'error' => 'Email already exists.'
+            ], 400);
+        }
+
+        if (!$user) {
+            $user = new User;
+            $user->password = 'paleoid';
+        }
+
+        $user->name = $response['nome'] . " " . $response['cognome'];
+        $user->email = $response['email'];
+        $user->save();
+
+        if (!$user->refresh_token) {
+            $refresh_token = $this->jwt($user, 60 * 60 * 24 * 30);
+
+            $user->refresh_token = $refresh_token;
+            $user->save();
+        } else {
+            $refresh_token = $user->refresh_token;
+        }
+
+        return response()->json([
+            'access_token' => $this->jwt($user, 60 * 60),
+            'refresh_token' => $refresh_token
+        ], 200);
+    }
+
+    /**
+     * Logout and delete the refresh_token
+     *
+     * @param \App\User $user
+     * @return mixed
+     */
+    public function logout(Request $request) {
+        $user = $request->auth;
+
+        $user->refresh_token = null;
+
+        try {
+            $user->save();
+        } catch (Exception $e) {
+            return response()->json([
+                'error' => 'An error while logging out.' // To get the error message use this: $e->getMessage()
+            ], 400);
+        }
+
+        return response()->json([
+            'success' => 'Successfully logged out.'
+        ], 200);
     }
 
     /**
      * Refresh the user token if middleware validate the provided refresh token.
-     * 
-     * @param  \App\User   $user 
+     *
+     * @param \App\User $user
      * @return mixed
      */
     public function refreshToken(Request $request) {
         $user = $request->auth;
 
         return response()->json([
-            'token' => $this->jwt($user)
+            'access_token' => $this->jwt($user, 60 * 60)
         ], 200);
+    }
+
+    /**
+     * Send an email with the link for the password reset.
+     *
+     * @param $email, $reset_token, $new_password
+     * @return mixed
+     */
+    public function sendResetPassword(Request $request) {
+        $this->validate($this->request, [
+            'email' => 'required|email'
+        ]);
+
+        $email = $request->input('email');
+
+        $user = User::where('email', $email)->first();
+
+        if (!$user) {
+            return response()->json([
+                'error' => 'Email does not exist.'
+            ], 400);
+        }
+
+        if ($user->password === "paleoid") {
+            return response()->json([
+                'error' => 'Authentication managed by PaleoID.'
+            ], 400);
+        }
+
+        // Check if user already has a reset password request
+        $password_reset = PasswordReset::where('email', $email)->first();
+        $reset_token = $this->jwt($user, 60 * 15);
+
+        if ($password_reset) {
+            $password_reset->reset_token = $reset_token;
+
+            $password_reset->save();
+        } else {
+            $request->merge(['reset_token' => $reset_token]);
+
+            $password_reset = PasswordReset::create($request->all());
+        }
+
+        $this->sendEmail($email, $reset_token);
+
+        return response()->json([
+            'success' => 'Email sent.'
+        ], 200);
+    }
+
+    /**
+     * Reset the password using the provided password_reset_token.
+     *
+     * @param \App\User $user
+     * @return mixed
+     */
+    public function resetPassword(Request $request, $reset_token) {
+        if (!$reset_token) {
+            return response()->json([
+                'error' => 'Reset token is required.'
+            ], 400);
+        }
+
+        $reset_token[36] = '.';
+        $reset_token[120] = '.';
+
+        $password_reset = PasswordReset::where('reset_token', $reset_token)->first();
+
+        if (!$password_reset) {
+            return response()->json([
+                'error' => 'This request is not valid.'
+            ], 400);
+        }
+
+        // Try to decode the reset token
+        if (!$this->decodeResetToken($reset_token)) {
+            return response()->json([
+                'error' => 'This request is not valid.'
+            ], 400);
+        }
+
+        $user = User::where('email', $password_reset->email)->first();
+
+        $this->validate($this->request, [
+            'new_password' => 'required'
+        ]);
+
+        // Save the hashed password
+        $hashed_password = Hash::make($this->request->input('new_password'));
+        $user->password = $hashed_password;
+
+        try {
+            $user->save();
+        } catch (Exception $e) {
+            return response()->json([
+                'error' => 'An error while updating password.' // To get the error message use this: $e->getMessage()
+            ], 400);
+        }
+
+        $password_reset->delete();
+
+        return response()->json([
+            'success' => 'Password successfully updated.'
+        ], 200);
+    }
+
+    public function sendEmail($email, $reset_token) {
+        // Replace the '.' in token with the '_', to create a valid url using the JWT token
+        $reset_token[36] = '_';
+        $reset_token[120] = '_';
+
+        //$reset_token = str_replace(".", "_", $reset_token);
+
+        Mail::to($email)->send(new Mailer($reset_token));
     }
 }

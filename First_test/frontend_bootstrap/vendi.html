@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta charset="UTF-8">
+    <title>PaleoBooks</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+</head>
+
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: chocolate;">
+    <a class="navbar-brand" href="#">PALEObooks  </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="#"> HOME </a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" href="#"> OFFRI <span class="sr-only">(current)</span> </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="profilo.html"> PROFILO </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="login.html"> LOGIN  </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="registrati.html"> REGISTRATI </a>
+        </li>
+
+       
+      </ul>
+    </div>
+</nav>
+
+<body style="margin: 10px; text-align: center;">
+    <h2>Crea offerta</h2>
+	<form action="/action_page.php">
+	    <label for="fname">Titolo: </label><br>
+		<!--<input type="text" id="fname" name="fname" value="John"><br>-->
+		<select name="books" id="books">
+			<option selected>Scegli un libro </option>
+		</select>
+		<br>
+		<!--<label for="lname">Last name:</label><br>
+        <input type="text" id="lname" name="lname" value="Doe"><br><br>-->
+        <br>
+		<input type="submit" class="btn btn-danger" value="Carica">
+	</form> 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script>
+		$(document).ready(function () {
+			$.ajax({
+				dataType: 'json',
+				url: 'https://www.paleobooks.it/pbapi/public/books',
+				data: {"access_token": sessionStorage.getItem('access_token')},
+				success: (books) => {
+					var x = document.getElementById("books");
+					$.each(books, (i, book) => {
+						var option = document.createElement("option");
+						var string = book.title;
+						string = string.substring(0,60);
+						option.text =  string;
+						option.value =  book.id;
+						//var row = $('<option value="' + book.id + '">' + book.title + '</option>');
+						//$('#books').append(row);
+						x.add(option);
+					});
+				}
+			});
+		});
+	</script>
+</body>
+</html>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

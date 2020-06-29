@@ -12,24 +12,27 @@ class JwtMiddleware
 {
     public function handle($request, Closure $next, $guard = null)
     {
-        $token = $request->get('token');
-        
-        if(!$token) {
+        $access_token = $request->bearerToken();
+
+        if (!$access_token)
+            $access_token = $request->get('access_token');
+
+        if(!$access_token) {
             // Unauthorized response if token not there
             return response()->json([
-                'error' => 'Token not provided.'
+                'error' => 'Access token not provided.'
             ], 401);
         }
 
         try {
-            $credentials = JWT::decode($token, env('JWT_SECRET'), ['HS256']);
+            $credentials = JWT::decode($access_token, env('JWT_SECRET'), ['HS256']);
         } catch(ExpiredException $e) {
             return response()->json([
-                'error' => 'Provided token is expired.'
+                'error' => 'Provided access token is expired.'
             ], 400);
         } catch(Exception $e) {
             return response()->json([
-                'error' => 'An error while decoding token.'
+                'error' => 'An error while decoding access token.'
             ], 400);
         }
 

@@ -18,7 +18,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'refresh_token'
+        'name', 'email', 'password'
     ];
 
     /**
@@ -29,4 +29,14 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $hidden = [
         'password', 'refresh_token', 'created_at', 'updated_at'
     ];
+
+    /*
+     * Append paleoid attribute, true if the user is authenticated with PaleoID, false otherwise
+     */
+    protected $appends = ['paleoid'];
+
+    public function getPaleoidAttribute() {
+        return $this->attributes['password'] === "paleoid";
+    }
+
 }

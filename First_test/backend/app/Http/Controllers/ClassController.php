@@ -6,7 +6,7 @@ use App\Models\SchoolClass;
 use Illuminate\Http\Response;
 
 class ClassController extends Controller {
-    public function getList() {
+    public function index() {
         return SchoolClass::all();
     }
 
@@ -17,6 +17,16 @@ class ClassController extends Controller {
 
     public function getClassBooks($id) {
         $class = SchoolClass::find($id);
-        return $class ? $class->books : Response()->json([], 404);
+        return $class ? $class->books($id) : Response()->json([], 404);
+    }
+
+    public function getClassSupplies($id) {
+        $class = SchoolClass::find($id);
+        return $class ? $class->supplies($id) : Response()->json([], 404);
+    }
+
+    public function getClassDemands($id) {
+        $class = SchoolClass::find($id);
+        return $class ? $class->demands($id) : Response()->json([], 404);
     }
 }

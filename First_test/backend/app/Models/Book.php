@@ -3,7 +3,7 @@
 
 namespace App\Models;
 
-
+use DB;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Book extends Model {
     public $timestamps = false;
-    protected $hidden = ['pivot'];
+    protected $hidden = ['pivot', 'created_at', 'updated_at'];
 
     protected $attributes = [
         'title' => '',
@@ -19,7 +19,23 @@ class Book extends Model {
         'price' => 0.00
     ];
 
-    public function classes() {
-        return $this->belongsToMany('App\Models\SchoolClass');
+    public function supplies($id) {
+        $data = DB::table('books')
+        ->join('supplies', 'books.id', '=', 'supplies.book_id')
+        ->where('books.id', $id)
+        ->select('books.id', 'books.title', 'supplies.*')
+        ->get();
+
+        return $data; // $this->belongsToMany('App\Models\SchoolClass');
+    }
+
+    public function demands($id) {
+        $data = DB::table('books')
+        ->join('demands', 'books.id', '=', 'demands.book_id')
+        ->where('books.id', $id)
+        ->select('books.id', 'books.title', 'demands.*')
+        ->get();
+
+        return $data; // $this->belongsToMany('App\Models\SchoolClass');
     }
 }
