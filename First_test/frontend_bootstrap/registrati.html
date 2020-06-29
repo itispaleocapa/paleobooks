@@ -65,45 +65,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script>
-    $("#form").submit(function (event) {
-       
-        event.preventDefault();
-        registration('https://www.paleobooks.it/pbapi/public/auth/register', $(this).serialize());
-    });
 
-    function registration(url, data) {
-        $.ajax({
-            type: 'POST',
-            dataType: 'json',
-            url: url,
-            data: data,
-            error: (err) => {
-                console.log(err);
-
-                var keyNames = Object.keys(err.responseJSON);
-
-                for(var i = 0; i < keyNames.length; i++){
-                    document.getElementById(keyNames[i]).style.borderColor = "red";
-                }
-                
-                if(err.status == 400){
-                    //Email esistente
-                    console.log("Errore");
-                }
-            },
-            success: (response) => {
-                
-                console.log(response.access_token)
-
-                var expiration_date = new Date();
-                expiration_date.setFullYear(expiration_date.getFullYear() + 1);
-
-                sessionStorage.setItem('access_token', response.access_token);
-                document.cookie = "refresh_token=" + response.refresh_token + "; expires=" + expiration_date.toUTCString() + "; path=/";
-
-                //window.location.href = "../";
-            }
-        });
-    }
-</script>
+<script src="assets/js/registrati.js"></script>
+<script src="assets/js/app.js"></script>
