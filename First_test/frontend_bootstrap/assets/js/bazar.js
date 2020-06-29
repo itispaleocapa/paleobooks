@@ -1,4 +1,8 @@
 $(document).ready(function () {
+    if (!isAuthenticated()){
+        window.location.href = "login.html";
+    }
+
     classes();
     $('#table').hide();
 });
@@ -50,7 +54,7 @@ function loadBooks(id) {
                     var row = $('<tr>');
                     row.append('<td>' + book.title + '</td>');
                     row.append('<td>' + book.isbn + '</td>');
-                    row.append('<td>' + book.price + '</td>');
+                    row.append('<td>' + book.price + '€</td>');
                     row.append('<td><a href=\"crea-offerta.html?book=' + book.id + '\">Clicca</a></td>');
                     row.append('<td><a href=\"crea-domanda.html?book=' + book.id + '\">Clicca</a></td>');
                     $('#booksTable').append(row);

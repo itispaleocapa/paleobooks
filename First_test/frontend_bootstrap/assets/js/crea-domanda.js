@@ -4,6 +4,10 @@ $("#form").submit(function (event) {
 });
 
 $(document).ready(function () {
+    if (!isAuthenticated()){
+        window.location.href = "login.html";
+    }
+
     var url = new URL(window.location.href);
     var book = url.searchParams.get("book");
 

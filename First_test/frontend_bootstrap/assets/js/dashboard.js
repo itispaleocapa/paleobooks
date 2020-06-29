@@ -1,4 +1,8 @@
 $(document).ready(function () {
+    if (!isAuthenticated()){
+        window.location.href = "login.html";
+    }
+
     supplies();
     demands();
 });
@@ -20,7 +24,7 @@ function supplies() {
                 var row = $('<tr>');
                 row.append('<td>' + supply.book.title + '</td>');
                 row.append('<td>' + supply.book.isbn + '</td>');
-                row.append('<td>' + supply.price + '</td>');
+                row.append('<td>' + supply.price + '€</td>');
                 $('#suppliesTable').append(row);
             });
         }

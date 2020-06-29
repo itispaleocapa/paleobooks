@@ -76,6 +76,17 @@ function checkUnauthorized(err) {
     }
 }
 
+function isAuthenticated() {
+    var access_token = getAccessToken();
+    var refresh_token = getRefreshCookie('refresh_token');
+
+    if (access_token || refresh_token) {
+        return true;
+    }
+
+    return false;
+}
+
 function getAccessToken() {
     return sessionStorage.getItem('access_token');
 }
