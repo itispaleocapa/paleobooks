@@ -31,6 +31,6 @@ class Mailer extends Mailable
     public function build()
     {
         return $this->subject('Ripristino password')
-            ->view('mail.password_reset');
+            ->view('Mail.password_reset');
     }
 }
