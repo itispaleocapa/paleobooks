@@ -17,11 +17,9 @@ function demands() {
         success: (demands) => {
             $.each(demands, (i, demand) => {
                 var row = $('<tr>');
-                row.append('<td>' + demand.id + '</td>');
                 row.append('<td>' + demand.book.title + '</td>');
                 row.append('<td>' + demand.book.isbn + '</td>');
-                row.append('<td>' + demand.user.name + '</td>');
-                row.append('<td><a href=\"mailto:' + demand.user.email + '\">Mail</a></td>');
+                row.append('<td><a href=\"mailto:' + demand.user.email + '\">' + demand.user.name + '</a></td>');
                 $('#demandsTable').append(row);
             });
         }

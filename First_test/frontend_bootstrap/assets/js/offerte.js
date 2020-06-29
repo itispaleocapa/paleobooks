@@ -17,7 +17,6 @@ function supplies() {
         success: (supplies) => {
             $.each(supplies, (i, supply) => {
                 var row = $('<tr>');
-                row.append('<td>' + supply.id + '</td>');
                 row.append('<td>' + supply.book.title + '</td>');
                 row.append('<td>' + supply.book.isbn + '</td>');
                 row.append('<td>' + supply.price + '</td>');

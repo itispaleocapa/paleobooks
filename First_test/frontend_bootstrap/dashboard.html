@@ -39,13 +39,12 @@
         <a class="nav-link" href="login.html"> LOGIN  </a>
       </li>
     </li>
-    <li class="nav-item">
-      <a class="nav-link" href="offerte.html"> OFFERTE </a>
-    </li>
-
     <li class="nav-item active">
-        <a class="nav-link" href="#"> DOMANDE <span class="sr-only">(corrente)</span> </a>
-      </li>
+      <a class="nav-link" href="#"> OFFERTE <span class="sr-only">(corrente)</span> </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="domande.html"> DOMANDE </a>
+    </li>
        <!--<li class="nav-item">
             <a class="nav-link" href="registrati.html"> REGISTRATI </a>
         </li>
@@ -59,14 +58,26 @@
 <body style="margin: 10px; text-align: center;">
   <div id="feedback" class="container-fluid"></div>
 
-  <h1>Domande</h1>
+  <h1>Dashboard</h1>
 
+  <h2>Offerte</h2>
   <table class="table table-bordered table table-striped">
     <thead>
     <tr>
         <th scope="col">Titolo libro</th>
         <th scope="col">ISBN</th>
-        <th scope="col">Contatta</th>
+        <th scope="col">Prezzo</th>
+    </tr>
+    </thead>
+    <tbody id="suppliesTable"></tbody>
+  </table>
+
+  <h2>Domande</h2>
+  <table class="table table-bordered table table-striped">
+    <thead>
+    <tr>
+        <th scope="col">Titolo libro</th>
+        <th scope="col">ISBN</th>
     </tr>
     </thead>
     <tbody id="demandsTable"></tbody>
@@ -84,7 +95,7 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-<script src="assets/js/domande.js"></script>
+<script src="assets/js/dashboard.js"></script>
 <script src="assets/js/app.js"></script>
 </body>
 </html>

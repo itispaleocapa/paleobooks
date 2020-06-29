@@ -19,7 +19,7 @@ class Supply extends Model {
      * @var array
      */
     protected $fillable = [
-        'book_id', 'user_id'
+        'book_id', 'user_id', 'price'
     ];
 
     public function user() {

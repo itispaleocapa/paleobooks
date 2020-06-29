@@ -53,19 +53,24 @@
 
 <body style="margin: 10px; text-align: center;">
   <div id="feedback" class="container-fluid"></div>
-  <h2> Registrati </h2>
+  <h2> Offerta </h2>
 
   <form id="form">
     <form id="form">
-      <label for="name">Nome</label><br>
-      <input class="rounded border " type="name" id="name" name="name" placeholder="Inserisci nome" style="text-align: center;"><br>
+      <label for="books">Libro</label><br>
+      <select name="book_id" id="books">
+        <option value="0">Scegli un libro</option>
+          </select><br>
+      <!--<input class="rounded border " type="name" id="name" name="name" placeholder="Inserisci nome" style="text-align: center;"><br>
       <label for="email">Email</label><br>
       <input class="rounded border " type="email" id="email" name="email" placeholder="Inserisci email" style="text-align: center;"><br>
       <label for="password">Password</label><br>
-      <input class="rounded border " type="password" id="password" name="password" placeholder="inserisci password" style="text-align: center;"><br>
+      <input class="rounded border " type="password" id="password" name="password" placeholder="inserisci password" style="text-align: center;"><br>-->
+      <label for="price">Prezzo</label><br>
+      <input class="rounded border " type="number" id="price" name="price" placeholder="Inserisci prezzo" style="text-align: center;"><br>
       <br>
 
-      <input type="submit" value="Registrati" class="btn btn-danger">
+      <input type="submit" value="Offri" class="btn btn-danger">
     </form>
 
     <!-- Optional JavaScript -->
@@ -91,5 +96,5 @@
   integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-<script src="assets/js/registrati.js"></script>
+<script src="assets/js/crea-offerta.js"></script>
 <script src="assets/js/app.js"></script>
