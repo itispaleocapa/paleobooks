@@ -27,17 +27,21 @@ function sendResetpassword(url, data) {
         data: data,
         error: (err) => {
             if (err.status == 400) {
+                clearFeedback();
                 $("#feedback").add("<p>" + err.responseJSON['error'] + "</p>").css( "background-color", "red" ).appendTo('#feedback');
             }
         },
         success: (response) => {
-            alert(response['success'] + ' Check the link.');
+            clearFeedback();
+            $("#feedback").add("<p>" + response['success'] + "</p>").css( "background-color", "green" ).appendTo('#feedback');
         }
     });
 }
 
 $("#password-form").submit(function (event) {
     event.preventDefault();
+    var url = new URL(window.location.href);
+    var token = url.searchParams.get("token");
     resetpassword('https://www.paleobooks.it/pbapi/public/auth/password-reset/' + token, $(this).serialize());
 });
 
@@ -49,6 +53,7 @@ function resetpassword(url, data) {
         data: data,
         error: (err) => {
             if (err.status == 400) {
+                clearFeedback();
                 $("#feedback").add("<p>" + err.responseJSON['error'] + "</p>").css( "background-color", "red" ).appendTo('#feedback');
             }
         },
