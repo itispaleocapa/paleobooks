@@ -7,21 +7,21 @@ function logout(onlyDestroyMemory) {
             url: 'https://www.paleobooks.it/pbapi/public/auth/logout',
             data: {"refresh_token": refresh_token},
             error: (err) => {
-                if (response.status == '400' || response.status == '401') {
+                /*if (response.status == '400' || response.status == '401') {
                     refreshToken();
-                }
+                }*/
+                console.log(err);
             },
             success: (response) => {
                 //location.reload();
-                console.log('logout effettuato con successo');
+                console.log(response);
             }
         });
     }
 
     document.cookie = "refresh_token=; path=/;";
     sessionStorage.removeItem('access_token');
-    window.location.href = "/user/login.html";
-    //location.reload();
+    window.location.href = "login.html";
 }
 
 function refreshToken() {
@@ -34,7 +34,7 @@ function refreshToken() {
             data: {"refresh_token": refresh_token},
             error: (err) => {
                 logout(true);
-                window.location.href = "/user/login.html";
+                window.location.href = "login.html";
             },
             success: (response) => {
                 sessionStorage.setItem('access_token', response.token);
@@ -45,7 +45,7 @@ function refreshToken() {
     else {
         // Need to logout
         logout(true);
-        window.location.href = "/user/login.html";
+        window.location.href = "login.html";
     }
         
 }
