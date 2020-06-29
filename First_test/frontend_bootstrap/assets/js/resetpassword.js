@@ -1,6 +1,44 @@
+$(document).ready(function () {
+    if (isAuthenticated()){
+        window.location.href = "dashboard.html";
+    }
+
+    var url = new URL(window.location.href);
+    var token = url.searchParams.get("token");
+
+    if (!token) {
+        $('#password-form').hide();
+    } else {
+        $('#password-form').show();
+        $('#form').hide();
+    }
+});
+
 $("#form").submit(function (event) {
     event.preventDefault();
-    resetpassword('https://www.paleobooks.it/pbapi/public/auth/password-reset', $(this).serialize());
+    sendResetpassword('https://www.paleobooks.it/pbapi/public/auth/password-reset', $(this).serialize());
+});
+
+function sendResetpassword(url, data) {
+    $.ajax({
+        type: 'POST',
+        dataType: 'json',
+        url: url,
+        data: data,
+        error: (err) => {
+            if (err.status == 400) {
+                $("#feedback").add("<p>" + err.responseJSON['error'] + "</p>").css( "background-color", "red" ).appendTo('#feedback');
+            }
+        },
+        success: (response) => {
+            alert(response['success'] + ' Check the link.');
+        }
+    });
+}
+
+$("#password-form").submit(function (event) {
+    event.preventDefault();
+    resetpassword('https://www.paleobooks.it/pbapi/public/auth/password-reset/' + token, $(this).serialize());
 });
 
 function resetpassword(url, data) {
@@ -10,10 +48,12 @@ function resetpassword(url, data) {
         url: url,
         data: data,
         error: (err) => {
-            $("#feedback").add("<p>" + err.responseJSON['error'] + "</p>").css( "background-color", "red" ).appendTo('#feedback');
+            if (err.status == 400) {
+                $("#feedback").add("<p>" + err.responseJSON['error'] + "</p>").css( "background-color", "red" ).appendTo('#feedback');
+            }
         },
         success: (response) => {
-            alert(response['success'] + ' Check the link.');
+            alert(response['success']);
         }
     });
 }

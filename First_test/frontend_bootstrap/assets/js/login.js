@@ -1,12 +1,16 @@
-$("#form").submit(function (event) {
-    event.preventDefault();
-    login('https://www.paleobooks.it/pbapi/public/auth/login', $(this).serialize());
-});
-
 $(document).ready(function () {
+    if (isAuthenticated()){
+        window.location.href = "dashboard.html";
+    }
+
     if (getUrlParameter('state')=='paleobooks') {
         login('https://www.paleobooks.it/pbapi/public/auth/paleoid', {'code': getUrlParameter('code')});
     }
+});
+
+$("#form").submit(function (event) {
+    event.preventDefault();
+    login('https://www.paleobooks.it/pbapi/public/auth/login', $(this).serialize());
 });
 
 function login(url, data) {

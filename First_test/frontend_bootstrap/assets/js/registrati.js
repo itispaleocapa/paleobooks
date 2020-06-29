@@ -1,3 +1,9 @@
+$(document).ready(function () {
+    if (isAuthenticated()){
+        window.location.href = "dashboard.html";
+    }
+});
+
 $("#form").submit(function (event) {
     event.preventDefault();
     registration('https://www.paleobooks.it/pbapi/public/auth/register', $(this).serialize());

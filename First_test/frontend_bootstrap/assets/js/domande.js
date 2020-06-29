@@ -1,4 +1,8 @@
 $(document).ready(function () {
+    if (!isAuthenticated()){
+        window.location.href = "login.html";
+    }
+
     demands();
 });
 
