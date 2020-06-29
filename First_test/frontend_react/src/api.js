@@ -1,16 +1,30 @@
 const api = {
-    request: (url = "", method = "GET", body = null) => {
+    request: (url = "", method = "GET", body = null, bearer = null) => {
         return new Promise((resolve, reject) => {
             fetch(process.env.REACT_APP_API_URL + url, {
                 method: method,
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + sessionStorage.getItem('access_token')
+                    'Authorization': 'Bearer ' + (bearer !== null ? bearer : sessionStorage.getItem('access_token'))
                 },
                 body: body
             }).then(res => {
                 if (res.status !== 200) {
-                    reject();
+                    if (url !== '/auth/login' && url !== '/auth/paleoid' && url !== '/auth/refresh-token' && res.status === 400 && localStorage.getItem('refresh_token') != null) {
+                        api.request('/auth/refresh-token', 'POST', null, localStorage.getItem('refresh_token')).then((res) => {
+                            sessionStorage.setItem('access_token', res.access_token);
+                            api.request(url, method, body).then((res) => {
+                                resolve(res);
+                            }).catch(() => {
+                                reject();
+                            })
+                        }).catch(() => {
+                            reject();
+                        })
+                    }
+                    else {
+                        reject();
+                    }
                 } else {
                     res.json().then(res => {
                         resolve(res);
@@ -22,10 +36,8 @@ const api = {
     login: (email, password) => {
         return new Promise((resolve, reject) => {
             api.request('/auth/login', 'POST', JSON.stringify({email: email, password: password})).then(res => {
-                var expiration_date = new Date();
-                expiration_date.setFullYear(expiration_date.getFullYear() + 1);
                 sessionStorage.setItem('access_token', res.access_token);
-                document.cookie = "refresh_token=" + res.refresh_token + "; expires=" + expiration_date.toUTCString() + "; path=/";
+                localStorage.setItem('refresh_token', res.refresh_token);
                 resolve();
             }).catch(() => {
                 reject();
@@ -35,10 +47,8 @@ const api = {
     loginPaleoID: (code) => {
         return new Promise((resolve, reject) => {
             api.request('/auth/paleoid', 'POST', JSON.stringify({code: code})).then(res => {
-                var expiration_date = new Date();
-                expiration_date.setFullYear(expiration_date.getFullYear() + 1);
                 sessionStorage.setItem('access_token', res.access_token);
-                document.cookie = "refresh_token=" + res.refresh_token + "; expires=" + expiration_date.toUTCString() + "; path=/";
+                localStorage.setItem('refresh_token', res.refresh_token);
                 resolve();
             }).catch(() => {
                 reject();
@@ -46,10 +56,8 @@ const api = {
         });
     },
     logout: () => {
-        var expiration_date = new Date();
-        expiration_date.setFullYear(expiration_date.getFullYear() + 1);
-        sessionStorage.setItem('access_token', null);
-        document.cookie = "refresh_token=; expires=" + expiration_date.toUTCString() + "; path=/";
+        sessionStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token')
     },
     isLoggedIn: () => {
         return new Promise((resolve, reject) => {
