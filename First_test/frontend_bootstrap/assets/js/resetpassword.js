@@ -65,8 +65,8 @@ function resetpassword(url, data) {
                     clearFeedback();
                     $("#feedback").add("<p>" + err.responseJSON['error'] + "</p>").css( "background-color", "red" ).appendTo('#feedback');
                 } else if (err.status == 422) {
-                    if (err.responseJSON['password']) {
-                        putError('passwordError', err.responseJSON['password']);
+                    if (err.responseJSON['new_password']) {
+                        putError('passwordError', err.responseJSON['new_password']);
                     }
                 }
             },
