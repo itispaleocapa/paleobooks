@@ -1,0 +1,7 @@
+#RewriteRule ^$ countdown/index.html
+#RewriteRule ^index.html(.*) countdown/index.html
+RewriteRule ^api(.*) pbapi/public$1
+
+RewriteCond %{REQUEST_URI} pbapi
+RewriteCond %{REQUEST_URI} !pbapi/public
+  RewriteRule ^pbapi(.*) pbapi/public$1
