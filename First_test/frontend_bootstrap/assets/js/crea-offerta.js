@@ -64,10 +64,10 @@ function supply(url, data) {
                 this.supply();
             }
             if (err.status == 400) {
-                $("#feedback").add("<p>" + err.responseJSON['error'] + "</p>").css( "color", "red" ).css( "font-size", "20px" ).appendTo('#feedback');
+                $("#feedback").add("<p>" + err.responseJSON['price'] + "</p>").css( "color", "red" ).css( "font-size", "20px" ).appendTo('#feedback');
             }
             if (err.status == 422) {
-                $("#feedback").add("<p>" + err.responseJSON['error'] + "</p>").css( "color", "red" ).css( "font-size", "20px" ).appendTo('#feedback');
+                $("#feedback").add("<p>" + err.responseJSON['price'] + "</p>").css( "color", "red" ).css( "font-size", "20px" ).appendTo('#feedback');
             }
         },
         success: (response) => {
