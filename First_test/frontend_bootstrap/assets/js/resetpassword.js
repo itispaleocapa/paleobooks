@@ -26,9 +26,14 @@ function sendResetpassword(url, data) {
         url: url,
         data: data,
         error: (err) => {
+            clearError('emailError');
             if (err.status == 400) {
                 clearFeedback();
                 $("#feedback").add("<p>" + err.responseJSON['error'] + "</p>").css( "background-color", "red" ).appendTo('#feedback');
+            } else if (err.status == 422) {
+                if (err.responseJSON['email']) {
+                    putError('emailError', err.responseJSON['email']);
+                }
             }
         },
         success: (response) => {
@@ -55,9 +60,14 @@ function resetpassword(url, data) {
             url: url,
             data: data,
             error: (err) => {
+                clearError('passwordError');
                 if (err.status == 400) {
                     clearFeedback();
                     $("#feedback").add("<p>" + err.responseJSON['error'] + "</p>").css( "background-color", "red" ).appendTo('#feedback');
+                } else if (err.status == 422) {
+                    if (err.responseJSON['password']) {
+                        putError('passwordError', err.responseJSON['password']);
+                    }
                 }
             },
             success: () => {

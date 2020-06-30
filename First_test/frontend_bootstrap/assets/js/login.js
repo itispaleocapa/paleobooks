@@ -20,17 +20,17 @@ function login(url, data) {
         url: url,
         data: data,
         error: (err) => {
+            clearError('emailError');
+            clearError('passwordError');
             if (err.status == 400) {
                 clearFeedback();
                 $("#feedback").add("<p>" + err.responseJSON['error'] + "</p>").css( "background-color", "red" ).appendTo('#feedback');
             } else if (err.status == 422) {
-                clearError('email');
-                clearError('password');
                 if (err.responseJSON['email']) {
-                    putError('email', err.responseJSON['email']);
+                    putError('emailError', err.responseJSON['email']);
                 }
                 if (err.responseJSON['password']) {
-                    putError('password', err.responseJSON['password']);
+                    putError('passwordError', err.responseJSON['password']);
                 }
             }
         },

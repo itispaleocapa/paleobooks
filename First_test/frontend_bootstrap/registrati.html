@@ -32,6 +32,9 @@
       <li class="nav-item active">
         <a class="nav-link" href="registrati.html"> REGISTRATI <span class="sr-only">(corrente)</span> </a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" href="about.html"> ABOUT US </a>
+      </li>
     </ul>
   </div>
 </nav>
@@ -45,10 +48,18 @@
     <form id="form">
       <label for="name">Nome</label><br>
       <input class="rounded border " type="name" id="name" name="name" placeholder="Inserisci nome" style="text-align: center;"><br>
+      <span id="nameError"></span><br>
+
       <label for="email">Email</label><br>
       <input class="rounded border " type="email" id="email" name="email" placeholder="Inserisci email" style="text-align: center;"><br>
+      <span id="emailError"></span><br>
+
       <label for="password">Password</label><br>
       <input class="rounded border " type="password" id="password" name="password" placeholder="inserisci password" style="text-align: center;"><br>
+      <span id="passwordError"></span><br>
+
+      <label for="confirm_password">Conferma password</label><br>
+      <input class="rounded border " type="password" id="confirm_password" name="confirm_password" placeholder="inserisci conferma password" style="text-align: center;"><br>
       <br>
 
       <input type="submit" value="Registrati" class="btn btn-danger">

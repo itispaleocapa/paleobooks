@@ -100,9 +100,9 @@ function clearFeedback() {
 }
 
 function clearError(component) {
-    document.getElementById(component).value = "";
+    document.getElementById(component).innerHTML = "";
 }
 
 function putError(component, error) {
-    document.getElementById(component).value = error;
+    document.getElementById(component).innerHTML = error;
 }
