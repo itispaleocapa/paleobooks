@@ -68,7 +68,7 @@ function demand(url, data) {
             }
         },
         success: (response) => {
-            window.location.href = "dashboard.html";
+            window.location.href = "index.html";
         }
     });
 }

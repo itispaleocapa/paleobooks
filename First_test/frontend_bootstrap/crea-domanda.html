@@ -27,18 +27,11 @@
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav">
       <li class="nav-item">
-        <a class="nav-link" href="dashboard.html"> HOME </a>
+        <a class="nav-link" href="index.html"> DASHBOARD </a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="bazar.html"> BAZAR </a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="crea-offerta.html"> OFFRI </a>
-      </li>
-      <li class="nav-item active">
-        <a class="nav-link" href="#"> DOMANDA <span class="sr-only">(current)</span>  </a>
-      </li>
-      
       <li class="nav-item">
         <a class="nav-link" href="offerte.html"> OFFERTE </a>
       </li>
@@ -48,16 +41,6 @@
       <li class="nav-item">
         <a class="nav-link" href="profilo.html"> PROFILO </a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="login.html"> LOGIN </a>
-      </li>
-
-      <!-- 
-      <li class="nav-item">
-        <a class="nav-link" href="registrati.html"> REGISTRATI <span class="sr-only">(current)</span> </a>
-      </li> -->
-
-
     </ul>
   </div>
 </nav>
@@ -70,9 +53,13 @@
   <form id="form">
     <form id="form">
       <label for="books">Libro</label><br>
-      <select name="book_id" id="books">
-        <option value="0">Scegli un libro</option>
-          </select><br>
+      <div  >
+        <select class="browser-default custom-select custom-select-lg mb-3" name="book_id" id="books" class="form control">
+          <option  value="0">Scegli un libro</option>
+        </select>
+      </div>
+      
+          <br>
       <!--<input class="rounded border " type="name" id="name" name="name" placeholder="Inserisci nome" style="text-align: center;"><br>
       <label for="email">Email</label><br>
       <input class="rounded border " type="email" id="email" name="email" placeholder="Inserisci email" style="text-align: center;"><br>

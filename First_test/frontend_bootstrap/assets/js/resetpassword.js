@@ -1,6 +1,6 @@
 $(document).ready(function () {
     if (isAuthenticated()){
-        window.location.href = "dashboard.html";
+        window.location.href = "index.html";
     }
 
     var url = new URL(window.location.href);
@@ -46,21 +46,28 @@ $("#password-form").submit(function (event) {
 });
 
 function resetpassword(url, data) {
-    $.ajax({
-        type: 'POST',
-        dataType: 'json',
-        url: url,
-        data: data,
-        error: (err) => {
-            if (err.status == 400) {
-                clearFeedback();
-                $("#feedback").add("<p>" + err.responseJSON['error'] + "</p>").css( "background-color", "red" ).appendTo('#feedback');
+    var password = document.getElementById('password').value;
+    var confirm_password = document.getElementById('confirm_password').value;
+    if (password == confirm_password) {
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            url: url,
+            data: data,
+            error: (err) => {
+                if (err.status == 400) {
+                    clearFeedback();
+                    $("#feedback").add("<p>" + err.responseJSON['error'] + "</p>").css( "background-color", "red" ).appendTo('#feedback');
+                }
+            },
+            success: () => {
+                window.location.href = "login.html";
             }
-        },
-        success: () => {
-            window.location.href = "login.html";
-        }
-    });
+        });
+    } else {
+        clearFeedback();
+        $("#feedback").add("<p>Passwords don\'t match.</p>").css( "background-color", "red" ).appendTo('#feedback');
+    }
 }
 
 var getUrlParameter = function getUrlParameter(sParam) {

@@ -20,13 +20,17 @@ function supplies() {
             }
         },
         success: (supplies) => {
-            $.each(supplies, (i, supply) => {
-                var row = $('<tr>');
-                row.append('<td>' + supply.book.title + '</td>');
-                row.append('<td>' + supply.book.isbn + '</td>');
-                row.append('<td>' + supply.price + '€</td>');
-                $('#suppliesTable').append(row);
-            });
+            if (supplies[0]) {
+                $.each(supplies, (i, supply) => {
+                    var row = $('<tr>');
+                    row.append('<td><a href=\'offerta.html?supply=' + supply.id + '\'>' + supply.book.title + '</a></td>');
+                    row.append('<td>' + supply.book.isbn + '</td>');
+                    row.append('<td>' + supply.price + '€</td>');
+                    $('#suppliesTableBody').append(row);
+                });
+            } else {
+                document.getElementById('supplies').innerHTML = '<h2>Offerte</h2><p>Non stai offrendo nulla...<a href=\'bazar.html\'>offri ora</a></p>';
+            }
         }
     });
 }
@@ -44,12 +48,16 @@ function demands() {
             }
         },
         success: (demands) => {
-            $.each(demands, (i, demand) => {
-                var row = $('<tr>');
-                row.append('<td>' + demand.book.title + '</td>');
-                row.append('<td>' + demand.book.isbn + '</td>');
-                $('#demandsTable').append(row);
-            });
+            if (demands[0]) {
+                $.each(demands, (i, demand) => {
+                    var row = $('<tr>');
+                    row.append('<td><a href=\'domanda.html?demand=' + demand.id + '\'>' + demand.book.title + '</a></td>');
+                    row.append('<td>' + demand.book.isbn + '</td>');
+                    $('#demandsTableBody').append(row);
+                });
+            } else {
+                document.getElementById('demands').innerHTML = '<h2>Domande</h2><p>Non stai cercando nulla...<a href=\'bazar.html\'>cerca ora</a></p>';
+            }
         }
     });
 }

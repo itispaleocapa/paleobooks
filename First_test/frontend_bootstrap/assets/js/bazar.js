@@ -3,8 +3,20 @@ $(document).ready(function () {
         window.location.href = "login.html";
     }
 
-    classes();
-    $('#table').hide();
+    class_bazar = sessionStorage.getItem('class_bazar');
+    if (class_bazar) {
+        if (class_bazar < 90) {
+            loadClasses(class_bazar, 2019);
+            loadBooks(class_bazar);
+        } else {
+            loadClasses(class_bazar, 2020);
+            loadBooks(class_bazar);
+            document.getElementById('year').selectedIndex = 1;
+        }
+    } else {
+        loadClasses(0, 2019);
+        $('#table').hide();
+    }
 });
 
 $("#form").submit(function (event) {
@@ -12,7 +24,23 @@ $("#form").submit(function (event) {
     books('https://www.paleobooks.it/pbapi/public/books', $(this).serialize());
 });
 
-function classes() {
+function loadClasses(selected, year) {
+    /*class_bazar = sessionStorage.getItem('class_bazar');
+    if (class_bazar) {
+        if (class_bazar < 90 && year == 2019) {
+            selected = class_bazar;
+        } else if (class_bazar < 90 && year == 2020) {
+            selected = class_bazar + 89;
+            class_bazar += 89;
+        } else if (class_bazar > 90 && year == 2019) {
+            selected = class_bazar - 89;
+            class_bazar -= 89;
+        } else if (class_bazar > 90 && year == 2020) {
+            selected = class_bazar;
+        }
+        alert(class_bazar + 'cb');
+        alert(selected + 'sl');
+    }*/
     $.ajax({
         type: 'GET',
         dataType: 'json',
@@ -21,19 +49,28 @@ function classes() {
         error: (err) => {
             if (checkUnauthorized(err)) {
                 refreshToken();
-                this.classes();
+                this.loadBooks(selected, year);
             }
         },
         success: (classes) => {
+            clearClasses();
             $.each(classes, (i, schoolClass) => {
-                var row = $('<option value=' + schoolClass.id + '>' + schoolClass.name + '</option>');
-                $('#classes').append(row);
+                if (schoolClass.school_year == year) {
+                    if (schoolClass.id == selected) {
+                        var row = $('<option selected value=' + schoolClass.id + '>' + schoolClass.name + '</option>');
+                        $('#classes').append(row);
+                    } else {
+                        var row = $('<option value=' + schoolClass.id + '>' + schoolClass.name + '</option>');
+                        $('#classes').append(row);
+                    }
+                }
             });
         }
     });
 }
 
 function loadBooks(id) {
+    sessionStorage.setItem('class_bazar', id);
     if (id != 0) {
         document.getElementById('booksTable').innerHTML = "";
         $('#table').show();
@@ -93,4 +130,12 @@ function books(url, data) {
             });
         }
     });
+}
+
+function clearClasses() {
+    var select = document.getElementById("classes");
+    var length = select.options.length;
+    for (i = length-1; i > 0; i--) {
+        select.options[i] = null;
+    }
 }

@@ -1,6 +1,6 @@
 $(document).ready(function () {
     if (isAuthenticated()){
-        window.location.href = "dashboard.html";
+        window.location.href = "index.html";
     }
 });
 
@@ -10,32 +10,39 @@ $("#form").submit(function (event) {
 });
 
 function registration(url, data) {
-    $.ajax({
-        type: 'POST',
-        dataType: 'json',
-        url: url,
-        data: data,
-        error: (err) => {
-            if (err.status == 400) {
-                clearFeedback();
-                $("#feedback").add("<p>" + err.responseJSON['error'] + "</p>").css( "background-color", "red" ).appendTo('#feedback');
+    var password = document.getElementById('password').value;
+    var confirm_password = document.getElementById('confirm_password').value;
+    if (password == confirm_password) {
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            url: url,
+            data: data,
+            error: (err) => {
+                if (err.status == 400) {
+                    clearFeedback();
+                    $("#feedback").add("<p>" + err.responseJSON['error'] + "</p>").css( "background-color", "red" ).appendTo('#feedback');
+                }
+
+                var keyNames = Object.keys(err.responseJSON);
+
+                for(var i = 0; i < keyNames.length; i++){
+                    document.getElementById(keyNames[i]).style.borderColor = "red";
+                }
+            },
+            success: (response) => {
+                var expiration_date = new Date();
+                expiration_date.setFullYear(expiration_date.getFullYear() + 1);
+
+                sessionStorage.setItem('access_token', response.access_token);
+                document.cookie = "refresh_token=" + response.refresh_token + "; expires=" + expiration_date.toUTCString() + "; path=/";
+
+                alert(response['success']);
+                window.location.href = "index.html";
             }
-
-            var keyNames = Object.keys(err.responseJSON);
-
-            for(var i = 0; i < keyNames.length; i++){
-                document.getElementById(keyNames[i]).style.borderColor = "red";
-            }
-        },
-        success: (response) => {
-            var expiration_date = new Date();
-            expiration_date.setFullYear(expiration_date.getFullYear() + 1);
-
-            sessionStorage.setItem('access_token', response.access_token);
-            document.cookie = "refresh_token=" + response.refresh_token + "; expires=" + expiration_date.toUTCString() + "; path=/";
-
-            alert(response['success']);
-            window.location.href = "profilo.html";
-        }
-    });
+        });
+    } else {
+        clearFeedback();
+        $("#feedback").add("<p>Passwords don\'t match.</p>").css( "background-color", "red" ).appendTo('#feedback');
+    }
 }
