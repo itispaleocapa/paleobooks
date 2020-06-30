@@ -49,7 +49,7 @@ function loadClasses(selected, year) {
         error: (err) => {
             if (checkUnauthorized(err)) {
                 refreshToken();
-                this.classes();
+                this.loadBooks(selected, year);
             }
         },
         success: (classes) => {
