@@ -7,7 +7,7 @@ use Illuminate\Http\Response;
 
 class ClassController extends Controller {
     public function index() {
-        return SchoolClass::all();
+        return SchoolClass::orderBy('name', 'ASC')->get();
     }
 
     public function getClass($id) {
