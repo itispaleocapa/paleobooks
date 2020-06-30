@@ -2,12 +2,13 @@ import TableCell from "@material-ui/core/TableCell";
 import Button from "@material-ui/core/Button";
 import TableRow from "@material-ui/core/TableRow";
 import React from "react";
-import DemandDialog from "../dialogs/DemandDialog";
+import CreateDemandDialog from "../dialogs/CreateDemandDialog";
+import CreateSupplyDialog from "../dialogs/CreateSupplyDialog";
 
 class BookTableRow extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {demandDialogOpen: false};
+        this.state = {demandDialogOpen: false, supplyDialogOpen: false};
     }
 
     handleDemandOpen = () => {
@@ -16,6 +17,14 @@ class BookTableRow extends React.Component {
 
     handleDemandClose = () => {
         this.setState({demandDialogOpen: false});
+    }
+
+    handleSupplyOpen = () => {
+        this.setState({supplyDialogOpen: true});
+    }
+
+    handleSupplyClose = () => {
+        this.setState({supplyDialogOpen: false});
     }
 
     render() {
@@ -29,11 +38,12 @@ class BookTableRow extends React.Component {
                     <Button variant="outlined" color="primary" style={{margin: '4px'}} onClick={this.handleDemandOpen}>
                         Cerca
                     </Button>
-                    <Button variant="outlined" color="primary" style={{margin: '4px'}}>
+                    <Button variant="outlined" color="primary" style={{margin: '4px'}} onClick={this.handleSupplyOpen}>
                         Offri
                     </Button>
                 </TableCell>
-                <DemandDialog book={this.props.book} open={this.state.demandDialogOpen} handleClose={this.handleDemandClose} />
+                <CreateDemandDialog book={this.props.book} open={this.state.demandDialogOpen} handleClose={this.handleDemandClose} />
+                <CreateSupplyDialog book={this.props.book} open={this.state.supplyDialogOpen} handleClose={this.handleSupplyClose} />
             </TableRow>
         );
     }

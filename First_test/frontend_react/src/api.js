@@ -75,6 +75,7 @@ const api = {
     isLoggedIn: () => {
         return new Promise((resolve, reject) => {
             api.request('/users/profile').then(res => {
+                localStorage.setItem('user_id', res.id);
                 localStorage.setItem('user_email', res.email);
                 resolve();
             }).catch(() => {

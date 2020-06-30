@@ -15,6 +15,7 @@ import TableBody from "@material-ui/core/TableBody";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import BookTableRow from "../components/BookTableRow";
+import BooksList from "../components/BooksList";
 
 class FindClassBooksPage extends React.Component {
     constructor(props) {
@@ -47,6 +48,7 @@ class FindClassBooksPage extends React.Component {
     }
 
     updateYears = (_className) => {
+        if (this.state.rawClasses == null) return;
         let years = this.state.rawClasses.filter((c) => {
             return c.name == _className;
         }).map((c) => {
@@ -100,20 +102,7 @@ class FindClassBooksPage extends React.Component {
                         </Select>
                     </FormControl>
                 </div>
-                {this.state.books.length > 0 ? <TableContainer component={Paper} style={{marginTop: '20px'}}>
-                    <Table aria-label="simple table">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell align="center">Azioni</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {this.state.books.map((book) => (
-                                <BookTableRow key={book.id} book={book}/>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer> : null}
+                {this.state.books.length > 0 ? <BooksList books={this.state.books}/> : null}
             </>
         );
     }

@@ -24,6 +24,7 @@ import ProfileInfoDrawer from "./ProfileInfoDrawer";
 import HomePage from "./pages/HomePage";
 import ProfilePage from "./pages/ProfilePage";
 import FindClassBooksPage from "./pages/FindClassBooksPage";
+import FindBooksPage from "./pages/FindBooksPage";
 
 const drawerWidth = 240;
 const useStyles = makeStyles(theme => ({
@@ -116,6 +117,9 @@ function PageContainer(props) {
                 <ListItem button key="/" component={NavLink} exact to="/" activeClassName="Mui-selected">
                     <ListItemText primary="Home"/>
                 </ListItem>
+                <ListItem button key="/books" component={NavLink} to="/books" activeClassName="Mui-selected">
+                    <ListItemText primary="Ricerca libri"/>
+                </ListItem>
                 <ListItem button key="/class-books" component={NavLink} to="/class-books" activeClassName="Mui-selected">
                     <ListItemText primary="Ricerca libri classe"/>
                 </ListItem>
@@ -181,6 +185,9 @@ function PageContainer(props) {
                         </Route>
                         <Route path="/profile">
                             <ProfilePage/>
+                        </Route>
+                        <Route path="/books">
+                            <FindBooksPage/>
                         </Route>
                         <Route path="/class-books">
                             <FindClassBooksPage/>
