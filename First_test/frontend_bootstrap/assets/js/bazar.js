@@ -5,11 +5,16 @@ $(document).ready(function () {
 
     class_bazar = sessionStorage.getItem('class_bazar');
     if (class_bazar) {
-        classes(class_bazar, 2019);
-        //document.getElementById('classes').selectedIndex = class_bazar;
-        loadBooks(class_bazar);
+        if (class_bazar < 90) {
+            loadClasses(class_bazar, 2019);
+            loadBooks(class_bazar);
+        } else {
+            loadClasses(class_bazar, 2020);
+            loadBooks(class_bazar);
+            document.getElementById('year').selectedIndex = 1;
+        }
     } else {
-        classes(0, 2019);
+        loadClasses(0, 2019);
         $('#table').hide();
     }
 });
@@ -19,7 +24,23 @@ $("#form").submit(function (event) {
     books('https://www.paleobooks.it/pbapi/public/books', $(this).serialize());
 });
 
-function classes(selected, year) {
+function loadClasses(selected, year) {
+    /*class_bazar = sessionStorage.getItem('class_bazar');
+    if (class_bazar) {
+        if (class_bazar < 90 && year == 2019) {
+            selected = class_bazar;
+        } else if (class_bazar < 90 && year == 2020) {
+            selected = class_bazar + 89;
+            class_bazar += 89;
+        } else if (class_bazar > 90 && year == 2019) {
+            selected = class_bazar - 89;
+            class_bazar -= 89;
+        } else if (class_bazar > 90 && year == 2020) {
+            selected = class_bazar;
+        }
+        alert(class_bazar + 'cb');
+        alert(selected + 'sl');
+    }*/
     $.ajax({
         type: 'GET',
         dataType: 'json',

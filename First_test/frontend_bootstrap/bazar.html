@@ -27,36 +27,17 @@
         <a class="nav-link" href="index.html"> DASHBOARD </a>
       </li>
       <li class="nav-item active">
-        <a class="nav-link" href="#"> BAZAR  <span class="sr-only">(current)</span> </a>
+        <a class="nav-link" href="bazar.html"> BAZAR  <span class="sr-only">(current)</span> </a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="crea-offerta.html"> OFFRI </a>
-      </li>
-       <li class="nav-item">
-        <a class="nav-link" href="crea-domanda.html"> DOMANDA </a>
-      </li>
-     
       <li class="nav-item">
         <a class="nav-link" href="offerte.html"> OFFERTE </a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="domande.html"> DOMANDE </a>
       </li>
-
       <li class="nav-item">
         <a class="nav-link" href="profilo.html"> PROFILO </a>
       </li>
-
-      <!--
-      <li class="nav-item">
-        <a class="nav-link" href="login.html"> LOGIN </a>
-      </li>
-      <li class="nav-item">
-            <a class="nav-link" href="registrati.html"> REGISTRATI </a>
-        </li>
-      -->
-
-
     </ul>
   </div>
 </nav>
@@ -70,7 +51,7 @@
 		<select  class="rounded border " name="classes" id="classes" onchange="loadBooks(this.value);">
       <option selected value="0">Scegli una classe</option>
     </select>
-    <select  class="rounded border " name="year" id="year" onchange="classes(this.value);">
+    <select  class="rounded border " name="year" id="year" onchange="loadClasses(0, this.value);loadBooks(0);">
       <option selected value="2019">2019/20</option>
       <option value="2020">2020/21</option>
     </select>

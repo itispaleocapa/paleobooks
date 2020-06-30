@@ -1,6 +1,6 @@
 $(document).ready(function () {
     if (isAuthenticated()){
-        window.location.href = "dashboard.html";
+        window.location.href = "index.html";
     }
 
     if (getUrlParameter('state')=='paleobooks') {
@@ -32,7 +32,7 @@ function login(url, data) {
             sessionStorage.setItem('access_token', response.access_token);
             document.cookie = "refresh_token=" + response.refresh_token + "; expires=" + expiration_date.toUTCString() + "; path=/";
 
-            window.location.href = "profilo.html";
+            window.location.href = "index.html";
         }
     });
 }

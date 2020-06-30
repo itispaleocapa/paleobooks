@@ -1,6 +1,6 @@
 $(document).ready(function () {
     if (isAuthenticated()){
-        window.location.href = "dashboard.html";
+        window.location.href = "index.html";
     }
 });
 
@@ -35,7 +35,7 @@ function registration(url, data) {
             document.cookie = "refresh_token=" + response.refresh_token + "; expires=" + expiration_date.toUTCString() + "; path=/";
 
             alert(response['success']);
-            window.location.href = "profilo.html";
+            window.location.href = "index.html";
         }
     });
 }

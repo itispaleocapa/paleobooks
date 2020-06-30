@@ -100,7 +100,14 @@ class AuthController extends BaseController {
                 $user->refresh_token = $refresh_token;
                 $user->save();
             } else {
-                $refresh_token = $user->refresh_token;
+				if ($this->decodeResetToken($user->refresh_token)) {
+					$refresh_token = $user->refresh_token;
+				} else {
+					$refresh_token = $this->jwt($user, 60 * 60 * 24 * 30);
+
+					$user->refresh_token = $refresh_token;
+					$user->save();
+				}
             }
 
             return response()->json([

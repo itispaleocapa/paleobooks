@@ -1,6 +1,6 @@
 $(document).ready(function () {
     if (isAuthenticated()){
-        window.location.href = "dashboard.html";
+        window.location.href = "index.html";
     }
 
     var url = new URL(window.location.href);
