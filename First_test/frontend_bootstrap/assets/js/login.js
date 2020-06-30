@@ -14,6 +14,7 @@ $("#form").submit(function (event) {
 });
 
 function login(url, data) {
+    clearFeedback();
     $.ajax({
         type: 'POST',
         dataType: 'json',
@@ -23,8 +24,7 @@ function login(url, data) {
             clearError('emailError');
             clearError('passwordError');
             if (err.status == 400) {
-                clearFeedback();
-                $("#feedback").add("<p>" + err.responseJSON['error'] + "</p>").css( "background-color", "red" ).appendTo('#feedback');
+                $("#feedback").add("<p>" + err.responseJSON['error'] + "</p>").css( "color", "red" ).css( "font-size", "20px" ).appendTo('#feedback');
             } else if (err.status == 422) {
                 if (err.responseJSON['email']) {
                     putError('emailError', err.responseJSON['email']);

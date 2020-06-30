@@ -24,8 +24,7 @@ function registration(url, data) {
                 clearError('emailError');
                 clearError('passwordError');
                 if (err.status == 400) {
-                    clearFeedback();
-                    $("#feedback").add("<p>" + err.responseJSON['error'] + "</p>").css( "background-color", "red" ).appendTo('#feedback');
+                    $("#feedback").add("<p>" + err.responseJSON['error'] + "</p>").css( "color", "red" ).css( "font-size", "20px" ).appendTo('#feedback');
                 } else if (err.status == 422) {
                     if (err.responseJSON['name']) {
                         putError('nameError', err.responseJSON['name']);
@@ -55,6 +54,6 @@ function registration(url, data) {
             }
         });
     } else {
-        $("#feedback").add("<p>Passwords don\'t match.</p>").css( "background-color", "red" ).appendTo('#feedback');
+        $("#feedback").add("<p>Passwords don't match.</p>").css( "color", "red" ).css( "font-size", "20px" ).appendTo('#feedback');
     }
 }
