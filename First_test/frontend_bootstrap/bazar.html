@@ -51,13 +51,13 @@
   <div id="feedback" class="container-fluid">
     <h2>Bazar</h2>
 	<form style="display:inline-block;margin-right: 100px;">
-	  <label for="fname">Classe: </label><br>
-		<select  class="rounded border " name="classes" id="classes" onchange="loadBooks(this.value);">
-      <option selected value="0">Scegli una classe</option>
-    </select>
+    <label for="fname">Anno e classe: </label><br>
     <select  class="rounded border " name="year" id="year" onchange="loadClasses(0, this.value);loadBooks(0);">
       <option selected value="2019">2019/20</option>
       <option value="2020">2020/21</option>
+    </select>
+		<select  class="rounded border " name="classes" id="classes" onchange="loadBooks(this.value);">
+      <option selected value="0">Scegli una classe</option>
     </select>
   </form>
   <form id="form" style="display:inline-block;margin-left: 100px;">
