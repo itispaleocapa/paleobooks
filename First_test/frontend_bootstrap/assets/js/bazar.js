@@ -3,8 +3,15 @@ $(document).ready(function () {
         window.location.href = "login.html";
     }
 
-    classes();
-    $('#table').hide();
+    class_bazar = sessionStorage.getItem('class_bazar');
+    if (class_bazar) {
+        classes(class_bazar, 2019);
+        //document.getElementById('classes').selectedIndex = class_bazar;
+        loadBooks(class_bazar);
+    } else {
+        classes(0, 2019);
+        $('#table').hide();
+    }
 });
 
 $("#form").submit(function (event) {
@@ -12,7 +19,7 @@ $("#form").submit(function (event) {
     books('https://www.paleobooks.it/pbapi/public/books', $(this).serialize());
 });
 
-function classes() {
+function classes(selected, year) {
     $.ajax({
         type: 'GET',
         dataType: 'json',
@@ -25,15 +32,24 @@ function classes() {
             }
         },
         success: (classes) => {
+            clearClasses();
             $.each(classes, (i, schoolClass) => {
-                var row = $('<option value=' + schoolClass.id + '>' + schoolClass.name + '</option>');
-                $('#classes').append(row);
+                if (schoolClass.school_year == year) {
+                    if (schoolClass.id == selected) {
+                        var row = $('<option selected value=' + schoolClass.id + '>' + schoolClass.name + '</option>');
+                        $('#classes').append(row);
+                    } else {
+                        var row = $('<option value=' + schoolClass.id + '>' + schoolClass.name + '</option>');
+                        $('#classes').append(row);
+                    }
+                }
             });
         }
     });
 }
 
 function loadBooks(id) {
+    sessionStorage.setItem('class_bazar', id);
     if (id != 0) {
         document.getElementById('booksTable').innerHTML = "";
         $('#table').show();
@@ -93,4 +109,12 @@ function books(url, data) {
             });
         }
     });
+}
+
+function clearClasses() {
+    var select = document.getElementById("classes");
+    var length = select.options.length;
+    for (i = length-1; i > 0; i--) {
+        select.options[i] = null;
+    }
 }

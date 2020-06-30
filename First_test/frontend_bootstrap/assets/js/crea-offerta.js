@@ -66,9 +66,13 @@ function supply(url, data) {
                 clearFeedback();
                 $("#feedback").add("<p>" + err.responseJSON['error'] + "</p>").css( "background-color", "red" ).appendTo('#feedback');
             }
+            if (err.status == 422) {
+                clearFeedback();
+                $("#feedback").add("<p>" + err.responseJSON['price'] + "</p>").css( "background-color", "red" ).appendTo('#feedback');
+            }
         },
         success: (response) => {
-            window.location.href = "dashboard.html";
+            window.location.href = "index.html";
         }
     });
 }
