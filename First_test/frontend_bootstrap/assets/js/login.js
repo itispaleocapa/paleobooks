@@ -23,6 +23,15 @@ function login(url, data) {
             if (err.status == 400) {
                 clearFeedback();
                 $("#feedback").add("<p>" + err.responseJSON['error'] + "</p>").css( "background-color", "red" ).appendTo('#feedback');
+            } else if (err.status == 422) {
+                clearError('email');
+                clearError('password');
+                if (err.responseJSON['email']) {
+                    putError('email', err.responseJSON['email']);
+                }
+                if (err.responseJSON['password']) {
+                    putError('password', err.responseJSON['password']);
+                }
             }
         },
         success: (response) => {

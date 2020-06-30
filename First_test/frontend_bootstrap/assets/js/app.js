@@ -98,3 +98,11 @@ function sendAccessToken() {
 function clearFeedback() {
     document.getElementById('feedback').innerHTML = "";
 }
+
+function clearError(component) {
+    document.getElementById(component).value = "";
+}
+
+function putError(component, error) {
+    document.getElementById(component).value = error;
+}
