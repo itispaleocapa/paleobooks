@@ -4,7 +4,7 @@ $(document).ready(function () {
     }
 
     if (getUrlParameter('state')=='paleobooks') {
-        login('https://www.paleobooks.it/pbapi/public/auth/paleoid', {'code': getUrlParameter('code')});
+        login('https://www.paleobooks.it/pbapi/public/auth/paleoid', {'code': getUrlParameter('code'), 'redirect_uri': window.location.origin + window.location.pathname});
     }
 });
 

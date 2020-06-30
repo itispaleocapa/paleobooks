@@ -87,7 +87,7 @@
     <input type="submit" value="Login" class="btn btn-warning">  <a role="button" class="btn btn-danger" href="registrati.html" aria-pressed="true" >Registrati</button>
 
     <br>
-    <a href="https://id.paleo.bg.it/oauth/authorize?client_id=0cfa9278e6d017629b9dc26bffbd8335&response_type=code&state=paleobooks&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fuser%2Flogin.html"
+    <a onclick="alert('ciao'); window.location.href = 'https://id.paleo.bg.it/oauth/authorize?client_id=ae13b6e3fd3c0fccad39c5fcb8fda00d&response_type=code&state=paleobooks&redirect_uri=' + encodeURIComponent(window.location.origin + window.location.pathname)" href="#"
        style="display: block; margin-top: 10px">Accedi con PaleoID</a>
     <!--<p>(per accedere con PaleoID è necessario che questa pagina sia accessibile da
         http://localhost:3000/user/login.html)</p> -->

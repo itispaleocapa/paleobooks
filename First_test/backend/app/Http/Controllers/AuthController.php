@@ -170,7 +170,7 @@ class AuthController extends BaseController {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, env('PALEOID_BASEURL') . "/oauth/token");
         curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(array("grant_type" => "authorization_code", "code" => $request->input('code'), "redirect_uri" => env('PALEOID_REDIRECT_URI'), "client_id" => env('PALEOID_CLIENT_ID'), "client_secret" => env('PALEOID_CLIENT_SECRET'))));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(array("grant_type" => "authorization_code", "code" => $request->input('code'), "redirect_uri" => (strlen($request->input('redirect_uri')) > 0 ? $request->input('redirect_uri') : env('PALEOID_REDIRECT_URI')), "client_id" => env('PALEOID_CLIENT_ID'), "client_secret" => env('PALEOID_CLIENT_SECRET'))));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $serverOutput = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
