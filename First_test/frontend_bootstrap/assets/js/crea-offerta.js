@@ -52,6 +52,7 @@ function books(book_id = 0) {
 }
 
 function supply(url, data) {
+    clearFeedback();
     $.ajax({
         type: 'POST',
         dataType: 'json',
@@ -63,12 +64,10 @@ function supply(url, data) {
                 this.supply();
             }
             if (err.status == 400) {
-                clearFeedback();
-                $("#feedback").add("<p>" + err.responseJSON['error'] + "</p>").css( "background-color", "red" ).appendTo('#feedback');
+                $("#feedback").add("<p>" + err.responseJSON['price'] + "</p>").css( "color", "red" ).css( "font-size", "20px" ).appendTo('#feedback');
             }
             if (err.status == 422) {
-                clearFeedback();
-                $("#feedback").add("<p>" + err.responseJSON['price'] + "</p>").css( "background-color", "red" ).appendTo('#feedback');
+                $("#feedback").add("<p>" + err.responseJSON['price'] + "</p>").css( "color", "red" ).css( "font-size", "20px" ).appendTo('#feedback');
             }
         },
         success: (response) => {

@@ -18,16 +18,16 @@
 
 </head>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: chocolate;">
-  <img src="assets/img/LOGO1.png" img src="img_girl.jpg" style="max-width:10%; height:auto;" alt="logo-navbar">
+<nav id="nav" class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: chocolate;">
+  <img src="assets/img/LOGO1.png" style="max-width:10%; height:auto;" alt="logo-navbar">
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav"
     aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav">
-      <li class="nav-item active">
-        <a class="nav-link" href="index.html"> DASHBOARD <span class="sr-only">(corrente)</span> </a>
+      <li class="nav-item">
+        <a class="nav-link" href="index.html"> DASHBOARD </a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="bazar.html"> BAZAR </a>
@@ -41,7 +41,7 @@
       <li class="nav-item">
         <a class="nav-link" href="profilo.html"> PROFILO </a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item active">
         <a class="nav-link" href="about.html"> ABOUT US </a>
       </li>
     </ul>
@@ -51,36 +51,57 @@
 <body style="margin: 10px; text-align: center;">
   <div id="feedback" class="container-fluid"></div>
 
-  <h1>Dashboard</h1>
+  <h1>About Us</h1>
 
-  <div id="supplies">
-    <h2>Offerte</h2>
-    <p><a href="bazar.html">Offri ancora</a></p>
-    <table id="suppliesTable" class="table table-bordered table table-striped">
-      <thead>
-      <tr>
-          <th scope="col">Titolo libro</th>
-          <th scope="col">ISBN</th>
-          <th scope="col">Prezzo</th>
-      </tr>
-      </thead>
-      <tbody id="suppliesTableBody"></tbody>
-    </table>
-  </div>
+  <img width="50%" src="assets/img/LOGO1.png" > 
+  <div  class="contaier-fluid border rounded">
+     <h5 style="size: 15px;"> Applicazione per lo scambio dei libri usati sviluppata dagli studenti di EsperiaDev dell'ITIS Paleocapa di Bergamo in collaborazione con <a href="https://www.agesp.eu/"> l'Associazione Genitori Esperia </a>  </h5>
+      <div> 
+      <p style="size: 10px;"> Per problemi e chiarimenti <a href="mailto:info@paleobooks.it"> contattaci! </a> </p>  
+      </div>  
+  </diV>
+  
+  <br>
 
-  <div id="demands">
-    <h2>Domande</h2>
-    <p><a href="bazar.html">Chiedi ancora</a></p>
-    <table id="demandsTable" class="table table-bordered table table-striped">
-      <thead>
+  <h2> EsperiaDev: </h2>
+  
+  <table class="table table-striped" style="table-layout: fixed;">
+    <tbody>
       <tr>
-          <th scope="col">Titolo libro</th>
-          <th scope="col">ISBN</th>
+        <td >Attardo Diego</th>
+        <td>Biasion Marco</td>
       </tr>
-      </thead>
-      <tbody id="demandsTableBody"></tbody>
-    </table>
-  </div>
+      <tr>
+        <td >Brugnetti Luca</th>
+        <td>Cardillo Davide</td>
+      </tr>
+      <tr>
+        <td>Facoetti Riccardo</th>
+        <td>Livella Cristian</td>
+      </tr>
+      <tr>
+        <td>Maggi Gabriele</th>
+        <td>Mendiola Federico</td>
+      </tr>
+      <tr>
+        <td>Rampoldi Adriano</th>
+        <td>Verdi Alessandro</td>
+      </tr>
+      
+    </tbody>
+  </table>
+
+
+    
+       
+
+
+
+  <!-- Titolo, Prezzo pulsante per eliminare -->
+
+
+
+
 
 
 
@@ -93,7 +114,9 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-<script src="assets/js/dashboard.js"></script>
+
+<!-- <script src="assets/js/offerta.js"></script> -->
+<script src="assets/js/about.js"></script>
 <script src="assets/js/app.js"></script>
 </body>
 </html>

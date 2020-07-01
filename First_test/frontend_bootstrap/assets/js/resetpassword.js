@@ -20,20 +20,24 @@ $("#form").submit(function (event) {
 });
 
 function sendResetpassword(url, data) {
+    clearFeedback();
     $.ajax({
         type: 'POST',
         dataType: 'json',
         url: url,
         data: data,
         error: (err) => {
+            clearError('emailError');
             if (err.status == 400) {
-                clearFeedback();
-                $("#feedback").add("<p>" + err.responseJSON['error'] + "</p>").css( "background-color", "red" ).appendTo('#feedback');
+                $("#feedback").add("<p>" + err.responseJSON['error'] + "</p>").css( "color", "red" ).css( "font-size", "20px" ).appendTo('#feedback');
+            } else if (err.status == 422) {
+                if (err.responseJSON['email']) {
+                    putError('emailError', err.responseJSON['email']);
+                }
             }
         },
         success: (response) => {
-            clearFeedback();
-            $("#feedback").add("<p>" + response['success'] + "</p>").css( "background-color", "green" ).appendTo('#feedback');
+            $("#feedback").add("<p>" + response['success'] + "</p>").css( "color", "green" ).css( "font-size", "20px" ).appendTo('#feedback');
         }
     });
 }
@@ -46,6 +50,7 @@ $("#password-form").submit(function (event) {
 });
 
 function resetpassword(url, data) {
+    clearFeedback();
     var password = document.getElementById('password').value;
     var confirm_password = document.getElementById('confirm_password').value;
     if (password == confirm_password) {
@@ -55,9 +60,13 @@ function resetpassword(url, data) {
             url: url,
             data: data,
             error: (err) => {
+                clearError('passwordError');
                 if (err.status == 400) {
-                    clearFeedback();
-                    $("#feedback").add("<p>" + err.responseJSON['error'] + "</p>").css( "background-color", "red" ).appendTo('#feedback');
+                    $("#feedback").add("<p>" + err.responseJSON['error'] + "</p>").css( "color", "red" ).css( "font-size", "20px" ).appendTo('#feedback');
+                } else if (err.status == 422) {
+                    if (err.responseJSON['new_password']) {
+                        putError('passwordError', err.responseJSON['new_password']);
+                    }
                 }
             },
             success: () => {
@@ -65,8 +74,7 @@ function resetpassword(url, data) {
             }
         });
     } else {
-        clearFeedback();
-        $("#feedback").add("<p>Passwords don\'t match.</p>").css( "background-color", "red" ).appendTo('#feedback');
+        $("#feedback").add("<p>Passwords don't match.</p>").css( "color", "red" ).css( "font-size", "20px" ).appendTo('#feedback');
     }
 }
 

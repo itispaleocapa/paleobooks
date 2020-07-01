@@ -9,7 +9,26 @@ use App\Models\Demand;
 use App\Models\SchoolClass;
 
 class DemandController extends Controller {
-    public function index() {
+    public function index(Request $request) {
+		$filter = $request->input('search');
+
+        // Check if user used the search form
+        if ($filter) { 
+			$demand = Demand::with(['book:id,title,isbn', 'user'])
+				->whereHas('book', function($q) use($filter) {
+					$q->where('books.title', 'like', '%' . $filter . '%');
+				})->get();
+
+            if ($demand->isEmpty()) {
+                $demand = Demand::with(['book:id,title,isbn', 'user'])
+				->whereHas('book', function($q) use($filter) {
+					$q->where('books.isbn', 'like', '%' . $filter . '%');
+				})->get();
+            }
+
+            return $demand;
+        }
+		
         return Demand::with(['book:id,title,isbn', 'user'])->get();
     }
 	
@@ -67,7 +86,7 @@ class DemandController extends Controller {
         if ($request->auth->id != $demand->user_id) {
             return response()->json([
                 'error' => 'You are not authorized to edit this demand.'
-            ], 401);
+            ], 400);
         }
 
         // Check and validate the updated book
@@ -118,11 +137,17 @@ class DemandController extends Controller {
         ], 201);
     }
 
-    public function destroy($id) {
+    public function destroy(Request $request, $id) {
         $demand = Demand::find($id);
 
         if (!$demand) {
             return response()->json([], 404);
+        }
+		
+		if ($request->auth->id != $demand->user_id) {
+            return response()->json([
+                'error' => 'You are not authorized to delete this demand.'
+            ], 400);
         }
 
         $demand->delete();

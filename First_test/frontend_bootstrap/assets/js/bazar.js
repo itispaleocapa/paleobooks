@@ -104,32 +104,43 @@ function loadBooks(id) {
 }
 
 function books(url, data) {
-    document.getElementById('booksTable').innerHTML = "";
-    $('#table').show();
+    clearFeedback();
+    if (document.getElementById('search').value) {
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url: url,
+            data: data + sendAccessToken(),
+            error: (err) => {
+                if (checkUnauthorized(err)) {
+                    refreshToken();
+                    this.books(id);
+                }
+            },
+            success: (books) => {
+                if (books[0]) {
+                    document.getElementById('booksTable').innerHTML = "";
+                    $('#table').show();
 
-    $.ajax({
-        type: 'GET',
-        dataType: 'json',
-        url: url,
-        data: data + sendAccessToken(),
-        error: (err) => {
-            if (checkUnauthorized(err)) {
-                refreshToken();
-                this.books(id);
+                    $.each(books, (i, book) => {
+                        var row = $('<tr>');
+                        row.append('<td>' + book.title + '</td>');
+                        row.append('<td>' + book.isbn + '</td>');
+                        row.append('<td>' + book.price + '</td>');
+                        row.append('<td><a href=\"crea-offerta.html?book=' + book.id + '\">Clicca</a></td>');
+                        row.append('<td><a href=\"crea-domanda.html?book=' + book.id + '\">Clicca</a></td>');
+                        $('#booksTable').append(row);
+                    });
+                } else {
+                    document.getElementById('booksTable').innerHTML = "";
+                    $('#table').hide();
+                    $("#feedback").add("<p>The search did not return any results.</p>").css( "color", "red" ).css( "font-size", "20px" ).appendTo('#feedback');
+                }
             }
-        },
-        success: (books) => {
-            $.each(books, (i, book) => {
-                var row = $('<tr>');
-                row.append('<td>' + book.title + '</td>');
-                row.append('<td>' + book.isbn + '</td>');
-                row.append('<td>' + book.price + '</td>');
-                row.append('<td><a href=\"crea-offerta.html?book=' + book.id + '\">Clicca</a></td>');
-                row.append('<td><a href=\"crea-domanda.html?book=' + book.id + '\">Clicca</a></td>');
-                $('#booksTable').append(row);
-            });
-        }
-    });
+        });
+    } else {
+        $("#feedback").add("<p>The search did not return any results.</p>").css( "color", "red" ).css( "font-size", "20px" ).appendTo('#feedback');
+    }
 }
 
 function clearClasses() {

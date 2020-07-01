@@ -12,6 +12,7 @@ $("#form").submit(function (event) {
 function registration(url, data) {
     var password = document.getElementById('password').value;
     var confirm_password = document.getElementById('confirm_password').value;
+    clearFeedback();
     if (password == confirm_password) {
         $.ajax({
             type: 'POST',
@@ -19,16 +20,27 @@ function registration(url, data) {
             url: url,
             data: data,
             error: (err) => {
+                clearError('nameError');
+                clearError('emailError');
+                clearError('passwordError');
                 if (err.status == 400) {
-                    clearFeedback();
-                    $("#feedback").add("<p>" + err.responseJSON['error'] + "</p>").css( "background-color", "red" ).appendTo('#feedback');
+                    $("#feedback").add("<p>" + err.responseJSON['error'] + "</p>").css( "color", "red" ).css( "font-size", "20px" ).appendTo('#feedback');
+                } else if (err.status == 422) {
+                    if (err.responseJSON['name']) {
+                        putError('nameError', err.responseJSON['name']);
+                    }
+                    if (err.responseJSON['email']) {
+                        putError('emailError', err.responseJSON['email']);
+                    }
+                    if (err.responseJSON['password']) {
+                        putError('passwordError', err.responseJSON['password']);
+                    }
                 }
-
-                var keyNames = Object.keys(err.responseJSON);
+                /*var keyNames = Object.keys(err.responseJSON);
 
                 for(var i = 0; i < keyNames.length; i++){
                     document.getElementById(keyNames[i]).style.borderColor = "red";
-                }
+                }*/
             },
             success: (response) => {
                 var expiration_date = new Date();
@@ -42,7 +54,6 @@ function registration(url, data) {
             }
         });
     } else {
-        clearFeedback();
-        $("#feedback").add("<p>Passwords don\'t match.</p>").css( "background-color", "red" ).appendTo('#feedback');
+        $("#feedback").add("<p>Passwords don't match.</p>").css( "color", "red" ).css( "font-size", "20px" ).appendTo('#feedback');
     }
 }

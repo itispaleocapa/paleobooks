@@ -6,6 +6,8 @@
     <title>PALEObooks</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Quicksand&display=swap" rel="stylesheet">
+    <link rel="icon" href="assets/img/favicon.ico">
+
       <style>
         body {
           font-family: 'Quicksand', sans-serif;
@@ -38,21 +40,24 @@
       <li class="nav-item">
         <a class="nav-link" href="profilo.html"> PROFILO </a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" href="about.html"> ABOUT US </a>
+      </li>
     </ul>
   </div>
 </nav>
 
 <body style="margin: 10px; text-align: center;">
-  <div id="feedback" class="container-fluid">
+  <div id="feedback" class="container-fluid"></div>
     <h2>Bazar</h2>
 	<form style="display:inline-block;margin-right: 100px;">
-	  <label for="fname">Classe: </label><br>
-		<select  class="rounded border " name="classes" id="classes" onchange="loadBooks(this.value);">
-      <option selected value="0">Scegli una classe</option>
-    </select>
+    <label for="fname">Anno e classe: </label><br>
     <select  class="rounded border " name="year" id="year" onchange="loadClasses(0, this.value);loadBooks(0);">
       <option selected value="2019">2019/20</option>
       <option value="2020">2020/21</option>
+    </select>
+		<select  class="rounded border " name="classes" id="classes" onchange="loadBooks(this.value);">
+      <option selected value="0">Scegli una classe</option>
     </select>
   </form>
   <form id="form" style="display:inline-block;margin-left: 100px;">
@@ -89,4 +94,3 @@
 </div>
 </body>
 </html>
-

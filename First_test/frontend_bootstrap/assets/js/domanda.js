@@ -26,6 +26,7 @@ $("#deleteDemand").click(function (event) {
 });
 
 function demand_update(url, data, d){
+    clearFeedback();
     $.ajax({
         type: 'PUT',
         dataType: 'json',
@@ -37,8 +38,7 @@ function demand_update(url, data, d){
                 this.demand_update('https://www.paleobooks.it/pbapi/public/demands/', $(this).serialize(), d);
             }
             if (err.status == 400) {
-                clearFeedback();
-                $("#feedback").add("<p>" + err.responseJSON['error'] + "</p>").css( "background-color", "red" ).appendTo('#feedback');
+                $("#feedback").add("<p>" + err.responseJSON['error'] + "</p>").css( "color", "red" ).css( "font-size", "20px" ).appendTo('#feedback');
             }
         },
         success: (response) => {
@@ -48,6 +48,7 @@ function demand_update(url, data, d){
 }
 
 function demand_delete(url, data, d){
+    clearFeedback();
     $.ajax({
         type: 'DELETE',
         dataType: 'json',
@@ -59,8 +60,7 @@ function demand_delete(url, data, d){
                 this.demand_delete('https://www.paleobooks.it/pbapi/public/demands/', $(this).serialize(), d);
             }
             if (err.status == 400) {
-                clearFeedback();
-                $("#feedback").add("<p>" + err.responseJSON['error'] + "</p>").css( "background-color", "red" ).appendTo('#feedback');
+                $("#feedback").add("<p>" + err.responseJSON['error'] + "</p>").css( "color", "red" ).css( "font-size", "20px" ).appendTo('#feedback');
             }
         },
         success: (response) => {
