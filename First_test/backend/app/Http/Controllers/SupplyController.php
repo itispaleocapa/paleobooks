@@ -154,7 +154,7 @@ class SupplyController extends Controller {
         ], 201);
     }
 
-    public function destroy($id) {
+    public function destroy(Request $request, $id) {
         $supply = Supply::find($id);
 
         if (!$supply) {

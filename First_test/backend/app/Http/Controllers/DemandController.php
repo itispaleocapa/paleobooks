@@ -137,7 +137,7 @@ class DemandController extends Controller {
         ], 201);
     }
 
-    public function destroy($id) {
+    public function destroy(Request $request, $id) {
         $demand = Demand::find($id);
 
         if (!$demand) {
