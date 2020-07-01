@@ -1,7 +1,7 @@
 import Avatar from "@material-ui/core/Avatar";
 import Typography from "@material-ui/core/Typography";
 import React from "react";
-import api from "./api";
+import api from "../api";
 
 
 class ProfileInfoDrawer extends React.Component {

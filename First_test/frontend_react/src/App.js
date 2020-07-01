@@ -11,9 +11,9 @@ import {BrowserRouter, Redirect, Route, Switch} from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import api from "./api";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import PrivateRoute from "./PrivateRoute";
+import PrivateRoute from "./components/PrivateRoute";
 import HomePage from "./pages/HomePage";
-import PageContainer from "./PageContainer";
+import PageContainer from "./components/PageContainer";
 
 class App extends React.Component {
     constructor() {

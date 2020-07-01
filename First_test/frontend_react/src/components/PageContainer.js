@@ -19,12 +19,13 @@ import Divider from "@material-ui/core/Divider";
 import Icon from "@material-ui/core/Icon";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-import api from "./api";
+import api from "../api";
 import ProfileInfoDrawer from "./ProfileInfoDrawer";
-import HomePage from "./pages/HomePage";
-import ProfilePage from "./pages/ProfilePage";
-import FindClassBooksPage from "./pages/FindClassBooksPage";
-import FindBooksPage from "./pages/FindBooksPage";
+import HomePage from "../pages/HomePage";
+import ProfilePage from "../pages/ProfilePage";
+import FindClassBooksPage from "../pages/FindClassBooksPage";
+import FindBooksPage from "../pages/FindBooksPage";
+import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
 
 const drawerWidth = 240;
 const useStyles = makeStyles(theme => ({
@@ -75,6 +76,10 @@ function PageContainer(props) {
         setMobileOpen(!mobileOpen)
     }
 
+    function closeDrawer() {
+        setMobileOpen(false);
+    }
+
     const openProfileMenu = (event) => {
         setAnchorEl(event.currentTarget);
     }
@@ -108,19 +113,19 @@ function PageContainer(props) {
                     open={Boolean(anchorEl)}
                     onClose={handleClose}
                 >
-                    <MenuItem onClick={handleClose} component={NavLink} to="/profile" >Profilo</MenuItem>
+                    <MenuItem onClick={() => {handleClose(); closeDrawer();}} component={NavLink} to="/profile" >Profilo</MenuItem>
                     <MenuItem onClick={handleLogout}>Logout</MenuItem>
                 </Menu>
             </div>
             <Divider variant="middle" style={{margin: '0'}}/>
             <List>
-                <ListItem button key="/" component={NavLink} exact to="/" activeClassName="Mui-selected">
+                <ListItem button key="/" component={NavLink} exact to="/" activeClassName="Mui-selected" onClick={closeDrawer}>
                     <ListItemText primary="Home"/>
                 </ListItem>
-                <ListItem button key="/books" component={NavLink} to="/books" activeClassName="Mui-selected">
+                <ListItem button key="/books" component={NavLink} to="/books" activeClassName="Mui-selected" onClick={closeDrawer}>
                     <ListItemText primary="Ricerca libri"/>
                 </ListItem>
-                <ListItem button key="/class-books" component={NavLink} to="/class-books" activeClassName="Mui-selected">
+                <ListItem button key="/class-books" component={NavLink} to="/class-books" activeClassName="Mui-selected" onClick={closeDrawer}>
                     <ListItemText primary="Ricerca libri classe"/>
                 </ListItem>
             </List>
@@ -149,10 +154,11 @@ function PageContainer(props) {
             <nav className={classes.drawer}>
                 {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
                 <Hidden mdUp implementation="css">
-                    <Drawer
+                    <SwipeableDrawer
                         variant="temporary"
                         anchor={theme.direction === 'rtl' ? 'right' : 'left'}
                         open={mobileOpen}
+                        onOpen={handleDrawerToggle}
                         onClose={handleDrawerToggle}
                         classes={{
                             paper: classes.drawerPaper,
@@ -160,9 +166,10 @@ function PageContainer(props) {
                         ModalProps={{
                             keepMounted: true,
                         }}
+                        disableBackdropTransition
                     >
                         {drawer}
-                    </Drawer>
+                    </SwipeableDrawer>
                 </Hidden>
                 <Hidden smDown implementation="css">
                     <Drawer
@@ -192,9 +199,7 @@ function PageContainer(props) {
                         <Route path="/class-books">
                             <FindClassBooksPage/>
                         </Route>
-
                     </Switch>
-
                 </div>
             </div>
         </div>

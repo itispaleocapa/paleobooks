@@ -58,7 +58,7 @@ const api = {
     },
     loginPaleoID: (code) => {
         return new Promise((resolve, reject) => {
-            api.request('/auth/paleoid', 'POST', JSON.stringify({code: code})).then(res => {
+            api.request('/auth/paleoid', 'POST', JSON.stringify({code: code, redirect_uri: process.env.REACT_APP_PALEOID_REDIRECT_URI})).then(res => {
                 sessionStorage.setItem('access_token', res.access_token);
                 localStorage.setItem('refresh_token', res.refresh_token);
                 localStorage.setItem('user_class', res.class);
