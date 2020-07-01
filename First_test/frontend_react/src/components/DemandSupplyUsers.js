@@ -18,7 +18,7 @@ class DemandSupplyUsers extends React.Component {
                     &nbsp;{this.props.type == 'supply' ? 'vendendo' : 'acquistare'} questo libro,
                     contattal{this.props.users.length == 1 ? 'o' : 'i'} se sei interessato.
                 </Typography>
-                <List style={{margin: '-16px 0'}}>
+                <List style={{margin: '-12px 0'}}>
                     {this.props.users.map(i => {
                         return <DemandSupplyItem id={i.id} type={this.props.type}/>
                     })}

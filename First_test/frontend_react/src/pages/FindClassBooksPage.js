@@ -20,7 +20,7 @@ import BooksList from "../components/BooksList";
 class FindClassBooksPage extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {classes: [], _class: '', years: [], year: '', books: []};
+        this.state = {classes: [], _class: '', years: [], year: '', books: [], loading: false};
     }
 
     componentDidMount() {
@@ -59,12 +59,13 @@ class FindClassBooksPage extends React.Component {
     }
 
     updateBooksList = (_className, year) => {
+        this.setState({loading: true});
         let _class = this.state.rawClasses.filter((c) => {
             return c.name == _className && c.school_year == year;
         })
         let classId = _class[0].id;
         api.request('/classes/' + classId + '/books').then(res => {
-            this.setState({books: res});
+            this.setState({books: res, loading: false});
         })
     }
 
@@ -73,7 +74,7 @@ class FindClassBooksPage extends React.Component {
             return <div style={{margin: '20px auto', width: 'fit-content'}}><CircularProgress/></div>;
         return (
             <>
-                <Typography variant="h5" style={{textAlign: 'center', marginTop: '15px'}}>
+                <Typography variant="h5" style={{textAlign: 'center', marginTop: '10px'}}>
                     Cerca i libri della tua classe!
                 </Typography>
                 <div style={{width: 'fit-content', margin: '5px auto'}}>
@@ -102,7 +103,9 @@ class FindClassBooksPage extends React.Component {
                         </Select>
                     </FormControl>
                 </div>
-                {this.state.books.length > 0 ? <BooksList books={this.state.books}/> : null}
+                {this.state.loading === true ?
+                    <div style={{margin: '30px auto', width: 'fit-content'}}><CircularProgress/>
+                    </div> : (this.state.books.length > 0 ? <BooksList books={this.state.books}/> : null)}
             </>
         );
     }

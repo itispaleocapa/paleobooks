@@ -44,7 +44,7 @@ class DemandSupplyItem extends React.Component {
         }
         return (
             <ListItem button onClick={() => window.open('mailto:' + this.state.email, "_blank")}
-                      style={{padding: '6px 8px'}}>
+                      style={{padding: '4px', height: '56px'}}>
                 <ListItemAvatar>
                     <Avatar alt={this.state.name}
                             src={"https://gravatar.com/avatar/" + this.state.emailmd5 + "?d=retro"}

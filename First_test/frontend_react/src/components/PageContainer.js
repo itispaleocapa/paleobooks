@@ -26,6 +26,7 @@ import ProfilePage from "../pages/ProfilePage";
 import FindClassBooksPage from "../pages/FindClassBooksPage";
 import FindBooksPage from "../pages/FindBooksPage";
 import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
+import AboutUsPage from "../pages/AboutUsPage";
 
 const drawerWidth = 240;
 const useStyles = makeStyles(theme => ({
@@ -113,20 +114,30 @@ function PageContainer(props) {
                     open={Boolean(anchorEl)}
                     onClose={handleClose}
                 >
-                    <MenuItem onClick={() => {handleClose(); closeDrawer();}} component={NavLink} to="/profile" >Profilo</MenuItem>
+                    <MenuItem onClick={() => {
+                        handleClose();
+                        closeDrawer();
+                    }} component={NavLink} to="/profile">Profilo</MenuItem>
                     <MenuItem onClick={handleLogout}>Logout</MenuItem>
                 </Menu>
             </div>
             <Divider variant="middle" style={{margin: '0'}}/>
             <List>
-                <ListItem button key="/" component={NavLink} exact to="/" activeClassName="Mui-selected" onClick={closeDrawer}>
+                <ListItem button key="/" component={NavLink} exact to="/" activeClassName="Mui-selected"
+                          onClick={closeDrawer}>
                     <ListItemText primary="Home"/>
                 </ListItem>
-                <ListItem button key="/books" component={NavLink} to="/books" activeClassName="Mui-selected" onClick={closeDrawer}>
+                <ListItem button key="/books" component={NavLink} to="/books" activeClassName="Mui-selected"
+                          onClick={closeDrawer}>
                     <ListItemText primary="Ricerca libri"/>
                 </ListItem>
-                <ListItem button key="/class-books" component={NavLink} to="/class-books" activeClassName="Mui-selected" onClick={closeDrawer}>
+                <ListItem button key="/class-books" component={NavLink} to="/class-books" activeClassName="Mui-selected"
+                          onClick={closeDrawer}>
                     <ListItemText primary="Ricerca libri classe"/>
+                </ListItem>
+                <ListItem button key="/about-us" component={NavLink} to="/about-us" activeClassName="Mui-selected"
+                          onClick={closeDrawer}>
+                    <ListItemText primary="About us"/>
                 </ListItem>
             </List>
         </div>
@@ -198,6 +209,9 @@ function PageContainer(props) {
                         </Route>
                         <Route path="/class-books">
                             <FindClassBooksPage/>
+                        </Route>
+                        <Route path="/about-us">
+                            <AboutUsPage/>
                         </Route>
                     </Switch>
                 </div>

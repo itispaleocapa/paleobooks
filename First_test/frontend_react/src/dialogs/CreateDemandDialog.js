@@ -96,7 +96,7 @@ class CreateDemandDialog extends React.Component {
         return (
             <>
                 <Dialog onClose={this.handleClose} aria-labelledby="customized-dialog-title" open={this.props.open}
-                        onEnter={this.loadSupplies}>
+                        onEnter={this.loadSupplies} fullScreen={window.innerWidth < 550}>
                     <DialogTitle className="dialog-title-text-ellipsis" onClose={this.handleClose}>
                         {this.props.book.title}
                     </DialogTitle>
@@ -141,7 +141,7 @@ class CreateDemandDialog extends React.Component {
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.props.handleClose} color="primary">
-                            Annulla
+                            Chiudi
                         </Button>
                         {this.state.userDemand === null ? <Button autoFocus onClick={this.createDemand} color="primary">
                             Crea annuncio
