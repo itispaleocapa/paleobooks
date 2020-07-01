@@ -9,7 +9,26 @@ use App\Models\Demand;
 use App\Models\SchoolClass;
 
 class DemandController extends Controller {
-    public function index() {
+    public function index(Request $request) {
+		$filter = $request->input('search');
+
+        // Check if user used the search form
+        if ($filter) { 
+			$demand = Demand::with(['book:id,title,isbn', 'user'])
+				->whereHas('book', function($q) use($filter) {
+					$q->where('books.title', 'like', '%' . $filter . '%');
+				})->get();
+
+            if ($demand->isEmpty()) {
+                $demand = Demand::with(['book:id,title,isbn', 'user'])
+				->whereHas('book', function($q) use($filter) {
+					$q->where('books.isbn', 'like', '%' . $filter . '%');
+				})->get();
+            }
+
+            return $demand;
+        }
+		
         return Demand::with(['book:id,title,isbn', 'user'])->get();
     }
 	

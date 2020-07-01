@@ -9,7 +9,26 @@ use App\Models\Supply;
 use App\Models\SchoolClass;
 
 class SupplyController extends Controller {
-    public function index() {
+    public function index(Request $request) {
+		$filter = $request->input('search');
+
+        // Check if user used the search form
+        if ($filter) { 
+			$supply = Supply::with(['book:id,title,isbn', 'user'])
+				->whereHas('book', function($q) use($filter) {
+					$q->where('books.title', 'like', '%' . $filter . '%');
+				})->get();
+
+            if ($supply->isEmpty()) {
+                $supply = Supply::with(['book:id,title,isbn', 'user'])
+				->whereHas('book', function($q) use($filter) {
+					$q->where('books.isbn', 'like', '%' . $filter . '%');
+				})->get();
+            }
+
+            return $supply;
+        }
+		
         return Supply::with(['book:id,title,isbn', 'user'])->get();
     }
 	
