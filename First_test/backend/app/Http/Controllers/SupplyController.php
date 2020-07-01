@@ -86,7 +86,7 @@ class SupplyController extends Controller {
         if ($request->auth->id != $supply->user_id) {
             return response()->json([
                 'error' => 'You are not authorized to edit this supply.'
-            ], 401);
+            ], 400);
         }
 
         // Check and validate the updated book
@@ -159,6 +159,12 @@ class SupplyController extends Controller {
 
         if (!$supply) {
             return response()->json([], 404);
+        }
+		
+		if ($request->auth->id != $supply->user_id) {
+            return response()->json([
+                'error' => 'You are not authorized to delete this supply.'
+            ], 400);
         }
 
         $supply->delete();

@@ -86,7 +86,7 @@ class DemandController extends Controller {
         if ($request->auth->id != $demand->user_id) {
             return response()->json([
                 'error' => 'You are not authorized to edit this demand.'
-            ], 401);
+            ], 400);
         }
 
         // Check and validate the updated book
@@ -142,6 +142,12 @@ class DemandController extends Controller {
 
         if (!$demand) {
             return response()->json([], 404);
+        }
+		
+		if ($request->auth->id != $demand->user_id) {
+            return response()->json([
+                'error' => 'You are not authorized to delete this demand.'
+            ], 400);
         }
 
         $demand->delete();
