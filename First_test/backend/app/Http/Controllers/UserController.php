@@ -16,6 +16,12 @@ class UserController extends Controller
     public function update(Request $request) {
         $user = User::find($request->auth->id);
 
+        if ($user->password === "paleoid") {
+            return response()->json([
+                'error' => 'Authentication managed by PaleoID.'
+            ], 400);
+        }
+
         // Check and validate the updated name
         $name = $request->input('name');
         if ($name) {
