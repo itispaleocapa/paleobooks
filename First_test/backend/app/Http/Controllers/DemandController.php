@@ -14,13 +14,13 @@ class DemandController extends Controller {
 
         // Check if user used the search form
         if ($filter) {
-			$demand = Demand::with(['book:id,title,isbn,price', 'user'])
+			$demand = Demand::with(['book:id,title,isbn,price,photo', 'user'])
 				->whereHas('book', function($q) use($filter) {
 					$q->where('books.title', 'like', '%' . $filter . '%');
 				})->get();
 
             if ($demand->isEmpty()) {
-                $demand = Demand::with(['book:id,title,isbn,price', 'user'])
+                $demand = Demand::with(['book:id,title,isbn,price,photo', 'user'])
 				->whereHas('book', function($q) use($filter) {
 					$q->where('books.isbn', 'like', '%' . $filter . '%');
 				})->get();
@@ -29,18 +29,18 @@ class DemandController extends Controller {
             return $demand;
         }
 
-        return Demand::with(['book:id,title,isbn,price', 'user'])->get();
+        return Demand::with(['book:id,title,isbn,price,photo', 'user'])->get();
     }
 
 	public function getUserDemands(Request $request) {
-        return Demand::with(['book:id,title,isbn,price'])->where('user_id', $request->auth->id)->get();
+        return Demand::with(['book:id,title,isbn,price,photo'])->where('user_id', $request->auth->id)->get();
     }
 
     public function show(Request $request, $id) {
 
         $demand = Demand::find($id);
 
-        return $demand ? Demand::with(['book:id,title,isbn,price', 'user'])->where('id', $id)->first() : Response()->json([], 404);
+        return $demand ? Demand::with(['book:id,title,isbn,price,photo', 'user'])->where('id', $id)->first() : Response()->json([], 404);
     }
 
     public function create(Request $request) {
