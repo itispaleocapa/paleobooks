@@ -191,7 +191,7 @@ class CreateSupplyDialog extends React.Component {
                                                     Verrà condiviso il tuo nome e l'indirizzo
                                                     email <i>{localStorage.getItem('user_email')}</i>.<br/>
                                                     Se non è corretto, modificalo dal tuo <NavLink to="/profile"
-                                                                                                   style={{color: '#0000ee'}}>profilo</NavLink>.
+                                                                                                   style={{color: '#3f51b5'}}>profilo</NavLink>.
                                                 </Typography>
                                             </> : null}
                                         </> : (this.state.userSupply === null ? <><Typography gutterBottom>
@@ -202,7 +202,7 @@ class CreateSupplyDialog extends React.Component {
                                                 Verrà condiviso il tuo nome e l'indirizzo
                                                 email <i>{localStorage.getItem('user_email')}</i>.<br/>
                                                 Se non è corretto, modificalo dal tuo <NavLink to="/profile"
-                                                                                               style={{color: '#0000ee'}}>profilo</NavLink>.
+                                                                                               style={{color: '#3f51b5'}}>profilo</NavLink>.
                                             </Typography>
                                         </> : null)}
                                     {this.state.userSupply !== null ?

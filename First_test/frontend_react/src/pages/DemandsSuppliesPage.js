@@ -110,7 +110,7 @@ class DemandsSuppliesPage extends React.Component {
                                    onChange={this.handleQueryChange} variant='outlined'/>
                     </FormControl>
                 </div>
-                {(this.state.tooShort && this.state.loading === false) ?
+                {(this.state.tooShort && this.state.loading === false && (this.state.showAllUsers !== false || this.state.items.length != this.state.itemsFiltered.length)) ?
                     <Alert severity="warning" style={{maxWidth: '500px', margin: '15px auto'}}>
                         <AlertTitle>Attenzione</AlertTitle>
                         Devi inserire almeno <strong>4 caratteri</strong> oppure il
@@ -135,12 +135,8 @@ class DemandsSuppliesPage extends React.Component {
                                     Attualmente non hai
                                     nessuna {this.props.type === 'demands' ? 'domanda' : 'offerta'}.<br/>
                                     Consulta la lista dei <NavLink to='/class-books' style={{color: '#3f51b5'}}>libri
-                                    della
-                                    tua
-                                    classe</NavLink> oppure <NavLink to='/books' style={{color: '#3f51b5'}}>cerca un
-                                    libro
-                                    per titolo
-                                    o ISBN</NavLink>.
+                                    della tua classe</NavLink> oppure <NavLink to='/books' style={{color: '#3f51b5'}}>cerca
+                                    un libro per titolo o ISBN</NavLink>.
                                 </Alert>)
                     )
                 }

@@ -10,11 +10,39 @@ import React from "react";
 import BookCard from "./BookCard";
 import DemandSupplyTableRow from "./DemandSupplyTableRow";
 import DemandSupplyCard from "./DemandSupplyCard";
+import TablePagination from "@material-ui/core/TablePagination";
 
 
 class DemandsSuppliesList extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {page: 0, rowsPerPage: 25, items: []};
+    }
+
+    componentDidMount() {
+        this.setPage(0);
+    }
+
+    handleChangePage = (e, page) => {
+        this.setPage(page);
+    }
+
+    handleChangeRowsPerPage = (e) => {
+        this.setState({rowsPerPage: parseInt(e.target.value)})
+        this.setPage(0, e.target.value);
+    }
+
+    setPage = (page, rowsPerPage = this.state.rowsPerPage) => {
+        window.scroll({top: 0, left: 0, behavior: 'smooth' });
+        this.setState({page: page});
+        let items = this.props.items.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+        let count = 0;
+        let timer = setInterval(() => {
+            if (window.scrollY < 100 || count++ >= 50) {
+                this.setState({items: items});
+                clearInterval(timer);
+            }
+        }, 50)
     }
 
     render() {
@@ -33,17 +61,32 @@ class DemandsSuppliesList extends React.Component {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {this.props.items.map((item) => (
+                            {this.state.items.map((item) => (
                                 <DemandSupplyTableRow key={item.id} item={item} type={this.props.type} refreshList={this.props.refreshList} showAllUsers={this.props.showAllUsers} />
                             ))}
                         </TableBody>
                     </Table>
                 </TableContainer>
                 <div style={{marginTop: '20px', display: 'none'}} className='book-list-card-view'>
-                    {this.props.items.map((item) => (
+                    {this.state.items.map((item) => (
                         <DemandSupplyCard key={item.id} item={item} type={this.props.type} refreshList={this.props.refreshList} showAllUsers={this.props.showAllUsers}/>
                     ))}
                 </div>
+                <TablePagination
+                    component="div"
+                    count={this.props.items.length}
+                    page={this.state.page}
+                    onChangePage={this.handleChangePage}
+                    rowsPerPage={this.state.rowsPerPage}
+                    onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                    backIconButtonText='Pagina precedente'
+                    nextIconButtonText='Pagina successiva'
+                    labelRowsPerPage='Righe'
+                    labelDisplayedRows={({from, to, count}) => {
+                        return from + "-" + to + " di " + count;
+                    }}
+                    style={{width: 'fit-content', margin: '5px auto 0'}}
+                />
             </>
         )
     }

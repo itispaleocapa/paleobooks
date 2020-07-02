@@ -14,6 +14,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import PrivateRoute from "./components/PrivateRoute";
 import HomePage from "./pages/HomePage";
 import PageContainer from "./components/PageContainer";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 
 class App extends React.Component {
     constructor() {
@@ -47,12 +48,12 @@ class App extends React.Component {
                     <Route exact path="/login">
                         {this.state.isLoggedIn
                             ? <Redirect to=""/>
-                            : <LoginPage checkLogin={this.chechLogin}/>}
+                            : <LoginPage checkLogin={this.chechLogin} />}
                     </Route>
                     <Route path={["/reset-password", "/resetpassword.html"]}>
                         {this.state.isLoggedIn
                             ? <Redirect to=""/>
-                            : <p>ciao</p>}
+                            : <ResetPasswordPage checkLogin={this.chechLogin} />}
                     </Route>
                     <PrivateRoute auth={this.state.isLoggedIn} wasInitialized={this.state.wasInitialized} exact component={() => <PageContainer checkLogin={this.chechLogin} profile={this.state.profile}/>} path="*"/>
                     <Route path="*">

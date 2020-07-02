@@ -80,6 +80,12 @@ class ProfilePage extends React.Component {
         });
     }
 
+    handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            this.handleSave();
+        }
+    }
+
     render() {
         return (
             <>
