@@ -29,19 +29,19 @@ class DemandsSuppliesList extends React.Component {
                                 <TableCell align="left">ISBN</TableCell>
                                 <TableCell align="left">Prezzo{this.props.type === 'supplies' && ' di copertina'}</TableCell>
                                 {this.props.type === 'supplies' && <TableCell align="left">Prezzo di vendita</TableCell>}
-                                <TableCell align="center">Azioni</TableCell>
+                                {this.props.showAllUsers ? <TableCell align="center">Utente</TableCell> : <TableCell align="center">Azioni</TableCell>}
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {this.props.items.map((item) => (
-                                <DemandSupplyTableRow key={item.id} item={item} type={this.props.type} refreshList={this.props.refreshList}/>
+                                <DemandSupplyTableRow key={item.id} item={item} type={this.props.type} refreshList={this.props.refreshList} showAllUsers={this.props.showAllUsers} />
                             ))}
                         </TableBody>
                     </Table>
                 </TableContainer>
                 <div style={{marginTop: '20px', display: 'none'}} className='book-list-card-view'>
                     {this.props.items.map((item) => (
-                        <DemandSupplyCard key={item.id} item={item} type={this.props.type} refreshList={this.props.refreshList}/>
+                        <DemandSupplyCard key={item.id} item={item} type={this.props.type} refreshList={this.props.refreshList} showAllUsers={this.props.showAllUsers}/>
                     ))}
                 </div>
             </>

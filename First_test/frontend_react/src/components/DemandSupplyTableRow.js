@@ -4,6 +4,7 @@ import TableRow from "@material-ui/core/TableRow";
 import React from "react";
 import CreateDemandDialog from "../dialogs/CreateDemandDialog";
 import CreateSupplyDialog from "../dialogs/CreateSupplyDialog";
+import Link from "@material-ui/core/Link";
 
 class DemandSupplyTableRow extends React.Component {
     constructor(props) {
@@ -28,11 +29,17 @@ class DemandSupplyTableRow extends React.Component {
                 <TableCell align="left">{this.props.item.book.isbn}</TableCell>
                 <TableCell align="left">€{this.props.item.book.price}</TableCell>
                 {this.props.type === 'supplies' && <TableCell align="left">€{this.props.item.price}</TableCell>}
-                <TableCell align="center">
-                    <Button variant="outlined" color="primary" style={{margin: '4px'}} onClick={this.handleOpen}>
-                        Dettagli
-                    </Button>
-                </TableCell>
+                {this.props.showAllUsers ?
+                    <TableCell align="center">
+                        {this.props.item.user.name}<br/>
+                        <Link href={'mailto:' + this.props.item.user.email} target='_blank'>{this.props.item.user.email}</Link>
+                    </TableCell> :
+                    <TableCell align="center">
+                        <Button variant="outlined" color="primary" style={{margin: '4px'}} onClick={this.handleOpen}>
+                            Dettagli
+                        </Button>
+                    </TableCell>
+                }
                 <CreateDemandDialog book={this.props.item.book} open={this.state.demandDialogOpen}
                                     handleClose={this.handeClose} type='demand'/>
                 <CreateSupplyDialog book={this.props.item.book} open={this.state.supplyDialogOpen}

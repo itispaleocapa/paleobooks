@@ -10,6 +10,7 @@ import CreateDemandDialog from "../dialogs/CreateDemandDialog";
 import CreateSupplyDialog from "../dialogs/CreateSupplyDialog";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
+import Link from "@material-ui/core/Link";
 
 class DemandSupplyCard extends React.Component {
     constructor(props) {
@@ -42,20 +43,28 @@ class DemandSupplyCard extends React.Component {
                     </Typography>
                     {this.props.type === 'supplies' ?
                         <Typography variant="body1" component="p" style={{float: 'left'}}>
-                            <span style={{textDecoration: 'line-through'}}><i>€{this.props.item.book.price}</i></span>&nbsp;
+                            <span
+                                style={{textDecoration: 'line-through'}}><i>€{this.props.item.book.price}</i></span>&nbsp;
                             <span>€{this.props.item.price}</span>
                         </Typography>
                         : <span></span>}
                     <Typography variant="body2" color="textSecondary" component="p"
-                                style={{marginTop: '2px', float: 'right'}}>
+                                style={this.props.type === 'supplies' ? {marginTop: '2px', float: 'right'} : {marginTop: '2px', textAlign: 'center'}}>
                         ISBN: {this.props.item.book.isbn}
                     </Typography>
                     <div style={{float: 'none', clear: 'both'}}/>
                 </CardContent>
                 <CardActions>
-                    <Button size="small" color="primary" style={{margin: '0 auto'}} onClick={this.handleOpen}>
-                        Dettagli
-                    </Button>
+                    {this.props.showAllUsers ?
+                        <div style={{margin: '0 auto', textAlign: 'center'}}>
+                            {this.props.item.user.name}<br/>
+                            <Link href={'mailto:' + this.props.item.user.email} target='_blank'>{this.props.item.user.email}</Link>
+                        </div>
+                        :
+                        <Button size="small" color="primary" style={{margin: '0 auto'}} onClick={this.handleOpen}>
+                            Dettagli
+                        </Button>
+                    }
                 </CardActions>
                 <CreateDemandDialog book={this.props.item.book} open={this.state.demandDialogOpen}
                                     handleClose={this.handeClose} type='demand'/>
