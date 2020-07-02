@@ -14,13 +14,13 @@ class SupplyController extends Controller {
 
         // Check if user used the search form
         if ($filter) {
-			$supply = Supply::with(['book:id,title,isbn', 'user'])
+			$supply = Supply::with(['book:id,title,isbn,price', 'user'])
 				->whereHas('book', function($q) use($filter) {
 					$q->where('books.title', 'like', '%' . $filter . '%');
 				})->get();
 
             if ($supply->isEmpty()) {
-                $supply = Supply::with(['book:id,title,isbn', 'user'])
+                $supply = Supply::with(['book:id,title,isbn,price', 'user'])
 				->whereHas('book', function($q) use($filter) {
 					$q->where('books.isbn', 'like', '%' . $filter . '%');
 				})->get();
@@ -29,17 +29,17 @@ class SupplyController extends Controller {
             return $supply;
         }
 
-        return Supply::with(['book:id,title,isbn', 'user'])->get();
+        return Supply::with(['book:id,title,isbn,price', 'user'])->get();
     }
 
 	public function getUserSupplies(Request $request) {
-        return Supply::with(['book:id,title,isbn'])->where('user_id', $request->auth->id)->get();
+        return Supply::with(['book:id,title,isbn,price'])->where('user_id', $request->auth->id)->get();
     }
 
     public function show(Request $request, $id) {
         $supply = Supply::find($id);
 
-        return $supply ? Supply::with(['book:id,title,isbn', 'user'])->where('id', $supply->id)->first() : Response()->json([], 404);
+        return $supply ? Supply::with(['book:id,title,isbn,price', 'user'])->where('id', $supply->id)->first() : Response()->json([], 404);
     }
 
     public function create(Request $request) {
