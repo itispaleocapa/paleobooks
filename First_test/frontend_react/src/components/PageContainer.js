@@ -27,6 +27,7 @@ import FindClassBooksPage from "../pages/FindClassBooksPage";
 import FindBooksPage from "../pages/FindBooksPage";
 import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
 import AboutUsPage from "../pages/AboutUsPage";
+import DemandsSuppliesPage from "../pages/DemandsSuppliesPage";
 
 const drawerWidth = 240;
 const useStyles = makeStyles(theme => ({
@@ -72,9 +73,16 @@ function PageContainer(props) {
     const theme = useTheme();
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const [profile, setProfile] = React.useState(props.profile);
 
     function handleDrawerToggle() {
         setMobileOpen(!mobileOpen)
+    }
+
+    function updateProfile() {
+        api.request('/users/profile').then((res) => {
+            setProfile(res);
+        })
     }
 
     function closeDrawer() {
@@ -98,7 +106,7 @@ function PageContainer(props) {
     const drawer = (
         <div>
             <div style={{padding: '12px'}}>
-                <ProfileInfoDrawer/>
+                <ProfileInfoDrawer profile={profile}/>
 
                 <IconButton
                     edge="start"
@@ -126,6 +134,14 @@ function PageContainer(props) {
                 <ListItem button key="/" component={NavLink} exact to="/" activeClassName="Mui-selected"
                           onClick={closeDrawer}>
                     <ListItemText primary="Home"/>
+                </ListItem>
+                <ListItem button key="/demands" component={NavLink} to="/demands" activeClassName="Mui-selected"
+                          onClick={closeDrawer}>
+                    <ListItemText primary="Domande"/>
+                </ListItem>
+                <ListItem button key="/supplies" component={NavLink} to="/supplies" activeClassName="Mui-selected"
+                          onClick={closeDrawer}>
+                    <ListItemText primary="Offerte"/>
                 </ListItem>
                 <ListItem button key="/books" component={NavLink} to="/books" activeClassName="Mui-selected"
                           onClick={closeDrawer}>
@@ -202,7 +218,13 @@ function PageContainer(props) {
                             <HomePage checkLogin={props.checkLogin}/>
                         </Route>
                         <Route path="/profile">
-                            <ProfilePage/>
+                            <ProfilePage updateProfile={updateProfile}/>
+                        </Route>
+                        <Route path="/demands">
+                            <DemandsSuppliesPage type='demands' />
+                        </Route>
+                        <Route path="/supplies">
+                            <DemandsSuppliesPage type='supplies' />
                         </Route>
                         <Route path="/books">
                             <FindBooksPage/>
@@ -212,6 +234,9 @@ function PageContainer(props) {
                         </Route>
                         <Route path="/about-us">
                             <AboutUsPage/>
+                        </Route>
+                        <Route path="*">
+                            <Redirect to=""/>
                         </Route>
                     </Switch>
                 </div>

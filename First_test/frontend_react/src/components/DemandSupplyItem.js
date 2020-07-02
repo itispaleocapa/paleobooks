@@ -40,7 +40,7 @@ class DemandSupplyItem extends React.Component {
 
     render() {
         if (this.state.loading) {
-            return <div style={{margin: '20px auto', width: 'fit-content'}}><CircularProgress/></div>
+            return <div style={{margin: '0 auto', height: '56px', width: 'fit-content'}}><CircularProgress/></div>
         }
         return (
             <ListItem button onClick={() => window.open('mailto:' + this.state.email, "_blank")}

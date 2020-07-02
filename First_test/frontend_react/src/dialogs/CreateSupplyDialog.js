@@ -30,7 +30,7 @@ import OutlinedInput from "@material-ui/core/OutlinedInput";
 class CreateSupplyDialog extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {loading: true, demands: [], userSupply: false, price: 0};
+        this.state = {loading: true, demands: [], userSupply: false, price: 0, snackBarOpen: false};
     }
 
     loadDemands = () => {
@@ -205,11 +205,23 @@ class CreateSupplyDialog extends React.Component {
                                                                                                style={{color: '#0000ee'}}>profilo</NavLink>.
                                             </Typography>
                                         </> : null)}
-                                    {this.state.userSupply !== null ? <Typography gutterBottom>
-                                        Hai già un annuncio di vendita per questo libro. Puoi modificare il prezzo di
-                                        vendita oppure se l'hai già venduto puoi cliccare sul pulsante qui sotto per
-                                        eliminarlo.
-                                    </Typography> : null}
+                                    {this.state.userSupply !== null ?
+                                        (this.props.type !== 'supply' ?
+                                            <Typography gutterBottom>
+                                                Hai già un annuncio di vendita per questo libro. Puoi modificare il
+                                                prezzo di
+                                                vendita oppure se l'hai già venduto puoi cliccare sul pulsante qui sotto
+                                                per
+                                                eliminarlo.
+                                            </Typography> :
+                                            <Typography gutterBottom>
+                                                Puoi modificare il
+                                                prezzo di
+                                                vendita oppure se {this.state.demands.length > 0 ? 'l\'hai già venduto' : 'hai già venduto il libro'} puoi cliccare sul pulsante qui sotto
+                                                per
+                                                eliminare l'annunco.
+                                            </Typography>)
+                                        : null}
                                 </>)
                         }
                         {this.state.userSupply !== false ?
@@ -229,7 +241,7 @@ class CreateSupplyDialog extends React.Component {
                         <Button onClick={this.handleClose} color="primary">
                             Chiudi
                         </Button>
-                        {this.state.userSupply === null || this.state.userSupply === false ?
+                        {(this.state.userSupply === null || this.state.userSupply === false) && this.props.type !== 'supply' ?
                             <Button autoFocus onClick={this.createSupply} color="primary">
                                 Crea annuncio
                             </Button> : (<>

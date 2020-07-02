@@ -77,7 +77,7 @@ const api = {
             api.request('/users/profile').then(res => {
                 localStorage.setItem('user_id', res.id);
                 localStorage.setItem('user_email', res.email);
-                resolve();
+                resolve(res);
             }).catch(() => {
                 reject();
             })

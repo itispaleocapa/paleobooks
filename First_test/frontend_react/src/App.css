@@ -57,3 +57,11 @@
         display: block !important;
     }
 }
+
+@media screen and (min-width: 660px) {
+    .custom-grid-item {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+}
+

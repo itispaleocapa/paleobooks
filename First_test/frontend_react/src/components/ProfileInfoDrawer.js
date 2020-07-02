@@ -7,14 +7,22 @@ import api from "../api";
 class ProfileInfoDrawer extends React.Component {
     constructor() {
         super();
-        this.state = {name: '', email: '', emailmd5: ''};
+        this.state = {emailmd5: ''};
     }
 
     componentDidMount() {
-        api.request('/users/profile').then(res => {
-            var md5 = require('md5');
-            this.setState({name: res.name, email: res.email, emailmd5: md5(res.email.toLowerCase())})
-        })
+        this.updateAvatar();
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps !== this.props) {
+            this.updateAvatar();
+        }
+    }
+
+    updateAvatar = () => {
+        var md5 = require('md5');
+        this.setState({emailmd5: md5(this.props.profile.email.toLowerCase())})
     }
 
     render() {
@@ -22,10 +30,10 @@ class ProfileInfoDrawer extends React.Component {
                 <Avatar alt={this.state.name} src={"https://gravatar.com/avatar/" + this.state.emailmd5 + "?d=retro"}
                         style={{width: '56px', height: '56px'}}/>
                 <Typography variant="subtitle1" gutterBottom style={{marginTop: '0.4rem', marginBottom: '-0.3rem'}}>
-                    {this.state.name}
+                    {this.props.profile.name}
                 </Typography>
                 <Typography variant="caption" gutterBottom>
-                    {this.state.email}
+                    {this.props.profile.email}
                 </Typography>
             </>
         );

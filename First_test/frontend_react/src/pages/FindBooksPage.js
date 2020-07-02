@@ -60,7 +60,7 @@ class FindBooksPage extends React.Component {
     render() {
         return (
             <>
-                <Typography variant="h5" style={{textAlign: 'center', marginTop: '15px'}}>
+                <Typography variant="h5" style={{textAlign: 'center', marginTop: '10px'}}>
                     Inserisci il titolo o il codice ISBN
                 </Typography>
                 <div style={{width: 'fit-content', margin: '5px auto'}}>

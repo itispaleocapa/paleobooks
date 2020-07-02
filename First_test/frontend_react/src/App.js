@@ -31,12 +31,10 @@ class App extends React.Component {
     }
 
     chechLogin = () => {
-        api.isLoggedIn().then(() => {
-            this.setState({isLoggedIn: true, wasInitialized: true});
-            console.log(true);
+        api.isLoggedIn().then((res) => {
+            this.setState({isLoggedIn: true, wasInitialized: true, profile: res});
         }).catch(() => {
             this.setState({isLoggedIn: false, wasInitialized: true});
-            console.log(false);
         });
     }
 
@@ -51,7 +49,7 @@ class App extends React.Component {
                             ? <Redirect to=""/>
                             : <LoginPage checkLogin={this.chechLogin}/>}
                     </Route>
-                    <PrivateRoute auth={this.state.isLoggedIn} wasInitialized={this.state.wasInitialized} exact component={() => <PageContainer checkLogin={this.chechLogin} />} path="*"/>
+                    <PrivateRoute auth={this.state.isLoggedIn} wasInitialized={this.state.wasInitialized} exact component={() => <PageContainer checkLogin={this.chechLogin} profile={this.state.profile}/>} path="*"/>
                     <Route path="*">
                         <Redirect to=""/>
                     </Route>

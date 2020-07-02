@@ -40,8 +40,7 @@ class CreateDemandDialog extends React.Component {
                 })
                 if (userDemands.length > 0) {
                     this.setState({userDemand: userDemands[0]});
-                }
-                else {
+                } else {
                     this.setState({userDemand: null});
                 }
                 this.setState({loading: false});
@@ -132,10 +131,24 @@ class CreateDemandDialog extends React.Component {
                                                 </Typography>
                                             </> :
                                             null)}
-                                    {this.state.userDemand !== null ? <Typography gutterBottom>
-                                        Hai già un annuncio per questo libro. Se l'hai già acquistato e non ti serve
-                                        più, clicca sul pulsante qui sotto per eliminarlo.
-                                    </Typography> : null}
+                                    {this.state.userDemand !== null ?
+                                        (this.props.type !== 'demand' ?
+                                            <Typography gutterBottom>
+                                                Hai già un annuncio per questo libro. Se l'hai già acquistato e non ti
+                                                serve
+                                                più, clicca sul pulsante qui sotto per eliminarlo.
+                                            </Typography> :
+                                            <>
+                                                {this.state.supplies.length == 0 &&
+                                                <Typography gutterBottom>
+                                                    Attualmente non c'è nessun utente che sta vendendo questo libro.
+                                                </Typography>}
+                                                <Typography gutterBottom>
+                                                    Se l'hai già acquistato clicca sul pulsante qui sotto per eliminare
+                                                    l'annuncio.
+                                                </Typography>
+                                            </>)
+                                        : null}
                                 </>)
                         }
                     </DialogContent>
@@ -143,11 +156,12 @@ class CreateDemandDialog extends React.Component {
                         <Button onClick={this.props.handleClose} color="primary">
                             Chiudi
                         </Button>
-                        {this.state.userDemand === null ? <Button autoFocus onClick={this.createDemand} color="primary">
-                            Crea annuncio
-                        </Button> : <Button autoFocus onClick={this.deleteDemand} color="secondary">
-                            Elimina annuncio
-                        </Button>}
+                        {this.state.userDemand === null && this.props.type !== 'demand' ?
+                            <Button autoFocus onClick={this.createDemand} color="primary">
+                                Crea annuncio
+                            </Button> : <Button autoFocus onClick={this.deleteDemand} color="secondary">
+                                Elimina annuncio
+                            </Button>}
                     </DialogActions>
 
                 </Dialog>
