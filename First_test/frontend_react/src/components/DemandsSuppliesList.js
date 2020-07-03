@@ -39,7 +39,7 @@ class DemandsSuppliesList extends React.Component {
     }
 
     setPage = (page, rowsPerPage = this.state.rowsPerPage, scroll = true) => {
-        if (scroll == true) {
+        if (scroll === true) {
             window.scroll({top: 0, left: 0, behavior: 'smooth' });
         }
         this.setState({page: page});
