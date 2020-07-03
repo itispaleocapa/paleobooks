@@ -23,6 +23,12 @@ class DemandsSuppliesList extends React.Component {
         this.setPage(0);
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevState.items !== this.state.items) {
+            this.setPage( this.state.page);
+        }
+    }
+
     handleChangePage = (e, page) => {
         this.setPage(page);
     }
