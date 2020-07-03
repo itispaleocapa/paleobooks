@@ -24,8 +24,8 @@ class DemandsSuppliesList extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevState.items !== this.state.items) {
-            this.setPage( this.state.page);
+        if (prevProps.items !== this.props.items) {
+            this.setPage(this.state.page, this.state.rowsPerPage, false);
         }
     }
 
@@ -38,13 +38,15 @@ class DemandsSuppliesList extends React.Component {
         this.setPage(0, e.target.value);
     }
 
-    setPage = (page, rowsPerPage = this.state.rowsPerPage) => {
-        window.scroll({top: 0, left: 0, behavior: 'smooth' });
+    setPage = (page, rowsPerPage = this.state.rowsPerPage, scroll = true) => {
+        if (scroll == true) {
+            window.scroll({top: 0, left: 0, behavior: 'smooth' });
+        }
         this.setState({page: page});
         let items = this.props.items.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
         let count = 0;
         let timer = setInterval(() => {
-            if (window.scrollY < 100 || count++ >= 50) {
+            if (window.scrollY < 100 || count++ >= 50 || scroll !== true) {
                 this.setState({items: items});
                 clearInterval(timer);
             }
