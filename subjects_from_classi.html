@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>PaleoBooks - subjects (raw JSON to SQL)</title>
+    <link rel="icon" href="./icon/160.png">
+  </head>
+  <body style="height:100%;">
+    <table>
+      <tr>
+        <td>classi_diurno.json : </td>
+        <td><input type="file" class="fileInput" name="classi_diurno" accept=".json, .txt"></td>
+      </tr>
+      <tr>
+        <td>classi_serale.json : </td>
+        <td><input type="file" class="fileInput" name="classi_serale" accept=".json, .txt"></td>
+      </tr>
+      <tr>
+        <td>table name : </td>
+        <td><input type="text" id="tableName" value="subjects"></td>
+      </tr>
+      <tr>
+        <td>fields : </td>
+        <td><textarea id="fields" rows="15" cols="20">text,name&#13;&#10;text,course&#13;&#10;number,course_year</textarea>
+          <textarea rows="15" cols="20" disabled>one field per line.&#13;&#10;(text|number),name&#13;&#10;(text|number),name&#13;&#10;(text|number),name</textarea>
+          <textarea rows="15" cols="20" disabled>valid fields:&#13;&#10;&#13;&#10;text,name&#13;&#10;text,course&#13;&#10;number,course_year</textarea></td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <button id="btn" onclick="startConversion();">CONVERT / DOWNLOAD</button>
+        </td>
+      </tr>
+    </table>
+
+    <script src="base_script.js"></script>
+    <script>
+
+      // contains all the subjects that need to be renamed 
+      let converted = [
+        {
+          from: ["italiano antologie", "italiano grammatica", "italiano letteratura"],
+          to: "italiano"
+        },
+      ];
+
+      // contains all the subjects whose course will be ignored
+      let ignoredSubjects = [
+        "biologia",
+        "chimica",
+        "diritto ed economia",
+        "fisica",
+        "geografia",
+        "inglese",
+        "italiano",
+        "matematica",
+        "religione",
+        "scienze della terra",
+        "scienze e tecnologie applicate (riordino) ",
+        "scienze motorie e sportive",
+        "storia",
+        "tecnologie e tecniche di rappresentazione grafica",
+        "tecnologie informatiche",
+      ];
+
+      // 
+      function subjectConvert(subject){
+        for(let i=0; i<converted.length; i++)
+          if( converted[i].from.includes(subject) )
+            return converted[i].to;
+
+        return subject;
+      }
+
+      //
+      function ignoreCourse(subject){
+        if( ignoredSubjects.includes(subject) )
+          return true;
+
+        return false;
+      }
+
+      //
+      function shrinkJson(){
+
+        let text = texts["classi_diurno"].substring(0, texts["classi_diurno"].length-1) + "," + texts["classi_serale"].substring(1, texts["classi_serale"].length);
+        let items;
+
+        //console.log(text);
+
+        if(!text) return;
+        try { items = JSON.parse(text);
+            } catch (e) { return; }
+
+        //console.log(items);
+
+        let keys = Object.keys(items);
+        //console.log(keys);
+        let previousName = "0I";
+
+        for(let i=0; i<keys.length; i++){
+          let name = keys[i];
+          let name1 = name.substring(0,2);
+
+          if( items[ name ] && previousName!=name1 ){
+            let item = items[name];
+
+            let previousSubject = "tral";
+
+            for(let j=0; j<item.length; j++){
+              let t = cutItem( item[j], name );
+              //console.log(i, t);
+
+              if( previousSubject != t.name ){
+                if( ignoreCourse(t.name) )
+                  t.course = null;
+
+                result.elements.push( t );
+              }
+
+              previousSubject = t.name;
+            }
+          }
+
+          previousName = name1;
+        }
+
+        let noDuplicates = removeDuplicates(result.elements);
+
+        //console.log(result.elements);
+        //console.log(noDuplicates);
+        result.elements = noDuplicates;
+        
+        
+        finalizeConversion();
+      }
+
+      // the name of these functions must match the field they get (eq. the title function, get the field: title)
+      function name(obj, _){ try{ return subjectConvert( obj.DISCIPLINA.toLowerCase() ); }catch(e){ return null; } }
+      function course(_, name){ 
+        try{
+          switch( name.substring(1,2) ){
+            case "I":
+              return "informatica";
+            case "M":
+              return "meccanica";
+            case "E":
+              return "elettronica";
+            case "T":
+              return "tessile";
+          }
+          return null;
+        }catch(e){
+          return null;
+        }
+      }
+      function course_year(_, name){ try{ return parseInt( name.substring(0,1) ); }catch(e){ return null; } }
+    </script>
+  </body>
+</html>
+
