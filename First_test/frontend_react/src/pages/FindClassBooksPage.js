@@ -27,7 +27,6 @@ class FindClassBooksPage extends React.Component {
         api.request('/classes').then(res => {
             let classes = res.map((c) => c.name);
             classes = [...new Set(classes)].sort();
-            console.log(res);
             this.setState({rawClasses: res, classes: classes});
             let userClass = localStorage.getItem('user_class');
             if (userClass.length > 0 && classes.includes(userClass)) {
