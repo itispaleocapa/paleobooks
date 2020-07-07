@@ -44,8 +44,10 @@ function sendResetpassword(url, data) {
 
 $("#password-form").submit(function (event) {
     event.preventDefault();
+	
     var url = new URL(window.location.href);
     var token = url.searchParams.get("token");
+	
     resetpassword('https://www.paleobooks.it/pbapi/public/auth/password-reset/' + token, $(this).serialize());
 });
 
