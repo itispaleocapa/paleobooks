@@ -9,8 +9,8 @@ import PageContainer from "./components/PageContainer";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 
 class App extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {error: false, isLoggedIn: null, wasInitialized: false}
     }
 
@@ -32,24 +32,39 @@ class App extends React.Component {
     }
 
     render = () => {
-        if (this.state.error === true) return <div style={{textAlign: 'center'}}><h1>Impossibile comunicare con il server</h1><h2>Riprova più tardi</h2><h4>PALEObooks</h4></div>
-        if (this.state.isLoggedIn === null) return <div style={{margin: '20px auto', width: 'fit-content'}}><CircularProgress /></div>;
+        if (this.state.error === true) {
+            return (
+                <div style={{textAlign: 'center'}}>
+                    <h1>Impossibile comunicare con il server</h1>
+                    <h2>Riprova più tardi</h2><h4>PALEObooks</h4>
+                </div>
+            );
+        } else if (this.state.isLoggedIn === null) {
+            return (
+                <div style={{margin: '20px auto', width: 'fit-content'}}>
+                    <CircularProgress/>
+                </div>
+            );
+        }
         return (
-            <BrowserRouter basename={'pbr'}>
+            <BrowserRouter basename='pbr'>
                 <Switch>
-                    <Route exact path="/login">
+                    <Route exact path='/login'>
                         {this.state.isLoggedIn
                             ? <Redirect to=""/>
-                            : <LoginPage checkLogin={this.checkLogin} />}
+                            : <LoginPage checkLogin={this.checkLogin}/>
+                        }
                     </Route>
-                    <Route path={["/reset-password", "/resetpassword.html"]}>
+                    <Route path={['/reset-password', '/resetpassword.html']}>
                         {this.state.isLoggedIn
-                            ? <Redirect to=""/>
-                            : <ResetPasswordPage checkLogin={this.checkLogin} />}
+                            ? <Redirect to=''/>
+                            : <ResetPasswordPage checkLogin={this.checkLogin}/>
+                        }
                     </Route>
-                    <PrivateRoute auth={this.state.isLoggedIn} wasInitialized={this.state.wasInitialized} exact component={() => <PageContainer checkLogin={this.checkLogin} profile={this.state.profile}/>} path="*"/>
-                    <Route path="*">
-                        <Redirect to=""/>
+                    <PrivateRoute auth={this.state.isLoggedIn} wasInitialized={this.state.wasInitialized} exact
+                                  component={() => <PageContainer checkLogin={this.checkLogin}/>} path='*'/>
+                    <Route path='*'>
+                        <Redirect to=''/>
                     </Route>
                 </Switch>
             </BrowserRouter>
