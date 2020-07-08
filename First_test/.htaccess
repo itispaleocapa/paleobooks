@@ -1,8 +1,15 @@
+RewriteRule ^$ pbr [L]
+RewriteRule ^index.html(.*) pbr/index.html$1 [L]
+
+RewriteRule ^resetpassword.html(.*) pbr/reset-password$1
+
+ErrorDocument 404 https://www.paleobooks.it/pbr/
+	
 #RewriteRule ^$ countdown/index.html
 #RewriteRule ^index.html(.*) countdown/index.html
 
-RewriteRule ^api(.*) pbapi/public$1
+#RewriteRule ^api(.*) pbapi/public$1
 
-RewriteCond %{REQUEST_URI} pbapi
-RewriteCond %{REQUEST_URI} !pbapi/public
-  RewriteRule ^pbapi(.*) pbapi/public$1
+#RewriteCond %{REQUEST_URI} pbapi
+#RewriteCond %{REQUEST_URI} !pbapi/public
+#  RewriteRule ^pbapi(.*) pbapi/public$1
