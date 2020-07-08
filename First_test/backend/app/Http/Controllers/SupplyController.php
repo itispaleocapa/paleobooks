@@ -9,18 +9,37 @@ use App\Models\Supply;
 use App\Models\SchoolClass;
 
 class SupplyController extends Controller {
-    public function index() {
-        return Supply::with(['book:id,title,isbn', 'user'])->get();
+    public function index(Request $request) {
+		$filter = $request->input('search');
+
+        // Check if user used the search form
+        if ($filter) {
+			$supply = Supply::with(['book:id,title,isbn,price,photo', 'user'])
+				->whereHas('book', function($q) use($filter) {
+					$q->where('books.title', 'like', '%' . $filter . '%');
+				})->get();
+
+            if ($supply->isEmpty()) {
+                $supply = Supply::with(['book:id,title,isbn,price,photo', 'user'])
+				->whereHas('book', function($q) use($filter) {
+					$q->where('books.isbn', 'like', '%' . $filter . '%');
+				})->get();
+            }
+
+            return $supply;
+        }
+
+        return Supply::with(['book:id,title,isbn,price,photo', 'user'])->get();
     }
-	
+
 	public function getUserSupplies(Request $request) {
-        return Supply::with(['book:id,title,isbn'])->where('user_id', $request->auth->id)->get();
+        return Supply::with(['book:id,title,isbn,price,photo'])->where('user_id', $request->auth->id)->get();
     }
 
     public function show(Request $request, $id) {
         $supply = Supply::find($id);
 
-        return $supply ? Supply::with(['book:id,title,isbn', 'user'])->where('id', $supply->id)->first() : Response()->json([], 404);
+        return $supply ? Supply::with(['book:id,title,isbn,price,photo', 'user'])->where('id', $supply->id)->first() : Response()->json([], 404);
     }
 
     public function create(Request $request) {
@@ -35,7 +54,7 @@ class SupplyController extends Controller {
             return response()->json([
                 'error' => 'Provided book doesn\'t exist.'
             ], 400);
-        } 
+        }
 
         // Check if the user already have a supply for the given book
         $supply = Supply::where('book_id', $book->id)
@@ -46,7 +65,7 @@ class SupplyController extends Controller {
             return response()->json([
                 'error' => 'You already have a supply for this book.'
             ], 400);
-        } 
+        }
 
         $request->merge(['user_id' => $request->auth->id]);
 
@@ -67,7 +86,7 @@ class SupplyController extends Controller {
         if ($request->auth->id != $supply->user_id) {
             return response()->json([
                 'error' => 'You are not authorized to edit this supply.'
-            ], 401);
+            ], 400);
         }
 
         // Check and validate the updated book
@@ -81,14 +100,14 @@ class SupplyController extends Controller {
             $check_book = Book::find($book);
             if ($check_book) {
                 $check_supply = Supply::where('book_id', $book)
-                    ->where('user_id', $request->auth->id)
+                    ->where([['user_id', '=', $request->auth->id], ['id', '!=', $supply->id]])
                     ->first();
                 // Return error 400 if exists
                 if ($check_supply) {
                     return response()->json([
                         'error' => 'You already have a supply for this book.'
                     ], 400);
-                } 
+                }
             } else {
                 return response()->json([
                     'error' => 'Provided book doesn\'t exist.'
@@ -135,11 +154,17 @@ class SupplyController extends Controller {
         ], 201);
     }
 
-    public function destroy($id) {
+    public function destroy(Request $request, $id) {
         $supply = Supply::find($id);
 
         if (!$supply) {
             return response()->json([], 404);
+        }
+
+		if ($request->auth->id != $supply->user_id) {
+            return response()->json([
+                'error' => 'You are not authorized to delete this supply.'
+            ], 400);
         }
 
         $supply->delete();

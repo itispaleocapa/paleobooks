@@ -9,19 +9,38 @@ use App\Models\Demand;
 use App\Models\SchoolClass;
 
 class DemandController extends Controller {
-    public function index() {
-        return Demand::with(['book:id,title,isbn', 'user'])->get();
+    public function index(Request $request) {
+		$filter = $request->input('search');
+
+        // Check if user used the search form
+        if ($filter) {
+			$demand = Demand::with(['book:id,title,isbn,price,photo', 'user'])
+				->whereHas('book', function($q) use($filter) {
+					$q->where('books.title', 'like', '%' . $filter . '%');
+				})->get();
+
+            if ($demand->isEmpty()) {
+                $demand = Demand::with(['book:id,title,isbn,price,photo', 'user'])
+				->whereHas('book', function($q) use($filter) {
+					$q->where('books.isbn', 'like', '%' . $filter . '%');
+				})->get();
+            }
+
+            return $demand;
+        }
+
+        return Demand::with(['book:id,title,isbn,price,photo', 'user'])->get();
     }
-	
+
 	public function getUserDemands(Request $request) {
-        return Demand::with(['book:id,title,isbn'])->where('user_id', $request->auth->id)->get();
+        return Demand::with(['book:id,title,isbn,price,photo'])->where('user_id', $request->auth->id)->get();
     }
 
     public function show(Request $request, $id) {
 
         $demand = Demand::find($id);
 
-        return $demand ? Demand::with(['book:id,title,isbn', 'user'])->where('id', $id)->first() : Response()->json([], 404);
+        return $demand ? Demand::with(['book:id,title,isbn,price,photo', 'user'])->where('id', $id)->first() : Response()->json([], 404);
     }
 
     public function create(Request $request) {
@@ -46,7 +65,7 @@ class DemandController extends Controller {
             return response()->json([
                 'error' => 'You already have a demand for this book.'
             ], 400);
-        } 
+        }
 
         $request->merge(['user_id' => $request->auth->id]);
 
@@ -67,7 +86,7 @@ class DemandController extends Controller {
         if ($request->auth->id != $demand->user_id) {
             return response()->json([
                 'error' => 'You are not authorized to edit this demand.'
-            ], 401);
+            ], 400);
         }
 
         // Check and validate the updated book
@@ -81,14 +100,14 @@ class DemandController extends Controller {
             $check_book = Book::find($book);
             if ($check_book) {
                 $check_demand = Demand::where('book_id', $book)
-                    ->where('user_id', $request->auth->id)
+                    ->where([['user_id', '=', $request->auth->id], ['id', '!=', $demand->id]])
                     ->first();
                 // Return error 400 if exists
                 if ($check_demand) {
                     return response()->json([
                         'error' => 'You already have a demand for this book.'
                     ], 400);
-                } 
+                }
             } else {
                 return response()->json([
                     'error' => 'Provided book doesn\'t exist.'
@@ -118,11 +137,17 @@ class DemandController extends Controller {
         ], 201);
     }
 
-    public function destroy($id) {
+    public function destroy(Request $request, $id) {
         $demand = Demand::find($id);
 
         if (!$demand) {
             return response()->json([], 404);
+        }
+
+		if ($request->auth->id != $demand->user_id) {
+            return response()->json([
+                'error' => 'You are not authorized to delete this demand.'
+            ], 400);
         }
 
         $demand->delete();

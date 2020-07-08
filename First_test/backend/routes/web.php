@@ -37,7 +37,7 @@ $router->group(['prefix' => 'auth'], function () use ($router) {
             );
     
             $router->post(
-                '/{reset_token}', ['uses' => 'AuthController@resetPassword']
+                '/{token}', ['uses' => 'AuthController@resetPassword']
             );
         });
     });

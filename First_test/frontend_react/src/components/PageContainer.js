@@ -19,12 +19,16 @@ import Divider from "@material-ui/core/Divider";
 import Icon from "@material-ui/core/Icon";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-import api from "./api";
+import api from "../api";
 import ProfileInfoDrawer from "./ProfileInfoDrawer";
-import HomePage from "./pages/HomePage";
-import ProfilePage from "./pages/ProfilePage";
-import FindClassBooksPage from "./pages/FindClassBooksPage";
-import FindBooksPage from "./pages/FindBooksPage";
+import HomePage from "../pages/HomePage";
+import ProfilePage from "../pages/ProfilePage";
+import FindClassBooksPage from "../pages/FindClassBooksPage";
+import FindBooksPage from "../pages/FindBooksPage";
+import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
+import AboutUsPage from "../pages/AboutUsPage";
+import DemandsSuppliesPage from "../pages/DemandsSuppliesPage";
+import Link from "@material-ui/core/Link";
 
 const drawerWidth = 240;
 const useStyles = makeStyles(theme => ({
@@ -70,9 +74,20 @@ function PageContainer(props) {
     const theme = useTheme();
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const [profile, setProfile] = React.useState(props.profile);
 
     function handleDrawerToggle() {
         setMobileOpen(!mobileOpen)
+    }
+
+    function updateProfile() {
+        api.request('/users/profile').then((res) => {
+            setProfile(res);
+        })
+    }
+
+    function closeDrawer() {
+        setMobileOpen(false);
     }
 
     const openProfileMenu = (event) => {
@@ -92,7 +107,7 @@ function PageContainer(props) {
     const drawer = (
         <div>
             <div style={{padding: '12px'}}>
-                <ProfileInfoDrawer/>
+                <ProfileInfoDrawer profile={profile}/>
 
                 <IconButton
                     edge="start"
@@ -108,20 +123,42 @@ function PageContainer(props) {
                     open={Boolean(anchorEl)}
                     onClose={handleClose}
                 >
-                    <MenuItem onClick={handleClose} component={NavLink} to="/profile" >Profilo</MenuItem>
+                    <MenuItem onClick={() => {
+                        handleClose();
+                        closeDrawer();
+                    }} component={NavLink} to="/profile">Profilo</MenuItem>
                     <MenuItem onClick={handleLogout}>Logout</MenuItem>
                 </Menu>
             </div>
             <Divider variant="middle" style={{margin: '0'}}/>
             <List>
-                <ListItem button key="/" component={NavLink} exact to="/" activeClassName="Mui-selected">
+                <ListItem button key="/" component={NavLink} exact to="/" activeClassName="Mui-selected"
+                          onClick={closeDrawer}>
                     <ListItemText primary="Home"/>
                 </ListItem>
-                <ListItem button key="/books" component={NavLink} to="/books" activeClassName="Mui-selected">
+                <ListItem button key="/demands" component={NavLink} to="/demands" activeClassName="Mui-selected"
+                          onClick={closeDrawer}>
+                    <ListItemText primary="Domande"/>
+                </ListItem>
+                <ListItem button key="/supplies" component={NavLink} to="/supplies" activeClassName="Mui-selected"
+                          onClick={closeDrawer}>
+                    <ListItemText primary="Offerte"/>
+                </ListItem>
+                <ListItem button key="/books" component={NavLink} to="/books" activeClassName="Mui-selected"
+                          onClick={closeDrawer}>
                     <ListItemText primary="Ricerca libri"/>
                 </ListItem>
-                <ListItem button key="/class-books" component={NavLink} to="/class-books" activeClassName="Mui-selected">
+                <ListItem button key="/class-books" component={NavLink} to="/class-books" activeClassName="Mui-selected"
+                          onClick={closeDrawer}>
                     <ListItemText primary="Ricerca libri classe"/>
+                </ListItem>
+                <ListItem button key="/class-books" component={NavLink} to="/old-version" activeClassName="Mui-selected"
+                          onClick={closeDrawer}>
+                    <ListItemText primary="Vecchia versione"/>
+                </ListItem>
+                <ListItem button key="/about-us" component={NavLink} to="/about-us" activeClassName="Mui-selected"
+                          onClick={closeDrawer}>
+                    <ListItemText primary="About us"/>
                 </ListItem>
             </List>
         </div>
@@ -149,10 +186,11 @@ function PageContainer(props) {
             <nav className={classes.drawer}>
                 {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
                 <Hidden mdUp implementation="css">
-                    <Drawer
+                    <SwipeableDrawer
                         variant="temporary"
                         anchor={theme.direction === 'rtl' ? 'right' : 'left'}
                         open={mobileOpen}
+                        onOpen={handleDrawerToggle}
                         onClose={handleDrawerToggle}
                         classes={{
                             paper: classes.drawerPaper,
@@ -160,9 +198,10 @@ function PageContainer(props) {
                         ModalProps={{
                             keepMounted: true,
                         }}
+                        disableBackdropTransition
                     >
                         {drawer}
-                    </Drawer>
+                    </SwipeableDrawer>
                 </Hidden>
                 <Hidden smDown implementation="css">
                     <Drawer
@@ -184,7 +223,13 @@ function PageContainer(props) {
                             <HomePage checkLogin={props.checkLogin}/>
                         </Route>
                         <Route path="/profile">
-                            <ProfilePage/>
+                            <ProfilePage updateProfile={updateProfile}/>
+                        </Route>
+                        <Route path="/demands">
+                            <DemandsSuppliesPage type='demands' />
+                        </Route>
+                        <Route path="/supplies">
+                            <DemandsSuppliesPage type='supplies' />
                         </Route>
                         <Route path="/books">
                             <FindBooksPage/>
@@ -192,9 +237,17 @@ function PageContainer(props) {
                         <Route path="/class-books">
                             <FindClassBooksPage/>
                         </Route>
-
+                        <Route path='/old-version' component={() => {
+                            window.location.href = 'https://paleobooks.it/pb';
+                            return null;
+                        }}/>
+                        <Route path="/about-us">
+                            <AboutUsPage/>
+                        </Route>
+                        <Route path="*">
+                            <Redirect to=""/>
+                        </Route>
                     </Switch>
-
                 </div>
             </div>
         </div>

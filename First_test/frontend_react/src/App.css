@@ -42,3 +42,26 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+@media screen and (max-width: 1055px) {
+    .about-us-person-box {
+        width: 135px !important;
+    }
+}
+
+@media screen and (max-width: 800px) {
+    .book-list-table-view {
+        display: none !important;
+    }
+    .book-list-card-view {
+        display: block !important;
+    }
+}
+
+@media screen and (min-width: 660px) {
+    .custom-grid-item {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+}
+

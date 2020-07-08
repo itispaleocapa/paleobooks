@@ -328,6 +328,9 @@ class AuthController extends BaseController {
             $password_reset = PasswordReset::create($request->all());
         }
 
+        // Create a valid url using the reset token
+        $reset_token = urlencode( base64_encode( $reset_token ) );
+
         $this->sendEmail($email, $reset_token);
 
         return response()->json([
@@ -341,15 +344,17 @@ class AuthController extends BaseController {
      * @param \App\User $user
      * @return mixed
      */
-    public function resetPassword(Request $request, $reset_token) {
-        if (!$reset_token) {
+    public function resetPassword(Request $request, $token) {
+        if (!$token) {
             return response()->json([
                 'error' => 'Reset token is required.'
             ], 400);
         }
 
-        $reset_token[36] = '.';
-        $reset_token[120] = '.';
+        /*$reset_token[36] = '.';
+        $reset_token[120] = '.';*/
+
+        $reset_token = base64_decode( urldecode( $token ) );
 
         $password_reset = PasswordReset::where('reset_token', $reset_token)->first();
 
@@ -393,8 +398,8 @@ class AuthController extends BaseController {
 
     public function sendEmail($email, $reset_token) {
         // Replace the '.' in token with the '_', to create a valid url using the JWT token
-        $reset_token[36] = '_';
-        $reset_token[120] = '_';
+        /*$reset_token[36] = '_';
+        $reset_token[120] = '_';*/
 
         //$reset_token = str_replace(".", "_", $reset_token);
 

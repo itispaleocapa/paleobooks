@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>PaleoBooks - temp_adoptions (raw JSON to SQL)</title>
+    <link rel="icon" href="./icon/160.png">
+  </head>
+  <body style="height:100%;">
+    <table>
+      <tr>
+        <td>1.sql : </td>
+        <td><input type="file" class="fileInput" name="1" accept=".json, .txt"></td>
+      </tr>
+      <tr>
+        <td>2.sql : </td>
+        <td><input type="file" class="fileInput" name="2" accept=".json, .txt"></td>
+      </tr>
+      <tr>
+        <td>3.sql : </td>
+        <td><input type="file" class="fileInput" name="3" accept=".json, .txt"></td>
+      </tr>
+      <tr>
+        <td>4.sql : </td>
+        <td><input type="file" class="fileInput" name="4" accept=".json, .txt"></td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <button id="btn" onclick="merge();">MERGE / DOWNLOAD</button>
+        </td>
+      </tr>
+    </table>
+
+    <script src="base_script.js"></script>
+    <script>
+
+      function merge(){
+        read();        
+      }
+      //
+      function shrinkJson(){
+
+        let text = texts["classi_diurno"].substring(0, texts["classi_diurno"].length-1) + "," + texts["classi_serale"].substring(1, texts["classi_serale"].length);
+        let items;
+
+        //console.log(text);
+
+        if(!text) return;
+        try { items = JSON.parse(text);
+            } catch (e) { return; }
+
+        //console.log(items);
+
+        let keys = Object.keys(items);
+        //console.log(keys);
+
+        for(let i=0; i<keys.length; i++){
+          let name = keys[i];
+          let classs = items[ name ];
+          console.log(classs);
+
+          if( classs ){
+            for(let j=0; j<classs.length; j++){
+              let t = cutItem( classs[j], name );
+              //console.log(i, t);
+              result.elements.push( t );
+            }
+          }
+        }
+
+        //console.log(result.elements);
+
+        finalizeConversion();
+      }
+    </script>
+  </body>
+</html>
+

@@ -5,7 +5,7 @@ const api = {
                 method: method,
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + (bearer !== null ? bearer : sessionStorage.getItem('access_token'))
+                    'Authorization': 'Bearer ' + (bearer !== null ? bearer : localStorage.getItem('access_token'))
                 },
                 body: body
             }).then(res => {
@@ -14,7 +14,7 @@ const api = {
                         res.json().then(res => {
                             if (res.error.includes('access token')) {
                                 api.request('/auth/refresh-token', 'POST', null, localStorage.getItem('refresh_token')).then((res) => {
-                                    sessionStorage.setItem('access_token', res.access_token);
+                                    localStorage.setItem('access_token', res.access_token);
                                     api.request(url, method, body).then((res) => {
                                         resolve(res);
                                     }).catch(() => {
@@ -47,7 +47,7 @@ const api = {
     login: (email, password) => {
         return new Promise((resolve, reject) => {
             api.request('/auth/login', 'POST', JSON.stringify({email: email, password: password})).then(res => {
-                sessionStorage.setItem('access_token', res.access_token);
+                localStorage.setItem('access_token', res.access_token);
                 localStorage.setItem('refresh_token', res.refresh_token);
                 localStorage.setItem('user_class', '');
                 resolve();
@@ -58,8 +58,8 @@ const api = {
     },
     loginPaleoID: (code) => {
         return new Promise((resolve, reject) => {
-            api.request('/auth/paleoid', 'POST', JSON.stringify({code: code})).then(res => {
-                sessionStorage.setItem('access_token', res.access_token);
+            api.request('/auth/paleoid', 'POST', JSON.stringify({code: code, redirect_uri: process.env.REACT_APP_PALEOID_REDIRECT_URI})).then(res => {
+                localStorage.setItem('access_token', res.access_token);
                 localStorage.setItem('refresh_token', res.refresh_token);
                 localStorage.setItem('user_class', res.class);
                 resolve();
@@ -69,7 +69,7 @@ const api = {
         });
     },
     logout: () => {
-        sessionStorage.removeItem('access_token');
+        localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token')
     },
     isLoggedIn: () => {
@@ -77,7 +77,7 @@ const api = {
             api.request('/users/profile').then(res => {
                 localStorage.setItem('user_id', res.id);
                 localStorage.setItem('user_email', res.email);
-                resolve();
+                resolve(res);
             }).catch(() => {
                 reject();
             })
