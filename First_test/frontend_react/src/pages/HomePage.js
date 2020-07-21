@@ -20,14 +20,10 @@ class HomePage extends React.Component {
     }
 
     updateCounters = () => {
-        api.request('/supplies').then((res) => {
-            this.setState({books: res.length});
-        })
-        api.request('/demands/user').then((res) => {
-            this.setState({demands: res.length});
-        })
-        api.request('/supplies/user').then((res) => {
-            this.setState({supplies: res.length});
+        api.request('/app/info').then((res) => {
+            this.setState({books: res.supplies});
+            this.setState({demands: res.user_demands});
+            this.setState({supplies: res.user_supplies});
         })
     }
 
