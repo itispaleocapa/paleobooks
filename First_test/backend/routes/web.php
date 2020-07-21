@@ -58,6 +58,9 @@ $router->group(['prefix' => 'auth'], function () use ($router) {
 $router->group(
     ['middleware' => 'jwt.auth'],
     function() use ($router) {
+        // PALEObooks app info
+        $router->get('/app/info', 'AppController@getInfo');
+
         $router->group(['prefix' => 'users'], function () use ($router) {
             $router->get('/profile', 'UserController@show');
             $router->put('/', 'UserController@update');
