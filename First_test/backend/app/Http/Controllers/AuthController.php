@@ -216,7 +216,12 @@ class AuthController extends BaseController {
             $class = $response['info_studente']['classe'];
         }
 
-        $user = User::where('matricola', $response['info_studente']['matricola'])->first();
+        if ($response['tipo'] == "studente") {
+            $user = User::where('matricola', $response['info_studente']['matricola'])->first();
+        }
+        else {
+            $user = User::where('email', $response['email'])->first();
+        }
 
         if (!$user) {
             $user = new User;
@@ -226,7 +231,7 @@ class AuthController extends BaseController {
         $user->name = $response['nome'] . " " . $response['cognome'];
 
         $userEmail = User::where('email', $response['email'])->first();
-        if ($user && $user->password !== "paleoid") {
+        if ($userEmail && $userEmail->password !== "paleoid") {
             return response()->json([
                 'error' => 'Email already exists.'
             ], 400);
