@@ -211,13 +211,15 @@ class AuthController extends BaseController {
         }*/
 
         $class = '';
+        $matricola = 0;
 
         if (isset($response['info_studente']['classe'])) {
             $class = $response['info_studente']['classe'];
         }
 
         if ($response['tipo'] == "studente") {
-            $user = User::where('matricola', $response['info_studente']['matricola'])->first();
+            $matricola = $response['info_studente']['matricola'];
+            $user = User::where('matricola', $matricola)->first();
         }
         else {
             $user = User::where('email', $response['email'])->first();
@@ -226,6 +228,7 @@ class AuthController extends BaseController {
         if (!$user) {
             $user = new User;
             $user->password = 'paleoid';
+            $user->matricola = $matricola;
         }
 
         $user->name = $response['nome'] . " " . $response['cognome'];
