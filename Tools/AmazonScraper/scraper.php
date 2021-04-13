@@ -27,8 +27,8 @@
 */
 
 require 'functions.php';
-const SCHOOL_CODES = ['diurno' => 'BGTF010003', 'serale' => 'BGTF01050C'];
 
+const SCHOOL_CODES = ['diurno' => 'BGTF010003', 'serale' => 'BGTF01050C'];
 const ALS_HOST = 'https://www.adozionilibriscolastici.it/v1';
 
 if (PHP_SAPI !== 'cli') {
