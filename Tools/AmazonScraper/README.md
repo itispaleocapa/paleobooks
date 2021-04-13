@@ -24,5 +24,5 @@ php scraper.php
 ```
 And follow the on-screen instructions.
 
-### Sample output
-In the `sample` directory there are the output files of the school years 2019/2020 and 2020/2021.
+### Samples outputs
+In the `samples` directory there are the output files of the school years 2019/2020 and 2020/2021.
