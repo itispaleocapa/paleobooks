@@ -29,10 +29,10 @@ class ProfileInfoDrawer extends React.Component {
         return (<>
                 <Avatar alt={this.state.name} src={"https://gravatar.com/avatar/" + this.state.emailmd5 + "?d=retro"}
                         style={{width: '56px', height: '56px'}}/>
-                <Typography variant="subtitle1" gutterBottom style={{marginTop: '0.4rem', marginBottom: '-0.3rem'}}>
+                <Typography variant="subtitle1" gutterBottom style={{marginTop: '0.4rem', marginBottom: '-0.3rem', overflow: 'hidden', textOverflow: 'ellipsis'}}>
                     {this.props.profile.name}
                 </Typography>
-                <Typography variant="caption" gutterBottom>
+                <Typography variant="caption" gutterBottom style={{display: 'inline-block', overflow: 'hidden', maxWidth: '88%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginBottom: '-6px'}}>
                     {this.props.profile.email}
                 </Typography>
             </>
