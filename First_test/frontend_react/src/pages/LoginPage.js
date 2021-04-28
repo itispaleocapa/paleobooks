@@ -186,13 +186,13 @@ class LoginPage extends React.Component {
                                 <LinearProgress style={{margin: '8px'}}/> :
                                 <div style={{marginTop: '20px'}}/>
                             }
-                            <div style={{width: 'fit-content', margin: '0px auto 10px'}}>
+                            <div style={{textAlign: 'center', margin: '0px auto 10px'}}>
                                 <Button variant="contained" style={{marginRight: '4px'}}
                                         onClick={this.handleLogin}>Accedi</Button>
                                 <Button variant="contained" style={{marginLeft: '4px'}}
                                         onClick={this.handleRegistrationBtn}>Registrati</Button>
                             </div>
-                            <div style={{width: 'fit-content', margin: '20px auto 0px'}}>
+                            <div style={{textAlign: 'center', margin: '20px auto 0px'}}>
                                 <Button variant="contained" color="primary" href={this.state.paleoIdUrl}>
                                     Accedi con PaleoID
                                 </Button>

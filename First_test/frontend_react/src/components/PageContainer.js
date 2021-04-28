@@ -152,10 +152,6 @@ function PageContainer(props) {
                           onClick={closeDrawer}>
                     <ListItemText primary="Ricerca libri classe"/>
                 </ListItem>
-                <ListItem button key="/class-books" component={NavLink} to="/old-version" activeClassName="Mui-selected"
-                          onClick={closeDrawer}>
-                    <ListItemText primary="Vecchia versione"/>
-                </ListItem>
                 <ListItem button key="/about-us" component={NavLink} to="/about-us" activeClassName="Mui-selected"
                           onClick={closeDrawer}>
                     <ListItemText primary="About us"/>
@@ -237,10 +233,6 @@ function PageContainer(props) {
                         <Route path="/class-books">
                             <FindClassBooksPage/>
                         </Route>
-                        <Route path='/old-version' component={() => {
-                            window.location.href = 'https://paleobooks.it/pb';
-                            return null;
-                        }}/>
                         <Route path="/about-us">
                             <AboutUsPage/>
                         </Route>
