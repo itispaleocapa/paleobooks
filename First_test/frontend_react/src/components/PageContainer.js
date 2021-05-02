@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
@@ -9,12 +8,10 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import MenuIcon from '@material-ui/icons/Menu';
-import CloseIcon from '@material-ui/icons/Close';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
-import {BrowserRouter, NavLink, Redirect, Route, Switch} from "react-router-dom";
-import Avatar from "@material-ui/core/Avatar";
+import {NavLink, Redirect, Route, Switch} from "react-router-dom";
 import Divider from "@material-ui/core/Divider";
 import Icon from "@material-ui/core/Icon";
 import Menu from "@material-ui/core/Menu";
@@ -28,7 +25,6 @@ import FindBooksPage from "../pages/FindBooksPage";
 import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
 import AboutUsPage from "../pages/AboutUsPage";
 import DemandsSuppliesPage from "../pages/DemandsSuppliesPage";
-import Link from "@material-ui/core/Link";
 
 const drawerWidth = 240;
 const useStyles = makeStyles(theme => ({
@@ -69,7 +65,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function PageContainer(props) {
-    const dummyCategories = ['Hokusai', 'Hiroshige', 'Utamaro', 'Kuniyoshi', 'Yoshitoshi']
     const classes = useStyles();
     const theme = useTheme();
     const [mobileOpen, setMobileOpen] = React.useState(false);

@@ -6,15 +6,6 @@ import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import TableContainer from "@material-ui/core/TableContainer";
-import Table from "@material-ui/core/Table";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
-import TableBody from "@material-ui/core/TableBody";
-import Paper from "@material-ui/core/Paper";
-import Button from "@material-ui/core/Button";
-import BookTableRow from "../components/BookTableRow";
 import BooksList from "../components/BooksList";
 
 class FindClassBooksPage extends React.Component {
@@ -49,7 +40,7 @@ class FindClassBooksPage extends React.Component {
     updateYears = (_className) => {
         if (this.state.rawClasses == null) return;
         let years = this.state.rawClasses.filter((c) => {
-            return c.name == _className;
+            return c.name === _className;
         }).map((c) => {
             return c.school_year;
         })
@@ -60,7 +51,7 @@ class FindClassBooksPage extends React.Component {
     updateBooksList = (_className, year) => {
         this.setState({loading: true});
         let _class = this.state.rawClasses.filter((c) => {
-            return c.name == _className && c.school_year == year;
+            return c.name === _className && c.school_year === year;
         })
         let classId = _class[0].id;
         api.request('/classes/' + classId + '/books').then(res => {
@@ -69,7 +60,7 @@ class FindClassBooksPage extends React.Component {
     }
 
     render() {
-        if (this.state.classes.length == 0)
+        if (this.state.classes.length === 0)
             return <div style={{margin: '20px auto', width: 'fit-content'}}><CircularProgress/></div>;
         return (
             <>

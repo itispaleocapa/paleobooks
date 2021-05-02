@@ -2,10 +2,8 @@ import React from "react";
 import Typography from "@material-ui/core/Typography";
 import api from "../api";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import BooksList from "../components/BooksList";
 import DemandsSuppliesList from "../components/DemandsSuppliesList";
 import Alert from "@material-ui/lab/Alert";
-import Link from "@material-ui/core/Link";
 import {NavLink} from "react-router-dom";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
@@ -24,7 +22,7 @@ class DemandsSuppliesPage extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (this.props.type != prevProps.type) {
+        if (this.props.type !== prevProps.type) {
             this.getItems(true);
         }
     }
@@ -45,13 +43,13 @@ class DemandsSuppliesPage extends React.Component {
 
     handleQueryChange = (e) => {
         let query = e.target.value;
-        if (query.length == 0) {
+        if (query.length === 0) {
             clearTimeout(this.state.timer);
             this.setState({itemsFiltered: this.state.items, loading: false, query: query, tooShort: false})
             return;
         }
         this.setState({loading: true, query: query});
-        if (query.length < 4 || (query.substr(0, 4) == '9788' && query.length != 13)) {
+        if (query.length < 4 || (query.substr(0, 4) === '9788' && query.length !== 13)) {
             clearTimeout(this.state.timer);
             this.setState({
                 timer: setTimeout(() => {
@@ -76,7 +74,7 @@ class DemandsSuppliesPage extends React.Component {
             })
         } else {
             let books = this.state.items.filter((b) => {
-                return b.book.title.toLowerCase().includes(query.toLowerCase()) || b.book.isbn == query;
+                return b.book.title.toLowerCase().includes(query.toLowerCase()) || b.book.isbn === query;
             })
             this.setState({itemsFiltered: books, loading: false})
         }
@@ -110,27 +108,27 @@ class DemandsSuppliesPage extends React.Component {
                                    onChange={this.handleQueryChange} variant='outlined'/>
                     </FormControl>
                 </div>
-                {(this.state.tooShort && this.state.loading === false && (this.state.showAllUsers !== false || this.state.items.length != this.state.itemsFiltered.length)) ?
+                {(this.state.tooShort && this.state.loading === false && (this.state.showAllUsers !== false || this.state.items.length !== this.state.itemsFiltered.length)) ?
                     <Alert severity="warning" style={{maxWidth: '500px', margin: '15px auto'}}>
                         <AlertTitle>Attenzione</AlertTitle>
                         Devi inserire almeno <strong>4 caratteri</strong> oppure il
                         codice <strong>ISBN</strong> completo!
-                    </Alert> : ((this.state.itemsFiltered.length == 0 && this.state.loading === false && (this.state.showAllUsers !== false || this.state.items.length != this.state.itemsFiltered.length)) ?
+                    </Alert> : ((this.state.itemsFiltered.length === 0 && this.state.loading === false && (this.state.showAllUsers !== false || this.state.items.length !== this.state.itemsFiltered.length)) ?
                         <Alert severity="error" style={{maxWidth: '300px', margin: '15px auto'}}>
                             <AlertTitle>Attenzione</AlertTitle>
                             Nessun libro trovato.
-                        </Alert> : (this.state.loading === false && this.state.showAllUsers !== false && this.state.items.length != this.state.itemsFiltered.length &&
+                        </Alert> : (this.state.loading === false && this.state.showAllUsers !== false && this.state.items.length !== this.state.itemsFiltered.length &&
                             <Alert severity="info" style={{maxWidth: '300px', margin: '15px auto'}}>
-                                {this.state.itemsFiltered.length == 1 ? 'È stato trovato' : 'Sono stati trovati'}
+                                {this.state.itemsFiltered.length === 1 ? 'È stato trovato' : 'Sono stati trovati'}
                                 &nbsp;
-                                <strong>{this.state.itemsFiltered.length}</strong> libr{this.state.itemsFiltered.length == 1 ? 'o' : 'i'}.
+                                <strong>{this.state.itemsFiltered.length}</strong> libr{this.state.itemsFiltered.length === 1 ? 'o' : 'i'}.
                             </Alert>))}
                 {this.state.loading === true ?
                     <div style={{margin: '30px auto', width: 'fit-content'}}><CircularProgress/></div> :
                     ((this.state.itemsFiltered.length > 0) ?
                             <DemandsSuppliesList items={this.state.itemsFiltered} type={this.props.type}
                                                  refreshList={this.getItems} showAllUsers={this.state.showAllUsers}/> :
-                            (this.state.showAllUsers === false && this.state.items.length == 0 &&
+                            (this.state.showAllUsers === false && this.state.items.length === 0 &&
                                 <Alert severity="info" style={{maxWidth: '600px', margin: '15px auto'}}>
                                     Attualmente non hai
                                     nessuna {this.props.type === 'demands' ? 'domanda' : 'offerta'}.<br/>

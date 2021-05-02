@@ -11,10 +11,6 @@ import BookCard from "./BookCard";
 
 
 class BooksList extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         return (
             <>

@@ -42,7 +42,7 @@ class HomePage extends React.Component {
                     width: 'fit-content',
                     textAlign: 'center'
                 }}>
-                    <img src="https://i.imgur.com/jMTzBKa.png"
+                    <img src="https://i.imgur.com/jMTzBKa.png" alt="logo"
                          style={{width: '200px', maxWidth: '100%', margin: '5px auto', display: 'block'}}/>
                 </Paper>
                 <Grid container style={{maxWidth: '1200px', width: 'initial', margin: '0 auto'}}>

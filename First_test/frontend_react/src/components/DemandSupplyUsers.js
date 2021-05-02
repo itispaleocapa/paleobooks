@@ -5,18 +5,14 @@ import DemandSupplyItem from "./DemandSupplyItem";
 
 
 class DemandSupplyUsers extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         return (
             <>
                 <Typography gutterBottom>
-                    {this.props.users.length == 1 ? <>C'è <b>1</b> utente che {this.props.type == 'supply' ? 'sta' : 'vuole'}</> : <>Ci
-                        sono <b>{this.props.users.length}</b> utenti che {this.props.type == 'supply' ? 'stanno' : 'vogliono'}</>}
-                    &nbsp;{this.props.type == 'supply' ? 'vendendo' : 'acquistare'} questo libro,
-                    contattal{this.props.users.length == 1 ? 'o' : 'i'} se sei interessato.
+                    {this.props.users.length === 1 ? <>C'è <b>1</b> utente che {this.props.type === 'supply' ? 'sta' : 'vuole'}</> : <>Ci
+                        sono <b>{this.props.users.length}</b> utenti che {this.props.type === 'supply' ? 'stanno' : 'vogliono'}</>}
+                    &nbsp;{this.props.type === 'supply' ? 'vendendo' : 'acquistare'} questo libro,
+                    contattal{this.props.users.length === 1 ? 'o' : 'i'} se sei interessato.
                 </Typography>
                 <List style={{margin: '-12px 0'}}>
                     {this.props.users.map(i => {

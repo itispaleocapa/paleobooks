@@ -72,7 +72,7 @@ class AboutUsPage extends React.Component {
                 </Typography>
                 <Paper style={{margin: '10px auto', padding: '15px', maxWidth: '1000px', textAlign: 'center'}}>
                     <Typography variant="subtitle1" gutterBottom>
-                        <img src="https://i.imgur.com/jMTzBKa.png" style={{width: '30%', maxWidth: '120px', margin: '5px auto', display: 'block'}}/>
+                        <img src="https://i.imgur.com/jMTzBKa.png" alt="logo" style={{width: '30%', maxWidth: '120px', margin: '5px auto', display: 'block'}}/>
                         <b>PALEObooks</b> è un'applicazione per lo scambio dei libri usati sviluppata dagli studenti
                         di <b>EsperiaDev</b> dell'<Link href="https://itispaleocapa.edu.it" target="_blank">ITIS P.
                         Paleocapa</Link> di Bergamo in collaborazione con l'<Link href="https://www.agesp.eu/"

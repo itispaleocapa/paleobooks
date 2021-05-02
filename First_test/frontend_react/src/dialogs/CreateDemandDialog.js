@@ -7,14 +7,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import api from "../api";
-import Link from "@material-ui/core/Link";
 import {NavLink} from "react-router-dom";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import Avatar from "@material-ui/core/Avatar";
-import ListItemText from "@material-ui/core/ListItemText";
-import DemandSupplyItem from "../components/DemandSupplyItem";
 import Divider from "@material-ui/core/Divider";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from '@material-ui/lab/Alert';
@@ -31,12 +24,12 @@ class CreateDemandDialog extends React.Component {
         api.request('/books/' + this.props.book.id + '/supplies').then((res) => {
             this.setState({
                 supplies: res.filter((s) => {
-                    return s.user_id != localStorage.getItem('user_id');
+                    return s.user_id !== parseInt(localStorage.getItem('user_id'));
                 })
             })
             api.request('/books/' + this.props.book.id + '/demands').then((res) => {
                 let userDemands = res.filter((s) => {
-                    return s.user_id == localStorage.getItem('user_id');
+                    return s.user_id === parseInt(localStorage.getItem('user_id'));
                 })
                 if (userDemands.length > 0) {
                     this.setState({userDemand: userDemands[0]});
@@ -57,7 +50,7 @@ class CreateDemandDialog extends React.Component {
             });
             this.props.handleClose();
         }).catch((res) => {
-            if (res.error == "You already have a demand for this book.") {
+            if (res.error === "You already have a demand for this book.") {
                 res.error = "Hai già un annuncio per questo libro."
             }
             this.setState({snackBarOpen: true, snackBarSeverity: 'error', snackBarMessage: res.error});
@@ -139,7 +132,7 @@ class CreateDemandDialog extends React.Component {
                                                 più, clicca sul pulsante qui sotto per eliminarlo.
                                             </Typography> :
                                             <>
-                                                {this.state.supplies.length == 0 &&
+                                                {this.state.supplies.length === 0 &&
                                                 <Typography gutterBottom>
                                                     Attualmente non c'è nessun utente che sta vendendo questo libro.
                                                 </Typography>}

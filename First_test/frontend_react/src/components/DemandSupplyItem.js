@@ -13,7 +13,7 @@ class DemandSupplyItem extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.type == 'supply') {
+        if (this.props.type === 'supply') {
             api.request('/supplies/' + this.props.id).then((res) => {
                 var md5 = require('md5');
                 this.setState({
@@ -24,7 +24,7 @@ class DemandSupplyItem extends React.Component {
                     price: res.price
                 })
             })
-        } else if (this.props.type == 'demand') {
+        } else if (this.props.type === 'demand') {
             api.request('/demands/' + this.props.id).then((res) => {
                 var md5 = require('md5');
                 this.setState({

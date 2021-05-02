@@ -30,7 +30,7 @@ class BookTableRow extends React.Component {
     render() {
         return (
             <TableRow key={this.props.book.id}>
-                <TableCell align="center"><img src={this.props.book.photo} height='100px'/></TableCell>
+                <TableCell align="center"><img src={this.props.book.photo} height='100px' alt='book cover'/></TableCell>
                 <TableCell align="left">{this.props.book.title}</TableCell>
                 <TableCell align="left">{this.props.book.isbn}</TableCell>
                 <TableCell align="left">€{this.props.book.price}</TableCell>

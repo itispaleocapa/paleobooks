@@ -1,13 +1,8 @@
 import React from "react";
 import Avatar from "@material-ui/core/Avatar";
-import Link from "@material-ui/core/Link";
 import Typography from "@material-ui/core/Typography";
 
 class AboutUsPerson extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         return (
             <div style={{display: 'inline-block', width: '165px', margin: '12px'}} className='about-us-person-box'>

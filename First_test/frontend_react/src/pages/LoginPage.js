@@ -86,12 +86,12 @@ class LoginPage extends React.Component {
                 dialogOpen: true
             });
         }).catch((res) => {
-            if (res.email && res.email[0] == 'The email field is required.') {
+            if (res.email && res.email[0] === 'The email field is required.') {
                 res.error = 'Indirozzo email non valido.';
             }
-            else if (res.error == 'Email does not exist.') {
+            else if (res.error === 'Email does not exist.') {
                 res.error = 'Indirizzo email inesistente.';
-            } else if (res.error == 'Authentication managed by PaleoID.') {
+            } else if (res.error === 'Authentication managed by PaleoID.') {
                 res.error = 'L\'autenticazione di questo account è gestita da PaleoID.';
             }
             this.setState({dialogTitle: 'Errore', dialogContent: res.error, dialogOpen: true});
@@ -117,18 +117,18 @@ class LoginPage extends React.Component {
             this.registrationDialogHandleClose();
             this.handleLogin();
         }).catch((res) => {
-            if (res.name && res.name[0] == 'The name field is required.') {
+            if (res.name && res.name[0] === 'The name field is required.') {
                 res.error = 'Il campo nome è obbligatorio.';
             }
-            else if (res.email && (res.email[0] == 'The email field is required.' || res.email[0] == 'The email must be a valid email address.')) {
+            else if (res.email && (res.email[0] === 'The email field is required.' || res.email[0] === 'The email must be a valid email address.')) {
                 res.error = 'Indirizzo email non valido.';
             }
-            else if (res.password && res.password[0] == 'The password field is required.') {
+            else if (res.password && res.password[0] === 'The password field is required.') {
                 res.error = 'La password è obbligatoria';
             }
-            else if (res.error == 'Email does not exist.') {
+            else if (res.error === 'Email does not exist.') {
                 res.error = 'Indirizzo email inesistente.';
-            } else if (res.error == 'Authentication managed by PaleoID.') {
+            } else if (res.error === 'Authentication managed by PaleoID.') {
                 res.error = 'L\'autenticazione di questo account è gestita da PaleoID.';
             }
             this.setState({dialogTitle: 'Errore', dialogContent: res.error, dialogOpen: true});
@@ -163,7 +163,7 @@ class LoginPage extends React.Component {
                     </Toolbar>
                 </AppBar>
                 <Container style={{alignItems: 'center', marginTop: '10px'}}>
-                    <img src="https://i.imgur.com/jMTzBKa.png"
+                    <img src="https://i.imgur.com/jMTzBKa.png" alt="logo"
                          style={{width: '30%', maxWidth: '175px', margin: '15px auto', display: 'block'}}/>
                     <Paper style={{maxWidth: '500px', padding: '15px', margin: '0 auto'}}>
                         <form noValidate autoComplete="off">

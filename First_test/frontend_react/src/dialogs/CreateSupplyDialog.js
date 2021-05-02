@@ -7,23 +7,14 @@ import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import api from "../api";
-import Link from "@material-ui/core/Link";
 import {NavLink} from "react-router-dom";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import Avatar from "@material-ui/core/Avatar";
-import ListItemText from "@material-ui/core/ListItemText";
-import DemandSupplyItem from "../components/DemandSupplyItem";
 import Divider from "@material-ui/core/Divider";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from '@material-ui/lab/Alert';
 import DemandSupplyUsers from "../components/DemandSupplyUsers";
-import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
-import Input from "@material-ui/core/Input";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 
 
@@ -37,12 +28,12 @@ class CreateSupplyDialog extends React.Component {
         api.request('/books/' + this.props.book.id + '/demands').then((res) => {
             this.setState({
                 demands: res.filter((s) => {
-                    return s.user_id != localStorage.getItem('user_id');
+                    return s.user_id !== parseInt(localStorage.getItem('user_id'));
                 })
             });
             api.request('/books/' + this.props.book.id + '/supplies').then((res) => {
                 let userSupplies = res.filter((s) => {
-                    return s.user_id == localStorage.getItem('user_id');
+                    return s.user_id === parseInt(localStorage.getItem('user_id'));
                 })
                 if (userSupplies.length > 0) {
                     this.setState({userSupply: userSupplies[0]});
@@ -83,7 +74,7 @@ class CreateSupplyDialog extends React.Component {
             this.handleClose();
             this.loadDemands();
         }).catch((res) => {
-            if (res.error == "You already have a supply for this book.") {
+            if (res.error === "You already have a supply for this book.") {
                 res.error = "Hai già un annuncio di vendita per questo libro."
             }
             this.setState({snackBarOpen: true, snackBarSeverity: 'error', snackBarMessage: res.error});

@@ -70,10 +70,10 @@ class ProfilePage extends React.Component {
             });
             this.updateProfile();
         }).catch((res) => {
-            if (res.error == 'Email already exists.') {
+            if (res.error === 'Email already exists.') {
                 res.error = 'Indirizzo email già utilizzato'
             }
-            else if (res.error == 'Nothing to update.') {
+            else if (res.error === 'Nothing to update.') {
                 res.error = 'Profilo già salvato'
             }
             this.setState({snackBarOpen: true, snackBarSeverity: 'error', snackBarMessage: res.error});

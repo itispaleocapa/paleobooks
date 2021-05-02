@@ -24,7 +24,7 @@ class DemandSupplyTableRow extends React.Component {
     render() {
         return (
             <TableRow key={this.props.item.book.id}>
-                <TableCell align="center"><img src={this.props.item.book.photo} height='100px'/></TableCell>
+                <TableCell align="center"><img src={this.props.item.book.photo} height='100px' alt='book cover'/></TableCell>
                 <TableCell align="left">{this.props.item.book.title}</TableCell>
                 <TableCell align="left">{this.props.item.book.isbn}</TableCell>
                 <TableCell align="left">€{this.props.item.book.price}</TableCell>

@@ -15,7 +15,6 @@ import AppBar from "@material-ui/core/AppBar";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import {Redirect, withRouter} from 'react-router-dom'
 import queryString from 'query-string'
-import Link from "@material-ui/core/Link";
 
 class ResetPasswordPage extends React.Component {
     constructor(props) {
@@ -61,11 +60,11 @@ class ResetPasswordPage extends React.Component {
             });
         }).catch((res) => {
             if (res) {
-                if (res.error == 'Reset token is required.') {
+                if (res.error === 'Reset token is required.') {
                     res.error = 'URL non valido.';
-                } else if (res.error == 'This request is not valid.') {
+                } else if (res.error === 'This request is not valid.') {
                     res.error = 'Richiesta non valida';
-                } else if (res.error == 'Authentication managed by PaleoID.') {
+                } else if (res.error === 'Authentication managed by PaleoID.') {
                     res.error = 'L\'autenticazione di questo account è gestita da PaleoID.';
                 }
                 this.setState({dialogTitle: 'Errore', dialogContent: res.error, dialogOpen: true});
@@ -100,7 +99,7 @@ class ResetPasswordPage extends React.Component {
                     </Toolbar>
                 </AppBar>
                 <Container style={{alignItems: 'center', marginTop: '10px'}}>
-                    <img src="https://i.imgur.com/jMTzBKa.png"
+                    <img src="https://i.imgur.com/jMTzBKa.png" alt="logo"
                          style={{width: '30%', maxWidth: '175px', margin: '15px auto', display: 'block'}}/>
                     <Paper style={{maxWidth: '500px', padding: '15px', margin: '0 auto'}}>
                         <form noValidate autoComplete="off">
