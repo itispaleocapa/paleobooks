@@ -16,11 +16,10 @@ class GuestMiddleware
         if (!$access_token && !$refresh_token) {
             $access_token = $request->get('access_token');
             $refresh_token = $request->get('refresh_token');
-        } else {
-            return response()->json([
-                'error' => 'You are already logged in.'
-            ], 403);
         }
+
+        $access_token = $access_token === 'null' ? null : $access_token;
+        $refresh_token = $refresh_token === 'null' ? null : $refresh_token;
 
         if ($access_token || $refresh_token) {
             return response()->json([
