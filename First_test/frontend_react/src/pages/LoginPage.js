@@ -160,6 +160,9 @@ class LoginPage extends React.Component {
                         <Typography variant="h6">
                             PALEObooks
                         </Typography>
+                        <Typography variant="h6">
+                            Testing in progress
+                        </Typography>
                     </Toolbar>
                 </AppBar>
                 <Container style={{alignItems: 'center', marginTop: '10px'}}>
