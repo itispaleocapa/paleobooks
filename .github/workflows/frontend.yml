@@ -41,6 +41,6 @@ jobs:
         host: ${{ secrets.FTP_HOST }}
         user: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        remoteDir: pbr/
+        remoteDir: www.paleobooks.it/pbr/
         localDir: First_test/frontend_react/build/
         options: "-v --delete"
