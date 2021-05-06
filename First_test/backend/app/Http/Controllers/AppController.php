@@ -18,8 +18,8 @@ class AppController extends Controller {
         $user_demands = Demand::where('user_id', $user->id)->count();
 
         return response()->json([
-            'supplies' => $supplies * 10,
-            'demands' => 123456,
+            'supplies' => $supplies,
+            'demands' => $demands,
             'user_supplies' => $user_supplies,
             'user_demands' => $user_demands,
         ], 200);
