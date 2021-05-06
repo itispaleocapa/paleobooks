@@ -31,10 +31,10 @@ jobs:
       run: npm run build
       # run: CI=false npm run build  # decomment this line and comment the previous one to ignore build warnings
       working-directory: First_test/frontend_react/
-    - name: Sleep for 2 minutes
-      uses: jakejarvis/wait-action@master
-      with:
-        time: '2m'
+    #- name: Sleep for 2 minutes
+    #  uses: jakejarvis/wait-action@master
+    #  with:
+    #    time: '2m'
     - name: FTP publish
       uses: sebastianpopp/ftp-action@releases/v2
       with:

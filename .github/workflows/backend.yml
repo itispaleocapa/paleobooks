@@ -33,10 +33,10 @@ jobs:
       with:
           php_version: 7.4
           working_dir: First_test/backend/
-    - name: Sleep for 2 minutes
-      uses: jakejarvis/wait-action@master
-      with:
-        time: '2m'
+    #- name: Sleep for 2 minutes
+    #  uses: jakejarvis/wait-action@master
+    #  with:
+    #    time: '2m'
     - name: FTP publish
       uses: sebastianpopp/ftp-action@releases/v2
       with:
