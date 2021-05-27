@@ -46,3 +46,7 @@ jobs:
         remoteDir: www.paleobooks.it/pbapi/
         localDir: First_test/backend/
         options: "-v --delete -x ^.env ${{ (env.UPDATE_COMPOSER == 'false') && '-x ^vendor/' || '' }}"
+    - name: Update database
+      uses: wei/curl@master
+      with:
+        args: "https://www.paleobooks.it/pbapi/public/database/update?token=${{ secrets.MIGRATION_TOKEN }}"
