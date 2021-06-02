@@ -16,6 +16,7 @@ function getJson($url, $attempt = 1) {
     curl_setopt($ch, CURLOPT_ENCODING, 'gzip, deflate');
     curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
     curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
     $result = curl_exec($ch);
 
