@@ -45,6 +45,19 @@ class HomePage extends React.Component {
                     <img src="https://i.imgur.com/jMTzBKa.png" alt="logo"
                          style={{width: '200px', maxWidth: '100%', margin: '5px auto', display: 'block'}}/>
                 </Paper>
+                <Paper elevation={2} style={{
+                    width: 'fit-content',
+                    margin: '0 auto',
+                    marginTop: '15px',
+                    textAlign:'center',
+                    color:'red',
+                    backgroundColor: 'white',
+                    padding:'7px',
+                    fontSize:'22px',
+                }}>
+                    <span style={{fontSize:'30px'}}> ATTENZIONE!</span><br/>
+                    <span>Nei prossimi giorni, appena disponibili, caricheremo le classi per l'anno scolastico 2021-22 e le nuove adozioni dei libri di testo.</span>
+                </Paper>
                 <Grid container style={{maxWidth: '1200px', width: 'initial', margin: '0 auto'}}>
                     <Grid item xs={12} sm={4} style={{marginTop: '15px'}} className='custom-grid-item'>
                         <Paper elevation={2} style={{padding: '10px', textAlign: 'center'}}>
