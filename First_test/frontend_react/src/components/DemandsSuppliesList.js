@@ -63,7 +63,7 @@ class DemandsSuppliesList extends React.Component {
                                 <TableCell align="left">ISBN</TableCell>
                                 <TableCell align="left">Prezzo{this.props.type === 'supplies' && ' di copertina'}</TableCell>
                                 {this.props.type === 'supplies' && <TableCell align="left">Prezzo di vendita</TableCell>}
-                                {this.props.showAllUsers ? <TableCell align="center">Utente</TableCell> : <TableCell align="center">Azioni</TableCell>}
+                                {this.props.showAllUsers ? <> {this.props.type === 'supplies'? <> <TableCell align="center">Utente</TableCell> <TableCell align="center">Azioni</TableCell></>: <TableCell align="center">Utente</TableCell>} </> : <> <TableCell align="center">Azioni</TableCell> </> }
                             </TableRow>
                         </TableHead>
                         <TableBody>

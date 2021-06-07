@@ -210,7 +210,7 @@ class CreateSupplyDialog extends React.Component {
                                                 prezzo di
                                                 vendita oppure se {this.state.demands.length > 0 ? 'l\'hai già venduto' : 'hai già venduto il libro'} puoi cliccare sul pulsante qui sotto
                                                 per
-                                                eliminare l'annunco.
+                                                eliminare l'annuncio.
                                             </Typography>)
                                         : null}
                                 </>)

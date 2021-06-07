@@ -47,7 +47,8 @@ class SupplyController extends Controller {
 
         $this->validate($request, [
             'book_id' => 'required',
-            'price' => 'required|numeric|between:0,' . $book->price
+            'price' => 'required|numeric|between:0,' . $book->price,
+            'info' => 'required'
         ]);
 
         if(!$book) {
@@ -94,6 +95,7 @@ class SupplyController extends Controller {
         if ($book) {
             $this->validate($request, [
                 'book_id' => 'required',
+                'info' => 'required'
             ]);
 
             // Check if the book exists and if the user has not already a supply with the updated book
@@ -120,7 +122,8 @@ class SupplyController extends Controller {
 
         // Check and validate the updated price
         $price = $request->input('price');
-        if ($price) {
+        $info = $request->input('info');
+        if ($price || $info) {
             if ($supply->isDirty()) {
                 $book = Book::where('id', $book)->first();
             } else {
@@ -128,11 +131,13 @@ class SupplyController extends Controller {
             }
 
             $this->validate($request, [
-                'price' => 'required|numeric|between:0,' . $book->price
+                'price' => 'required|numeric|between:0,' . $book->price,
+                'info' => 'required'
             ]);
 
             //Update the name
             $supply->price = $price;
+            $supply->info = $info;
         }
 
         if ($supply->isDirty()) {

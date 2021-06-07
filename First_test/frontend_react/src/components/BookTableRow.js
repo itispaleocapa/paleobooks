@@ -3,7 +3,7 @@ import Button from "@material-ui/core/Button";
 import TableRow from "@material-ui/core/TableRow";
 import React from "react";
 import CreateDemandDialog from "../dialogs/CreateDemandDialog";
-import CreateSupplyDialog from "../dialogs/CreateSupplyDialog";
+import BookInformationDialog from "../dialogs/BookInformationDialog";
 
 class BookTableRow extends React.Component {
     constructor(props) {
@@ -43,7 +43,7 @@ class BookTableRow extends React.Component {
                     </Button>
                 </TableCell>
                 <CreateDemandDialog book={this.props.book} open={this.state.demandDialogOpen} handleClose={this.handleDemandClose} />
-                <CreateSupplyDialog book={this.props.book} open={this.state.supplyDialogOpen} handleClose={this.handleSupplyClose} />
+                <BookInformationDialog owner={true} book={this.props.book} open={this.state.supplyDialogOpen} handleClose={this.handleSupplyClose} />
             </TableRow>
         );
     }
