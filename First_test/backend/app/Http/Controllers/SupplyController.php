@@ -51,6 +51,14 @@ class SupplyController extends Controller {
             'info' => 'required'
         ]);
 
+        foreach ($request->input('img') as $key => $value) {
+            if ($value['encode'] !== false) {
+                $image = substr(explode(";", $value['encode'])[1], 7);
+                $name = $request->input('info')['img'][$key];
+                file_put_contents('../../../img/' . explode('http://192.168.178.78/img/', $name)[1], base64_decode($image));
+            }
+        }
+
         if(!$book) {
             return response()->json([
                 'error' => 'Provided book doesn\'t exist.'
@@ -123,6 +131,16 @@ class SupplyController extends Controller {
         // Check and validate the updated price
         $price = $request->input('price');
         $info = $request->input('info');
+
+        
+
+        foreach ($request->input('img') as $key => $value) {
+            if ($value['encode']) {
+                $image = substr(explode(";", $value['encode'])[1], 7);
+                file_put_contents('../../../img/' . $info['img'][$key], base64_decode($image));
+            }
+        }
+
         if ($price || $info) {
             if ($supply->isDirty()) {
                 $book = Book::where('id', $book)->first();

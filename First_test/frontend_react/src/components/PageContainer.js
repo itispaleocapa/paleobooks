@@ -70,7 +70,6 @@ function PageContainer(props) {
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [profile, setProfile] = React.useState(props.profile);
-
     function handleDrawerToggle() {
         setMobileOpen(!mobileOpen)
     }
@@ -226,7 +225,7 @@ function PageContainer(props) {
                             <FindBooksPage/>
                         </Route>
                         <Route path="/class-books">
-                            <FindClassBooksPage/>
+                            <FindClassBooksPage profile={profile}/>
                         </Route>
                         <Route path="/about-us">
                             <AboutUsPage/>

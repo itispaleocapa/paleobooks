@@ -9,7 +9,7 @@ import Link from "@material-ui/core/Link";
 class DemandSupplyTableRow extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {demandDialogOpen: false, supplyDialogOpen: false};
+        this.state = {demandDialogOpen: false, supplyDialogOpen: false, book: {...this.props.item.book, userPrice: this.props.item.price, info: (this.props.item.info === undefined)? {cover: false, pen: false} : JSON.parse(this.props.item.info)}};
     }
 
     handleOpen = () => {
@@ -19,6 +19,15 @@ class DemandSupplyTableRow extends React.Component {
     handeClose = () => {
         this.setState({[this.props.type === 'demands' ? 'demandDialogOpen' : 'supplyDialogOpen']: false});
         this.props.refreshList();
+    }
+
+    update = (newSupply) => {
+
+        Object.keys(newSupply).forEach(val => {
+            if (Object.keys(this.state.book).includes(val) && val !== 'price') {
+                this.setState({[val]: newSupply.val})
+            }
+        });
     }
 
     render() {
@@ -58,8 +67,8 @@ class DemandSupplyTableRow extends React.Component {
 
                 <CreateDemandDialog book={this.props.item.book} open={this.state.demandDialogOpen}
                                     handleClose={this.handeClose} type='demand'/>
-                <BookInformationDialog owner={(!this.props.showAllUsers || this.props.item.user.email === localStorage.getItem('user_email'))} book={{...this.props.item.book, userPrice: this.props.item.price, info: (this.props.item.info === undefined)? {cover: false, pen: false} : JSON.parse(this.props.item.info)}} open={this.state.supplyDialogOpen}
-                                    handleClose={this.handeClose} type='supply'/>
+                <BookInformationDialog owner={!this.props.showAllUsers} book={this.state.book} open={this.state.supplyDialogOpen}
+                                    update={this.update} handleClose={this.handeClose} type='supply'/>
             </TableRow>
         );
     }

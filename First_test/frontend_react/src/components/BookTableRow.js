@@ -8,7 +8,7 @@ import BookInformationDialog from "../dialogs/BookInformationDialog";
 class BookTableRow extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {demandDialogOpen: false, supplyDialogOpen: false};
+                this.state = {demandDialogOpen: false, supplyDialogOpen: false};
     }
 
     handleDemandOpen = () => {
