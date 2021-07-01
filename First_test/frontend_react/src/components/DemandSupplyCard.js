@@ -6,7 +6,7 @@ import Typography from "@material-ui/core/Typography";
 import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
 import CreateDemandDialog from "../dialogs/CreateDemandDialog";
-import CreateSupplyDialog from "../dialogs/CreateSupplyDialog";
+import CreateSupplyDialog from "../dialogs/BookInformationDialog";
 import Link from "@material-ui/core/Link";
 
 class DemandSupplyCard extends React.Component {
@@ -65,7 +65,7 @@ class DemandSupplyCard extends React.Component {
                 </CardActions>
                 <CreateDemandDialog book={this.props.item.book} open={this.state.demandDialogOpen}
                                     handleClose={this.handeClose} type='demand'/>
-                <CreateSupplyDialog book={this.props.item.book} open={this.state.supplyDialogOpen}
+                <CreateSupplyDialog owner={true} book={this.props.item.book} open={this.state.supplyDialogOpen}
                                     handleClose={this.handeClose} type='supply'/>
             </Card>
         );

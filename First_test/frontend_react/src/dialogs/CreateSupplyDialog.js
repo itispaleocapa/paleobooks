@@ -12,16 +12,16 @@ import Divider from "@material-ui/core/Divider";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from '@material-ui/lab/Alert';
 import DemandSupplyUsers from "../components/DemandSupplyUsers";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import InputLabel from "@material-ui/core/InputLabel";
-import FormControl from "@material-ui/core/FormControl";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
-
+//import InputAdornment from "@material-ui/core/InputAdornment";
+//import InputLabel from "@material-ui/core/InputLabel";
+//import FormControl from "@material-ui/core/FormControl";
+//import OutlinedInput from "@material-ui/core/OutlinedInput";
+import BookInformationDialog from "../dialogs/BookInformationDialog";
 
 class CreateSupplyDialog extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {loading: true, demands: [], userSupply: false, price: 0, snackBarOpen: false};
+        this.state = {loading: true, demands: [], userSupply: false, price: 0, snackBarOpen: false, supplyDialogOpen: false};
     }
 
     loadDemands = () => {
@@ -157,6 +157,14 @@ class CreateSupplyDialog extends React.Component {
             }
         }
     }
+    handleSupplyOpen = () => {
+        this.setState({supplyDialogOpen: true});
+    }
+
+    handleSupplyClose = () => {
+        this.setState({supplyDialogOpen: false});
+        this.handleClose();
+    }
 
     render() {
         return (
@@ -215,6 +223,7 @@ class CreateSupplyDialog extends React.Component {
                                         : null}
                                 </>)
                         }
+                        {/*
                         {this.state.userSupply !== false ?
                             <FormControl fullWidth variant="outlined" style={{marginTop: '8px'}}>
                                 <InputLabel htmlFor="outlined-adornment-amount">Prezzo di vendita</InputLabel>
@@ -227,26 +236,29 @@ class CreateSupplyDialog extends React.Component {
                                                onKeyPress={this.handleKeyPress}
                                 />
                             </FormControl> : null}
+                        */}
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.handleClose} color="primary">
                             Chiudi
                         </Button>
                         {(this.state.userSupply === null || this.state.userSupply === false) && this.props.type !== 'supply' ?
-                            <Button autoFocus onClick={this.createSupply} color="primary">
-                                Crea annuncio
+                            <Button autoFocus onClick={this.handleSupplyOpen} color="primary">
+                                Crea Offerta
                             </Button> : (<>
                                 <Button onClick={this.deleteSupply} color="secondary">
-                                    Elimina annuncio
+                                    Elimina Offerta
                                 </Button>
-                                <Button autoFocus onClick={this.updateSupply} color="primary">
-                                    Salva annuncio
+                                <Button autoFocus onClick={this.handleSupplyOpen} color="primary">
+                                    Modifica Offerta
                                 </Button>
                             </>)
                         }
                     </DialogActions>
 
                 </Dialog>
+                {console.log(this.props.book)}
+                <BookInformationDialog owner={this.props.owner} book={this.props.book} open={this.state.supplyDialogOpen} handleClose={this.handleSupplyClose} />
                 <Snackbar open={this.state.snackBarOpen} autoHideDuration={6000} onClose={this.handleSnackbarClose}>
                     <Alert onClose={this.handleSnackbarClose} severity={this.state.snackBarSeverity}>
                         {this.state.snackBarMessage}

@@ -61,7 +61,7 @@ class BookCard extends React.Component {
                     </Button>
                 </CardActions>
                 <CreateDemandDialog book={this.props.book} open={this.state.demandDialogOpen} handleClose={this.handleDemandClose} />
-                <CreateSupplyDialog book={this.props.book} open={this.state.supplyDialogOpen} handleClose={this.handleSupplyClose} />
+                <CreateSupplyDialog owner={true} book={this.props.book} open={this.state.supplyDialogOpen} handleClose={this.handleSupplyClose} />
             </Card>
         );
     }

@@ -4,8 +4,7 @@ import DemandsSuppliesList from "../components/DemandsSuppliesList";
 import Alert from "@material-ui/lab/Alert";
 import {NavLink} from "react-router-dom";
 import AlertTitle from "@material-ui/lab/AlertTitle";
-import { FormHelperText, Select, MenuItem, Checkbox, ListItemText, FormControl, TextField, Switch, FormControlLabel, CircularProgress, Typography, List} from "@material-ui/core";
-import { array } from "prop-types";
+import { Checkbox, FormControl, TextField, Switch, FormControlLabel, CircularProgress, Typography} from "@material-ui/core";
 
 class DemandsSuppliesPage extends React.Component {
     constructor(props) {

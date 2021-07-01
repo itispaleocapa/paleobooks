@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Book;
 use App\Models\Supply;
 use App\Models\SchoolClass;
+use SebastianBergmann\Environment\Console;
 
 class SupplyController extends Controller {
     public function index(Request $request) {
@@ -51,11 +52,15 @@ class SupplyController extends Controller {
             'info' => 'required'
         ]);
 
+        $info = json_decode($request->input('info'));
         foreach ($request->input('img') as $key => $value) {
             if ($value['encode'] !== false) {
                 $image = substr(explode(";", $value['encode'])[1], 7);
-                $name = $request->input('info')['img'][$key];
-                file_put_contents('../../../img/' . explode('http://192.168.178.78/img/', $name)[1], base64_decode($image));
+
+                //$name = $request->input('info')['img'][$key];
+                //file_put_contents('../../../img/' .  $name, base64_decode($image));
+                file_put_contents('../../../img/' . $info['img'][$key], base64_decode($image));
+                //file_put_contents('../../../img/' . $info['img'][$key], base64_decode($image));
             }
         }
 
@@ -132,7 +137,6 @@ class SupplyController extends Controller {
         $price = $request->input('price');
         $info = $request->input('info');
 
-        
 
         foreach ($request->input('img') as $key => $value) {
             if ($value['encode']) {
