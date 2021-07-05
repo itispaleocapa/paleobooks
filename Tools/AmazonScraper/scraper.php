@@ -122,8 +122,8 @@ foreach ($booksChunks AS $index => $chunk) {
 
 if (count($skippedBooks) > 0) {
     logMessage('Found ' . count($skippedBooks) . ' book(s) with invalid ISBN. These books will not be in libri_' . $timestamp . '.json:');
-    foreach ($skippedBooks AS $book) {
-        logMessage(' - ' . $book['name'] . ', used by ' . $book['classes'] . ' class(es)');
+    foreach ($skippedBooks AS $isbn => $book) {
+        logMessage(' - ' . $isbn . ', ' . $book['name'] . ', used by ' . $book['classes'] . ' class(es)');
     }
 }
 
