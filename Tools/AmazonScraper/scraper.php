@@ -37,6 +37,7 @@ if (PHP_SAPI !== 'cli') {
 
 $timestamp = dechex(time());
 $globalBooks = [];
+$skippedBooks = [];
 
 logMessage('Starting scraping!');
 
@@ -49,14 +50,18 @@ foreach (SCHOOL_CODES AS $course => $schoolCode) {
     logMessage('Found ' . count($classes) . ' classes (' . $course . ').');
 
     $classes = array_map(function($class) use ($course) {
-        $branch = substr($class['DESCOMB'], 0, 1);
-        if ($branch == 'S') $branch = 'T';
-        if ($class['DESCOMB'] == 'ENERGIA') $branch = 'M';
-        if ($class['DESCOMB'] == 'SISTEMA MODA - BIENNIO COMUNE') $class['SEZION'] = 'I';
-        if ($course === 'serale' && $class['CLASSE'] < 3) $branch = '';
+        $branch = '';
+        if (strlen($class['SEZION']) < 2) {
+            $branch = substr($class['DESCOMB'], 0, 1);
+            if ($branch == 'S') $branch = 'T';
+            if ($class['DESCOMB'] == 'ENERGIA') $branch = 'M';
+            if ($class['DESCOMB'] == 'SISTEMA MODA - BIENNIO COMUNE') $class['SEZION'] = 'I';
+            if ($course === 'serale' && $class['CLASSE'] < 3) $branch = '';
+        }
+
         return [
             'id' => $class['CLID'],
-            'name' => $class['CLASSE'] . $branch . $class['SEZION'] . ($course === 'serale' ? 'S' : ''),
+            'name' => $class['CLASSE'] . $class['SEZION'] . (($course === 'serale' && strtoupper(substr($class['SEZION'], -1)) !== 'S') ? 'S' : ''),
             'books' => []
         ];
     }, $classes);
@@ -75,7 +80,15 @@ foreach (SCHOOL_CODES AS $course => $schoolCode) {
         $classes[$index]['books'] = $books;
         foreach ($books AS $book) {
             $isbn = $book['ISBN'];
-            if (!in_array($isbn, $globalBooks)) {
+            if (strlen($isbn) !== 13) {
+                if (!isset($skippedBooks[$isbn])) {
+                    $skippedBooks[$isbn] = ['name' => $book['DESC_DISCIPLINA'] ?? '', 'classes' => 1];
+                }
+                else {
+                    $skippedBooks[$isbn]['classes']++;
+                }
+            }
+            elseif (!isset($globalBooks[$isbn])) {
                 $globalBooks[$isbn] = [];
             }
         }
@@ -89,7 +102,7 @@ foreach (SCHOOL_CODES AS $course => $schoolCode) {
     file_put_contents('classi_' . $course . '_' . $timestamp . '.json', json_encode($outputArray));
 }
 
-logMessage('Found ' . count($globalBooks) . ' books in total, retrieving details...');
+logMessage('Found ' . count($globalBooks) . ' valid books in total, retrieving details...');
 
 $booksChunks = array_chunk(array_keys($globalBooks), 4);
 $chunksCount = count($booksChunks);
@@ -104,6 +117,13 @@ foreach ($booksChunks AS $index => $chunk) {
     }
     foreach ($books AS $index => $book) {
         $globalBooks[$chunk[$index]] = $book;
+    }
+}
+
+if (count($skippedBooks) > 0) {
+    logMessage('Found ' . count($skippedBooks) . ' book(s) with invalid ISBN. These books will not be in libri_' . $timestamp . '.json:');
+    foreach ($skippedBooks AS $book) {
+        logMessage(' - ' . $book['name'] . ', used by ' . $book['classes'] . ' class(es)');
     }
 }
 
