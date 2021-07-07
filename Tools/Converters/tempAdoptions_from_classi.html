@@ -35,7 +35,7 @@
     <script src="base_script.js"></script>
     <script>
 
-      // contains all the subjects that need to be renamed 
+      // contains all the subjects that need to be renamed
       let converted = [
         {
           from: ["italiano antologie", "italiano grammatica", "italiano letteratura"],
@@ -43,7 +43,7 @@
         },
       ];
 
-      // 
+      //
       function subjectConvert(subject){
         for(let i=0; i<converted.length; i++)
           if( converted[i].from.includes(subject) )
@@ -89,13 +89,12 @@
       }
 
       // the name of these functions must match the field they get (eq. the title function, get the field: title)
-      function book_isbn(obj, _){ try{ return obj["CODICE VOLUME"]; }catch(e){ return null; } }
+      function book_isbn(obj, _){ try{ return obj.ISBN; }catch(e){ return null; } }
       function class_name(_, name){ try{ return name; }catch(e){ return null; } }
-      function subject_name(obj, _){ try{ return subjectConvert( obj.DISCIPLINA.toLowerCase() ); }catch(e){ return null; } }
-      function must_buy(obj, _){ try{ return ( obj["DA ACQUISTARE"] == "No" ? 0/*false*/ : 1/*true*/); }catch(e){ return null; } }
+      function subject_name(obj, _){ try{ return subjectConvert( obj.DESC_DISCIPLINA.toLowerCase() ); }catch(e){ return null; } }
+      function must_buy(obj, _){ try{ return ( obj.DA_ACQUISTARE == "No" ? 0/*false*/ : 1/*true*/); }catch(e){ return null; } }
       function recommended(obj, _){ try{ return ( obj.CONSIGLIATO == "No" ? 0/*false*/ : 1/*true*/); }catch(e){ return null; } }
-      function new_adoption(obj, _){ try{ return ( obj.NUOVA == "No" ? 0/*false*/ : 1/*true*/); }catch(e){ return null; } }
+      function new_adoption(obj, _){ try{ return ( obj.NUOVA_ADOZIONE == "No" ? 0/*false*/ : 1/*true*/); }catch(e){ return null; } }
     </script>
   </body>
 </html>
-
