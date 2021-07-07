@@ -3,13 +3,12 @@ import Button from "@material-ui/core/Button";
 import TableRow from "@material-ui/core/TableRow";
 import React from "react";
 import CreateDemandDialog from "../dialogs/CreateDemandDialog";
-//import BookInformationDialog from "../dialogs/BookInformationDialog";
-import CreateSupplyDialog from "../dialogs/CreateSupplyDialog";
+import BookInformationDialog from "../dialogs/BookInformationDialog";
 
 class BookTableRow extends React.Component {
     constructor(props) {
         super(props);
-                this.state = {demandDialogOpen: false, supplyDialogOpen: false};
+        this.state = {demandDialogOpen: false, supplyDialogOpen: false, book: this.props.book};
     }
 
     handleDemandOpen = () => {
@@ -28,6 +27,14 @@ class BookTableRow extends React.Component {
         this.setState({supplyDialogOpen: false});
     }
 
+    update = (newSupply) => {
+        Object.keys(newSupply).forEach(val => {
+            if ( Object.keys(this.state.book).includes(val) && val !== 'price' && val != 'id') {
+                this.setState({[val]: newSupply.val})
+            }
+        });
+    }
+
     render() {
         return (
             <TableRow key={this.props.book.id}>
@@ -44,7 +51,7 @@ class BookTableRow extends React.Component {
                     </Button>
                 </TableCell>
                 <CreateDemandDialog book={this.props.book} open={this.state.demandDialogOpen} handleClose={this.handleDemandClose} />
-                <CreateSupplyDialog owner={true} book={this.props.book} open={this.state.supplyDialogOpen} handleClose={this.handleSupplyClose} />
+                <BookInformationDialog owner={true} update={this.update} book={this.props.book} open={this.state.supplyDialogOpen} handleClose={this.handleSupplyClose} />
             </TableRow>
         );
     }
