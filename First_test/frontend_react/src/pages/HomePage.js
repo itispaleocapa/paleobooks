@@ -50,13 +50,13 @@ class HomePage extends React.Component {
                     margin: '0 auto',
                     marginTop: '15px',
                     textAlign:'center',
-                    color:'red',
+                    color:'green',
                     backgroundColor: 'white',
                     padding:'7px',
                     fontSize:'22px',
                 }}>
-                    <span style={{fontSize:'30px'}}> ATTENZIONE!</span><br/>
-                    <span>Nei prossimi giorni, appena disponibili, caricheremo le classi per l'anno scolastico 2021-22 e le nuove adozioni dei libri di testo.</span>
+                    <span style={{fontSize:'30px'}}>NUOVA EDIZIONE!</span><br/>
+                    <span>L'elenco delle classi dell'anno scolastico 2021-22 e le nuove adozioni dei libri di testo sono state aggiunte!</span>
                 </Paper>
                 <Grid container style={{maxWidth: '1200px', width: 'initial', margin: '0 auto'}}>
                     <Grid item xs={12} sm={4} style={{marginTop: '15px'}} className='custom-grid-item'>
