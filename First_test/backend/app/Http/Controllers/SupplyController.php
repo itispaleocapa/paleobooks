@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use App\Models\Book;
 use App\Models\Supply;
 use App\Models\SchoolClass;
-use SebastianBergmann\Environment\Console;
 
 class SupplyController extends Controller {
     public function index(Request $request) {
@@ -52,15 +51,14 @@ class SupplyController extends Controller {
             'info' => 'required'
         ]);
 
-        $info = json_decode($request->input('info'));
+        $info = json_decode($request->input('info'), true);
+        $info['img'] = [];
         foreach ($request->input('img') as $key => $value) {
-            if ($value['encode'] !== false) {
+            if ($value['encode']) {
                 $image = substr(explode(";", $value['encode'])[1], 7);
-
-                //$name = $request->input('info')['img'][$key];
-                //file_put_contents('../../../img/' .  $name, base64_decode($image));
-                file_put_contents('../../../img/' . $info['img'][$key], base64_decode($image));
-                //file_put_contents('../../../img/' . $info['img'][$key], base64_decode($image));
+                $name = bin2hex(random_bytes(10)) . '-' . $request->auth->id . '.jpeg';
+                array_push($info['img'], $name);
+                file_put_contents('../../../img/' . $name . '.jpeg', base64_decode($image));
             }
         }
 
@@ -136,12 +134,13 @@ class SupplyController extends Controller {
         // Check and validate the updated price
         $price = $request->input('price');
         $info = $request->input('info');
-
-
+        $info['img'] = [];
         foreach ($request->input('img') as $key => $value) {
             if ($value['encode']) {
                 $image = substr(explode(";", $value['encode'])[1], 7);
-                file_put_contents('../../../img/' . $info['img'][$key], base64_decode($image));
+                $name = bin2hex(random_bytes(10)) . '-' . $request->auth->id . '.jpeg';
+                array_push($info['img'], $name);
+                file_put_contents('../../../img/' . $name, base64_decode($image));
             }
         }
 
