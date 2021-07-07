@@ -116,7 +116,10 @@ foreach ($booksChunks AS $index => $chunk) {
         continue;
     }
     foreach ($books AS $index => $book) {
-        $globalBooks[$chunk[$index]] = $book;
+        $isbn = $book['ItemAttributes']['EAN'] ?? null;
+        if ($isbn !== null) {
+            $globalBooks[$isbn] = $book;
+        }
     }
 }
 
