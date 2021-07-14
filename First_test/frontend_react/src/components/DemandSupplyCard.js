@@ -12,7 +12,7 @@ import Link from "@material-ui/core/Link";
 class DemandSupplyCard extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {demandDialogOpen: false, supplyDialogOpen: false};
+        this.state = {demandDialogOpen: false, supplyDialogOpen: false, book: this.props.item.book};
     }
 
     handleOpen = () => {
@@ -22,6 +22,14 @@ class DemandSupplyCard extends React.Component {
     handeClose = () => {
         this.setState({[this.props.type === 'demands' ? 'demandDialogOpen' : 'supplyDialogOpen']: false});
         this.props.refreshList();
+    }
+
+    update = (newSupply) => {
+        Object.keys(newSupply).forEach(val => {
+            if ( Object.keys(this.state.book).includes(val) && val !== 'price' && val != 'id') {
+                this.setState({[val]: newSupply.val})
+            }
+        });
     }
 
     render() {
@@ -65,7 +73,7 @@ class DemandSupplyCard extends React.Component {
                 </CardActions>
                 <CreateDemandDialog book={this.props.item.book} open={this.state.demandDialogOpen}
                                     handleClose={this.handeClose} type='demand'/>
-                <CreateSupplyDialog book={this.props.item.book} open={this.state.supplyDialogOpen}
+                <CreateSupplyDialog update={this.update} owner={true} book={this.state.book} open={this.state.supplyDialogOpen}
                                     handleClose={this.handeClose} type='supply'/>
             </Card>
         );

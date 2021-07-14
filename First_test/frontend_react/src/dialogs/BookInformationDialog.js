@@ -429,8 +429,8 @@ class BookInformationDialog extends React.Component {
                                 </div>
 
                                 <div style={{height: '350px', minWidth: '300px', textAlign: 'center'}}>
-                                    {!this.state.currentImage.includes('amazon') && this.props.owner?
-                                    <img src={close} onClick={this.removeImage} style={{position: 'absolute', left: '375px', marginTop: '5px', zIndex: '1', height: '22px', cursor: 'pointer'}} />
+                                    {!this.state.currentImage?.includes('amazon') && this.props.owner?
+                                    <img src={close} onClick={this.removeImage} style={{position: 'absolute', left: '375px', marginTop: '5px', zIndex: '1', height: '22px', cursor: 'pointer' }} alt="remove"/>
                                     : null
                                 }
 

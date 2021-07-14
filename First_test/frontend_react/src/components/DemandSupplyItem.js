@@ -52,7 +52,7 @@ class DemandSupplyItem extends React.Component {
         }
         return (
             <>
-                <ListItem button onClick={() => this.setState({handleOpen: true})}
+                <ListItem button onClick={() => this.props.type === "supply" ? this.setState({handleOpen: true}) : window.open('mailto:' + this.state.email, "_blank")}
                         style={{padding: '4px', height: '56px'}}>
                     <ListItemAvatar>
                         <Avatar alt={this.state.name}
@@ -62,8 +62,10 @@ class DemandSupplyItem extends React.Component {
                     <ListItemText
                         primary={<ItemText name={this.state.name} price={this.state.price} email={this.state.email}/>}/>
                 </ListItem>
-
-                <BookInformationDialog open={this.state.handleOpen} book={this.state.book} handleClose={() => this.setState({handleOpen: false})}/>
+                {this.props.type === "supply" ?
+                    <BookInformationDialog open={this.state.handleOpen} book={this.state.book} handleClose={() => this.setState({handleOpen: false})}/>
+                    : null
+                }
             </>
         );
     }
