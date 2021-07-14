@@ -6,7 +6,7 @@ import Typography from "@material-ui/core/Typography";
 import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
 import CreateDemandDialog from "../dialogs/CreateDemandDialog";
-import CreateSupplyDialog from "../dialogs/CreateSupplyDialog";
+import CreateSupplyDialog from "../dialogs/BookInformationDialog";
 import Link from "@material-ui/core/Link";
 
 class DemandSupplyCard extends React.Component {

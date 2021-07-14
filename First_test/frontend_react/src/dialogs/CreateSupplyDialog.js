@@ -12,6 +12,13 @@ import Divider from "@material-ui/core/Divider";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from '@material-ui/lab/Alert';
 import DemandSupplyUsers from "../components/DemandSupplyUsers";
+<<<<<<< HEAD
+=======
+//import InputAdornment from "@material-ui/core/InputAdornment";
+//import InputLabel from "@material-ui/core/InputLabel";
+//import FormControl from "@material-ui/core/FormControl";
+//import OutlinedInput from "@material-ui/core/OutlinedInput";
+>>>>>>> 9d8e20fc9036226e46354844002f5402779f4585
 import BookInformationDialog from "../dialogs/BookInformationDialog";
 
 class CreateSupplyDialog extends React.Component {
