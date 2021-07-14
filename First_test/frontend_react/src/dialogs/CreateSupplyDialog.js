@@ -219,20 +219,6 @@ class CreateSupplyDialog extends React.Component {
                                         : null}
                                 </>)
                         }
-                        {/*
-                        {this.state.userSupply !== false ?
-                            <FormControl fullWidth variant="outlined" style={{marginTop: '8px'}}>
-                                <InputLabel htmlFor="outlined-adornment-amount">Prezzo di vendita</InputLabel>
-                                <OutlinedInput id="outlined-adornment-amount"
-                                               onChange={(e) => this.handlePriceChange(e)}
-                                               type="number"
-                                               defaultValue={(this.state.userSupply !== null) ? this.state.userSupply.price : 0}
-                                               startAdornment={<InputAdornment position="start">€</InputAdornment>}
-                                               labelWidth={125}
-                                               onKeyPress={this.handleKeyPress}
-                                />
-                            </FormControl> : null}
-                        */}
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.handleClose} color="primary">
