@@ -18,7 +18,7 @@ class AboutUsPage extends React.Component {
                     github: 'ColleoniLorenzo',
                 },
                 {
-                    name: 'Francesco Brignoli',
+                    name: 'Francesco Giacomo Brignoli',
                     github: 'xFranciB',
                 },
                 {
