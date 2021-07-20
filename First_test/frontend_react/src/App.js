@@ -15,7 +15,7 @@ class App extends React.Component {
     }
 
     componentDidMount = () => {
-        this.chechLogin();
+        this.checkLogin();
         setTimeout(() => {
             if (this.state.isLoggedIn === null) {
                 this.setState({error: true})
@@ -23,7 +23,7 @@ class App extends React.Component {
         }, 5000);
     }
 
-    chechLogin = (props = false) => {
+    checkLogin = (props = false) => {
         if(props){
             this.setState({url: props})
         }
@@ -44,14 +44,14 @@ class App extends React.Component {
                     <Route exact path="/login">
                         {this.state.isLoggedIn
                             ? <Redirect to=""/>
-                            : <LoginPage redirectUri={window.location.pathname.replace('/pbr', '')} checkLogin={this.chechLogin} />}
+                            : <LoginPage redirectUri={window.location.pathname.replace('/pbr', '')} checkLogin={this.checkLogin} />}
                     </Route>
                     <Route path={["/reset-password", "/resetpassword.html"]}>
                         {this.state.isLoggedIn
                             ? <Redirect to=""/>
-                            : <ResetPasswordPage checkLogin={this.chechLogin} />}
+                            : <ResetPasswordPage checkLogin={this.checkLogin} />}
                     </Route>
-                    <PrivateRoute auth={this.state.isLoggedIn} wasInitialized={this.state.wasInitialized} exact path='*' component={() => <PageContainer checkLogin={this.chechLogin} profile={this.state.profile}/>} />
+                    <PrivateRoute auth={this.state.isLoggedIn} wasInitialized={this.state.wasInitialized} exact path='*' component={() => <PageContainer checkLogin={this.checkLogin} profile={this.state.profile}/>} />
 
                     <Route path="*">
                         {this.state.url? 

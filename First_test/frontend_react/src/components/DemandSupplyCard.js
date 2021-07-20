@@ -12,7 +12,7 @@ import Link from "@material-ui/core/Link";
 class DemandSupplyCard extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {demandDialogOpen: false, supplyDialogOpen: false, book: {...this.props.item.book, email: this.props.item.user?.email, userPrice: this.props.item.price, info: JSON.parse(this.props.item.info)}};
+        this.state = {demandDialogOpen: false, supplyDialogOpen: false, book: {...this.props.item.book, email: this.props.item.user?.email, userPrice: this.props.item.price, info: this.props.type === 'supply'? this.props.item.info: false}};
     }
 
     handleOpen = () => {

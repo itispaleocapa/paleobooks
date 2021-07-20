@@ -14,7 +14,6 @@ import MuiAlert from '@material-ui/lab/Alert';
 class HomePage extends React.Component {
     constructor(props) {
         super(props);
-        console.log(props)
         this.state = {books: 0, demands: 0, supplies: 0, loading: true, open: true, book: {}, error: true}
     }
 
@@ -77,7 +76,7 @@ class HomePage extends React.Component {
     render() {
         return (
             <>
-                {this.props.match?.params?.id? this.state.loading? null : this.state.error? null : <BookInformationDialog type={'supplies'} book={this.state.book} owner={false} open={this.state.open} handleClose={this.handleClose}/> : null}
+                {this.props.match?.params?.id? this.state.loading? null : this.state.error? null : <BookInformationDialog book={{...this.state.book, info: JSON.parse(this.state.book.info)}} owner={false} open={this.state.open} handleClose={this.handleClose}/> : null}
                 <Paper elevation={3} style={{
                     margin: '10px auto 5px',
                     padding: '15px',
@@ -92,6 +91,7 @@ class HomePage extends React.Component {
                     width: 'fit-content',
                     margin: '0 auto',
                     marginTop: '15px',
+                    maxWidth: '1200px',
                     textAlign:'center',
                     color:'green',
                     backgroundColor: 'white',

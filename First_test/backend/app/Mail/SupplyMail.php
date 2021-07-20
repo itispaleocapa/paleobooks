@@ -8,6 +8,8 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Http\Controllers\SupplyController;
 use App\Http\Controllers\BookController;
+use App\Models\Supply;
+
 
 class SupplyMail extends Mailable
 {
@@ -15,11 +17,9 @@ class SupplyMail extends Mailable
 
     public $book_title;
 
+    public $supply_url;
+
     public $user_price;
-
-    public $description;
-
-
 
     /**
     * Create a new message instance.
@@ -29,19 +29,16 @@ class SupplyMail extends Mailable
     public function __construct($id, $request)
     {   
         $bookController = new  BookController();
-        // $book = $bookController->show($request, $id);
-
-        // $this->t
-
-        // print_r($request['info'][0]);
-
-        // $this->user_price = $request['price'];
-
-        // $this->description = json_decode($request['info'])['description'];
-
+        $book = $bookController->show($id);
+        $supplies = Supply::with(['book:id,title,isbn,price,photo'])->where('user_id', $request['user_id'])->get();
+        foreach ($supplies as $value) {
+            if($value->book_id  === $id) {
+                $supply = $value;
+            }
+        }
+        $this->user_price = $request['price'];
+        $this->supply_url = env('APP_URL').'/supply/'.$supply->id;
         $this->book_title = $bookController->show($id)->title;
-
-
     }
 
     /**

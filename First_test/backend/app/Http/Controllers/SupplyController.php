@@ -8,6 +8,7 @@ use App\Models\Book;
 use App\Models\Supply;
 use App\Models\SchoolClass;
 use App\Mail\SupplyMail;
+use App\User;
 use Illuminate\Support\Facades\Mail;
 
 
@@ -65,7 +66,7 @@ class SupplyController extends Controller {
             }
         }
 
-        if (!$book) {
+        if(!$book) {
             return response()->json([
                 'error' => 'Provided book doesn\'t exist.'
             ], 400);
@@ -84,12 +85,12 @@ class SupplyController extends Controller {
 
         $request->merge(['user_id' => $request->auth->id]);
         $class = new SupplyController();
-        // $supply = Supply::create($request->all());
+        $supply = Supply::create($request->all());
         $class->sendmail($request, $book->id);
 
-        // return response()->json([
-        //     'success' => 'Supply created successfully'
-        // ], 201);     
+        return response()->json([
+            'success' => 'Supply created successfully'
+        ], 201);     
 
     }
 
@@ -214,11 +215,12 @@ class SupplyController extends Controller {
 
         foreach ($book->getBookDemands($id) as $data) {
             $info = $demand->show($request, $data->id);
-            Mail::to($info->user->email)->send(new SupplyMail($id, $request->all()));
+            $user = User::find($info->user->id);
+            if($user->NewSupply && $request->auth->id != $user->id){
+                Mail::to($user->email)->send(new SupplyMail($id, $request->all()));
+            }
+
         }
-
-        return false;
-
     }
 
 }

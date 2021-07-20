@@ -190,7 +190,6 @@ class BookInformationDialog extends React.Component {
             price: parseFloat(this.state.price),
             img: this.state.imgUp,
             info: JSON.stringify({
-                id: this.props.book.id,
                 img: this.state.img.splice(null),
                 pen: this.state.pen,
                 cover: this.state.cover,
