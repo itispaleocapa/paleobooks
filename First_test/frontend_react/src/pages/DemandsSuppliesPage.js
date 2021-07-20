@@ -75,7 +75,7 @@ class DemandsSuppliesPage extends React.Component {
 
                     res.forEach(val => {
                         let resInfo = JSON.parse(val.info)
-                        if(resInfo.cover === this.state.cover && this.state.filtri && resInfo.pen === this.state.pen && this.state.filtri){
+                        if (resInfo.cover === this.state.cover && this.state.filtri && resInfo.pen === this.state.pen && this.state.filtri) {
                             newArray = [...newArray, val]
                         }
                     });                   

@@ -6,13 +6,13 @@ import Typography from "@material-ui/core/Typography";
 import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
 import CreateDemandDialog from "../dialogs/CreateDemandDialog";
-import CreateSupplyDialog from "../dialogs/BookInformationDialog";
+import BookInformationDialog from "../dialogs/BookInformationDialog";
 import Link from "@material-ui/core/Link";
 
 class DemandSupplyCard extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {demandDialogOpen: false, supplyDialogOpen: false, book: this.props.item.book};
+        this.state = {demandDialogOpen: false, supplyDialogOpen: false, book: {...this.props.item.book, email: this.props.item.user?.email, userPrice: this.props.item.price, info: JSON.parse(this.props.item.info)}};
     }
 
     handleOpen = () => {
@@ -60,20 +60,13 @@ class DemandSupplyCard extends React.Component {
                     <div style={{float: 'none', clear: 'both'}}/>
                 </CardContent>
                 <CardActions>
-                    {this.props.showAllUsers ?
-                        <div style={{margin: '0 auto', textAlign: 'center'}}>
-                            {this.props.item.user.name}<br/>
-                            <Link href={'mailto:' + this.props.item.user.email} target='_blank'>{this.props.item.user.email}</Link>
-                        </div>
-                        :
-                        <Button size="small" color="primary" style={{margin: '0 auto'}} onClick={this.handleOpen}>
-                            Dettagli
-                        </Button>
-                    }
+                    <Button size="small" color="primary" style={{margin: '0 auto'}} onClick={this.handleOpen}>
+                        Dettagli
+                    </Button>
                 </CardActions>
                 <CreateDemandDialog book={this.props.item.book} open={this.state.demandDialogOpen}
                                     handleClose={this.handeClose} type='demand'/>
-                <CreateSupplyDialog update={this.update} owner={true} book={this.state.book} open={this.state.supplyDialogOpen}
+                <BookInformationDialog update={this.update} owner={!this.props.showAllUsers} book={this.state.book} open={this.state.supplyDialogOpen}
                                     handleClose={this.handeClose} type='supply'/>
             </Card>
         );

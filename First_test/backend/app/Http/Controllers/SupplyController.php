@@ -62,7 +62,7 @@ class SupplyController extends Controller {
             }
         }
 
-        if(!$book) {
+        if (!$book) {
             return response()->json([
                 'error' => 'Provided book doesn\'t exist.'
             ], 400);

@@ -23,7 +23,13 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import TextField from '@material-ui/core/TextField';
-import close from '../close.png'
+import Link from '@material-ui/core/Link';
+import Tooltip from '@material-ui/core/Tooltip';
+import InfoIcon from '@material-ui/icons/Info';
+import {withStyles} from '@material-ui/core/styles/';
+
+import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
+import close from '../close.png';
 
 import api from "../api";
 
@@ -31,14 +37,33 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Fade position="center" ref={ref} {...props} />;
 });
 
-const penStateValue = ['Appunti', 'Esercizi', 'Sia Appunti che esercizi', 'Altro'];
+const penStateValue = ['Appunti', 'Esercizi', 'Sia Appunti che Esercizi', 'Altro'];
+
+const MarginLeftSwitch = withStyles({
+    root: {
+        marginLeft: 'auto'
+    }
+})(Switch);
+
+const NoBackgroundSwitch = withStyles({
+    root: {
+        marginLeft: 'auto'
+    },
+    switchBase: {
+        backgroundColor: 'transparent !important',
+        marginLeft: 'auto'
+    },
+    input: {
+        cursor: 'default !important'
+    }
+})(Switch);
 
 class BookInformationDialog extends React.Component {
     constructor(props) {
         super(props);
         this.state = {loading: true, userSupply: false, cover: false, pen: false, penState: '', price: 0, description: '', img: [], imgUp: [], images: this.props.book?.info?.img? this.props.book.info.img : [], currentImage: this.props.book.photo};
         this.inputRef = React.createRef();
-    }    
+    }  
 
     getItems = (loading = true) => {
         this.setState({loading: loading});
@@ -194,7 +219,6 @@ class BookInformationDialog extends React.Component {
             this.props.handleClose();
             
         });
-
     }
 
     updateSupply = () => {
@@ -386,9 +410,9 @@ class BookInformationDialog extends React.Component {
     render() {
         return (
             <>
-                <Dialog onEnter={() => this.loadDemands()} open={this.props.open} TransitionComponent={Transition} maxWidth={false}> 
+                <Dialog onEnter={() => this.loadDemands()} open={this.props.open} TransitionComponent={Transition} maxWidth={false} className="book-info-dialog"> 
                     <AppBar className="dialog-title-text-ellipsis" style={{position: 'relative'}}>
-                        <Toolbar style={{maxWidth: '700px'}}>
+                        <Toolbar style={{maxWidth: '817px'}} className="book-info-dialog-header">
                             <IconButton edge="start" color="inherit" onClick={this.props.handleClose} aria-label="close">
                                 <CloseIcon />
                             </IconButton>
@@ -396,53 +420,53 @@ class BookInformationDialog extends React.Component {
                         </Toolbar>
                     </AppBar>
                     
-                    <DialogContent style={{display: 'flex', flexWrap: 'none', gap: '20px'}}>
+                    <DialogContent style={{display: 'flex', flexWrap: 'none', gap: '20px'}} className="book-info-dialog-content">
                         
                         {(this.props.owner && this.state.loading)? (
                             <div style={{margin: '20px auto', width: 'fit-content'}}><CircularProgress/></div>
                         ) : (
                             <>
-                                <div style={{display: 'flex', flexFlow: 'column', gap: '20px'}}>
-                                    <img src={this.props.book.photo} style={{maxWidth: '50px', marginTop: '10px', borderRadius: '5px', cursor: 'pointer', border: 'solid 2px #3f51b5'}} onClick={this.imgShow} alt=""/>
+                                <div style={{display: 'flex'}}>
+                                    <div style={{display: 'flex', flexFlow: 'column', gap: '20px'}}>
+                                        <img src={this.props.book.photo} style={Object.assign({}, {maxWidth: '50px', marginTop: '10px', borderRadius: '5px', cursor: 'pointer', transition: 'all .1s ease'}, (this.props.book.photo === this.state.currentImage)? {border: 'solid 2px #3f51b5', boxShadow: '0 0 7px 2px #3f51b5'} : {border: 'solid 2px #dedede'})} onClick={this.imgShow} alt=""/>
 
-                                    {this.state.images.map(image => {
-                                        const thisImage = (image.includes("blob"))? image : process.env.REACT_APP_IMAGES_URL + '/' + image;
-                                        
-                                        return <img src={thisImage} style={(thisImage === this.state.currentImage)? {
-                                            maxWidth: '50px',
-                                            borderRadius: '5px',
-                                            cursor: 'pointer',
-                                            border: 'solid 2px #3f51b5',
-                                            boxShadow: '0 0 7px 2px #3f51b5',
-                                            transition: 'all .1s ease'
-                                        } : {
-                                            maxWidth: '50px',
-                                            borderRadius: '5px',
-                                            cursor: 'pointer',
-                                            border: 'solid 2px #dedede',
-                                            transition: 'all .1s ease'
-                                        }} onClick={this.imgShow} alt=""/>
-                                    })}
+                                        {this.state.images.map(image => {
+                                            const thisImage = (image.includes("blob"))? image : process.env.REACT_APP_IMAGES_URL + '/' + image;
+                                            
+                                            return <img src={thisImage} style={(thisImage === this.state.currentImage)? {
+                                                maxWidth: '50px',
+                                                borderRadius: '5px',
+                                                cursor: 'pointer',
+                                                border: 'solid 2px #3f51b5',
+                                                boxShadow: '0 0 7px 2px #3f51b5',
+                                                transition: 'all .1s ease'
+                                            } : {
+                                                maxWidth: '50px',
+                                                borderRadius: '5px',
+                                                cursor: 'pointer',
+                                                border: 'solid 2px #dedede',
+                                                transition: 'all .1s ease'
+                                            }} onClick={this.imgShow} alt=""/>
+                                        })}
 
-                                    {(this.state.images.length < 3 && this.props.owner)? <svg onClick={() => this.inputRef.current.click()} style={{width: '40px', cursor: 'pointer', alignSelf: 'center'}} class="MuiSvgIcon-root jss79" focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"></path></svg> : null}
+                                        {(this.state.images.length < 3 && this.props.owner)? <svg onClick={() => this.inputRef.current.click()} style={{width: '40px', cursor: 'pointer', alignSelf: 'center'}} class="MuiSvgIcon-root jss79" focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"></path></svg> : null}
 
-                                </div>
+                                    </div>
 
-                                <div style={{height: '350px', minWidth: '300px', textAlign: 'center'}}>
-                                    {!this.state.currentImage?.includes('amazon') && this.props.owner?
-                                    <img src={close} onClick={this.removeImage} style={{position: 'absolute', left: '375px', marginTop: '5px', zIndex: '1', height: '22px', cursor: 'pointer' }} alt="remove"/>
-                                    : null
-                                }
+                                    <div style={{height: '350px', minWidth: '300px', textAlign: 'center'}}>
+                                        {!this.state.currentImage?.includes('amazon') && this.props.owner?
+                                        <img src={close} onClick={this.removeImage} style={{position: 'absolute', left: '365px', marginTop: '5px', zIndex: '1', height: '22px', cursor: 'pointer' }} alt="remove"/>
+                                        : null
+                                    }
 
-                                    <img style={{maxHeight: '350px', maxWidth: '300px', position: 'relative', top: '50%', transform: 'translateY(-50%)'}} src={this.state.currentImage} alt="img"/>
+                                        <img style={{maxHeight: '350px', maxWidth: '300px', position: 'relative', top: '50%', transform: 'translateY(-50%)'}} src={this.state.currentImage} alt="img"/>
+                                    </div>
                                 </div>
 
                                 <div>
-
-                                    <span style={{display: 'inline', verticalAlign: 'middle', fontSize: '17px', textDecoration: 'line-through'}}>€{this.props.book.price}</span><br/>
-
                                     {this.props.owner?
                                         <>
+                                            <span style={{display: 'inline', verticalAlign: 'middle', fontSize: '17px', textDecoration: 'line-through'}}>€{this.props.book.price}</span><br/>
 
                                             <FormControl variant="outlined" style={{marginTop: '8px'}}>
                                                 <InputLabel htmlFor="outlined-adornment-amount">Prezzo di vendita</InputLabel>
@@ -456,19 +480,23 @@ class BookInformationDialog extends React.Component {
                                                             style={{marginBottom: '10px'}}
                                                 />
 
-                                                Copertina protettiva:
-                                                <Switch
-                                                    checked={this.state.cover}
-                                                    onChange={this.handleChange('cover')}
-                                                    color="primary"
-                                                />
+                                                <div style={{display: 'flex', alignItems: 'center'}}>
+                                                    Copertina protettiva
+                                                    <MarginLeftSwitch
+                                                        checked={this.state.cover}
+                                                        onChange={this.handleChange('cover')}
+                                                        color="primary"
+                                                    />
+                                                </div>
 
-                                                Scrittura in penna / evidenziature:
-                                                <Switch
-                                                    checked={this.state.pen}
-                                                    onChange={this.handleChange('pen')}
-                                                    color="primary"
-                                                />
+                                                <div style={{display: 'flex', alignItems: 'center'}}>
+                                                    Scrittura in penna / evidenziature
+                                                    <MarginLeftSwitch
+                                                        checked={this.state.pen}
+                                                        onChange={this.handleChange('pen')}
+                                                        color="primary"
+                                                    />
+                                                </div>
                                                 <FormControl disabled={!this.state.pen}>
                                                     <FormHelperText>Cosa è scritto in penna?</FormHelperText>
                                                     <Select value={this.state.penState} onChange={(event) => this.setState({penState: event.target.value})}>
@@ -479,21 +507,63 @@ class BookInformationDialog extends React.Component {
                                                     </Select>
                                                 </FormControl>
 
-                                                <TextField variant="outlined" style={{marginTop: '20px', minWidth: '400px'}} value={this.state.description} onChange={(event) => this.setState({description: event.target.value})} inputProps={{maxLength: 200, rows: 4}} label="Descrizione del libro" multiline rows={1}/><label style={(200 - this.state.description.length <= 10)? ({color:'red'}) : null}>{this.state.description.length}/200</label>
+                                                <TextField variant="outlined" style={{marginTop: '20px', width: '400px', maxWidth: '90vw'}} value={this.state.description} onChange={(event) => this.setState({description: event.target.value})} inputProps={{maxLength: 200, rows: 4}} label="Descrizione del libro" multiline rows={1}/><label style={(200 - this.state.description.length <= 10)? ({color:'red'}) : null}>{this.state.description.length}/200</label>
 
                                                 <input ref={this.inputRef} accept="image/png, image/jpeg" type="file" style={{display: 'none'}} multiple onChange={this.handleImg}/>
                                             </FormControl>
                                         </>
                                     : 
-                                        <>      
-                                            <span style={{fontSize: '30px', fontWeight: 'bold', position: 'relative', top: '-5px'}}>€{this.props.book.userPrice}</span><br />
-                                            Copertina: {this.props.book.info.cover? 'si':'no'}<br/>
-                                            ISBN: {this.props.book.isbn}<br/>
-                                            Scritto in penna: {this.props.book.info.pen? 'si':'no'}<br/>
-                                            {(this.props.book.info.pen)? <>Tipo penna: {penStateValue[this.props.book.info.penState]}<br/></> : null}
-                                            Descrizione: {this.props.book.info.description}<br/>
-                                            <button onClick={() => window.open('mailto:' + this.props.book.email, "_blank")}>CONTATTA L'OFFERENTE</button>
-                                        </>
+                                        <div style={{width: '400px', height: '96%', maxWidth: '90vw', display: 'flex', flexDirection: 'column'}}>  
+                                            <div style={{display: 'flex'}}>
+                                                <div>
+                                                    <span style={{display: 'inline', verticalAlign: 'middle', fontSize: '17px', textDecoration: 'line-through'}}>€{this.props.book.price}</span><br/>
+                                                    <span style={{fontSize: '30px', fontWeight: 'bold', position: 'relative', top: '-5px'}}>€{this.props.book.userPrice}</span><br />
+                                                </div>
+                                                <div style={{marginLeft: 'auto', fontSize: '15px'}}>
+                                                    ISBN: {this.props.book.isbn}<br/>
+                                                </div>
+                                            </div>
+                                            <div style={{display: 'flex', alignItems: 'center'}}>
+                                                Copertina protettiva
+                                                <NoBackgroundSwitch
+                                                    checked={this.props.book.info.cover}
+                                                    color="primary"
+                                                    disableRipple
+                                                />
+                                            </div>
+
+                                            <div style={{display: 'flex', alignItems: 'center'}}>
+                                                Scrittura in penna / evidenziature
+                                                {(this.props.book.info.penState !== '')? (
+                                                    <Tooltip title={penStateValue[this.props.book.info.penState]} arrow={true} style={{marginLeft: '5px'}} placement="top">
+                                                        <IconButton size="small">
+                                                            <InfoIcon />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                ) : null}
+                                                <NoBackgroundSwitch
+                                                    checked={this.props.book.info.pen}
+                                                    color="primary"
+                                                    disableRipple
+                                                />
+                                            </div>
+                                            {(this.props.book.info.description === '')? null : (
+                                                <Typography style={{marginTop: '10px'}}>{this.props.book.info.description}</Typography>
+                                            )}
+
+                                            <div style={{display: 'flex', alignItems: 'center', margin: 'auto 0 -15px 0'}}>
+                                                Contatta l'offerente
+                                                <div style={{marginLeft: 'auto'}}>
+                                                    <Link href={'mailto:' + this.props.book.email}>{this.props.book.email}</Link>
+                                                    <IconButton style={{marginLeft: '10px'}} onClick={() => {
+                                                        navigator.clipboard.writeText(this.props.book.email);
+                                                        this.setState({snackBarOpen: true, snackBarSeverity: 'success', snackBarMessage: 'Email copiata negli appunti!'})
+                                                    }}>
+                                                        <FileCopyOutlinedIcon/>
+                                                    </IconButton>
+                                                </div>
+                                            </div>
+                                        </div>
                                     }
                                     <br/>
                                 </div>
