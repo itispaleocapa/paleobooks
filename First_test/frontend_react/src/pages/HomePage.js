@@ -54,12 +54,8 @@ class HomePage extends React.Component {
 
                     api.request('/supplies/' + id).then((res) => {
                         this.setState({result: true, book: {
-                                id: res.book.id,
+                                ...res.book,
                                 info: res.info,
-                                isbn: res.book.isbn,
-                                photo: res.book.photo,
-                                price: res.book.price,
-                                title: res.book.title,
                                 userPrice: res.price,
                                 email: res.user.email
                             }}, function() {

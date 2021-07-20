@@ -93,6 +93,11 @@ class ProfilePage extends React.Component {
 
     handleCheckBoxChange = (name) => {
         this.setState({[name]: !this.state.NewSupply});
+        if(this.state.paleoid){
+            this.setState({password_confirm: this.state.password}, function() {
+                this.handleSave()   
+            })
+        }
     }
 
     render() {
