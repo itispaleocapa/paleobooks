@@ -73,7 +73,7 @@ class DemandSupplyCard extends React.Component {
                 </CardActions>
                 <CreateDemandDialog book={this.props.item.book} open={this.state.demandDialogOpen}
                                     handleClose={this.handeClose} type='demand'/>
-                <CreateSupplyDialog update={this.update} owner={true} book={this.state.book} open={this.state.supplyDialogOpen}
+                <CreateSupplyDialog showAllUsers={this.props.showAllUsers} update={this.update} owner={true} book={this.state.book} open={this.state.supplyDialogOpen}
                                     handleClose={this.handeClose} type='supply'/>
             </Card>
         );
