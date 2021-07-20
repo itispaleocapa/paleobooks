@@ -66,7 +66,7 @@ class LoginPage extends React.Component {
     handleLogin = () => {
         this.setState({isLoading: true})
         api.login(this.state.email, this.state.password).then((res) => {
-            this.props.checkLogin();
+            this.props.checkLogin(this.props.redirectUri);
         }).catch(() => {
             this.setState({dialogTitle: 'Errore', dialogContent: 'Credenziali non valide', dialogOpen: true});
             this.setState({isLoading: false})

@@ -7,12 +7,15 @@ import Paper from "@material-ui/core/Paper";
 import Divider from "@material-ui/core/Divider";
 import {NavLink} from "react-router-dom";
 import CountUp from 'react-countup';
-
+import BookInformationDialog from '../dialogs/BookInformationDialog';
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from '@material-ui/lab/Alert';
 
 class HomePage extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {books: 0, demands: 0, supplies: 0}
+        console.log(props)
+        this.state = {books: 0, demands: 0, supplies: 0, loading: true, open: true, book: {}, error: true}
     }
 
     componentDidMount() {
@@ -20,6 +23,9 @@ class HomePage extends React.Component {
     }
 
     updateCounters = () => {
+        if(this.props.match?.params?.id) {
+            this.checkSupply(this.props.match.params.id)
+        }
         api.request('/app/info').then((res) => {
             this.setState({books: res.supplies});
             this.setState({demands: res.user_demands});
@@ -32,9 +38,50 @@ class HomePage extends React.Component {
         this.props.checkLogin();
     }
 
+    handleClose = () => {this.setState({open: false})}
+
+    checkSupply = (id) => {
+        api.request('/supplies/').then((res) => {
+
+            if(res.lenght < 0) {
+                this.setState({loading: false})
+                return
+            }
+
+            for (var i = 0; i < res.length; i++) {
+                var element = res[i]
+                if(parseInt(element.id) === parseInt(id)) {
+
+                    api.request('/supplies/' + id).then((res) => {
+                        this.setState({result: true, book: {
+                                id: res.book.id,
+                                info: res.info,
+                                isbn: res.book.isbn,
+                                photo: res.book.photo,
+                                price: res.book.price,
+                                title: res.book.title,
+                                userPrice: res.price,
+                                email: res.user.email
+                            }}, function() {
+                            this.setState({loading: false, error: false})
+                        });
+                    })
+                    return
+
+                } else {
+                    if (i === res.length-1){
+                        this.setState({snackBarOpen: true, snackBarSeverity: 'error', snackBarMessage: "Impossibile trovare l'offerta", loading: false})
+                        this.props.history.push('/')
+                    }
+                }
+            }
+        });       
+    }
+
     render() {
         return (
             <>
+                {this.props.match?.params?.id? this.state.loading? null : this.state.error? null : <BookInformationDialog type={'supplies'} book={this.state.book} owner={false} open={this.state.open} handleClose={this.handleClose}/> : null}
                 <Paper elevation={3} style={{
                     margin: '10px auto 5px',
                     padding: '15px',
@@ -96,9 +143,20 @@ class HomePage extends React.Component {
                         </Paper>
                     </Grid>
                 </Grid>
+
+                <Snackbar open={this.state.snackBarOpen} autoHideDuration={6000} onClose={() => this.setState({snackBarOpen: false})}>
+                    <Alert onClose={() => this.setState({snackBarOpen: false})} severity={this.state.snackBarSeverity}>
+                        {this.state.snackBarMessage}
+                    </Alert>
+                </Snackbar>
+
             </>
         );
     }
+}
+
+const Alert = (props) => {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
 export default HomePage;

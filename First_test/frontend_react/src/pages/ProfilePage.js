@@ -10,6 +10,7 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Alert from "@material-ui/lab/Alert";
 import Snackbar from "@material-ui/core/Snackbar";
+import Checkbox from "@material-ui/core/Checkbox"
 
 class ProfilePage extends React.Component {
     constructor(props) {
@@ -22,7 +23,8 @@ class ProfilePage extends React.Component {
             password: '',
             password_confirm: '',
             emailmd5: '',
-            snackBarOpen: false
+            snackBarOpen: false,
+            NewSupply: false
         };
     }
 
@@ -38,6 +40,7 @@ class ProfilePage extends React.Component {
                 paleoid: res.paleoid,
                 name: res.name,
                 email: res.email,
+                NewSupply: res.NewSupply,
                 emailmd5: md5(res.email.toLowerCase())
             });
             this.props.updateProfile();
@@ -58,10 +61,12 @@ class ProfilePage extends React.Component {
             return
         }
         let password = this.state.password.length > 0 ? this.state.password : null;
+        console.log(this.state.NewSupply? 1 : 0)
         api.request('/users', 'PUT', JSON.stringify({
             name: this.state.name,
             email: this.state.email,
-            password: password
+            password: password,
+            NewSupply: this.state.NewSupply? 1 : 0
         })).then(res => {
             this.setState({
                 snackBarOpen: true,
@@ -86,6 +91,10 @@ class ProfilePage extends React.Component {
         }
     }
 
+    handleCheckBoxChange = (name) => {
+        this.setState({[name]: !this.state.NewSupply});
+    }
+
     render() {
         return (
             <>
@@ -94,8 +103,10 @@ class ProfilePage extends React.Component {
                 </Typography>
                 {this.state.id === null ?
                     <div style={{margin: '30px auto', width: 'fit-content'}}><CircularProgress/></div> :
+
                     <Grid container style={{maxWidth: '800px', width: 'initial', margin: '0 auto'}}>
-                        <Grid item xs={12} sm={7} style={{marginTop: '10px'}} className='custom-grid-item'>
+
+                        <Grid item xs={12} sm={8} style={{marginTop: '10px'}} className='custom-grid-item'>
                             <Paper style={{padding: '10px', textAlign: 'center'}}>
                                 <TextField id="outlined-basic" label="Nome" variant="outlined" fullWidth
                                            style={{marginTop: '10px'}}
@@ -117,6 +128,16 @@ class ProfilePage extends React.Component {
                                            onChange={(e) => this.handleInputChange('password_confirm', e)}
                                            onKeyPress={this.handleKeyPress}
                                            type='password' disabled={this.state.paleoid}/>
+                                <Checkbox
+                                    checked={this.state.NewSupply}
+                                    value="NewSupply"
+                                    onChange={(e) => this.handleCheckBoxChange('NewSupply', e)}
+                                    color="primary"
+                                    inputProps={{ 'aria-label': 'Checkbox A' }}
+                                />
+                                
+                                Desideri ricevere un'email quando viene creata un offerta di un libro che stai cercando
+                                <br/>
                                 {this.state.paleoid === false ?
                                     <Button variant="contained" color="primary" style={{marginTop: '10px'}}
                                             onClick={this.handleSave}>
@@ -131,9 +152,11 @@ class ProfilePage extends React.Component {
                                         l'indirizzo email.
                                     </Alert>
                                 }
+                                
                             </Paper>
                         </Grid>
-                        <Grid item xs={12} sm={5} style={{marginTop: '10px'}} className='custom-grid-item'>
+
+                        <Grid item xs={12} sm={4} style={{marginTop: '10px'}} className='custom-grid-item'>
                             <Paper style={{padding: '10px', textAlign: 'center'}}>
                                 <Avatar alt={this.state.name}
                                         src={"https://gravatar.com/avatar/" + this.state.emailmd5 + "?d=retro&s=256"}
@@ -146,6 +169,7 @@ class ProfilePage extends React.Component {
                                 <Link href="https://it.gravatar.com/" target="_blank">Modifica su Gravatar</Link>
                             </Paper>
                         </Grid>
+                        
                     </Grid>
                 }
                 <Snackbar open={this.state.snackBarOpen} autoHideDuration={6000} onClose={this.handleSnackbarClose}>

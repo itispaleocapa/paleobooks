@@ -11,7 +11,7 @@ import ResetPasswordPage from "./pages/ResetPasswordPage";
 class App extends React.Component {
     constructor() {
         super();
-        this.state = {error: false, isLoggedIn: null, wasInitialized: false}
+        this.state = {error: false, isLoggedIn: null, wasInitialized: false, url: false}
     }
 
     componentDidMount = () => {
@@ -23,7 +23,11 @@ class App extends React.Component {
         }, 5000);
     }
 
-    chechLogin = () => {
+    chechLogin = (props = false) => {
+        if(props){
+            this.setState({url: props})
+        }
+
         api.isLoggedIn().then((res) => {
             this.setState({isLoggedIn: true, wasInitialized: true, profile: res});
         }).catch(() => {
@@ -40,17 +44,24 @@ class App extends React.Component {
                     <Route exact path="/login">
                         {this.state.isLoggedIn
                             ? <Redirect to=""/>
-                            : <LoginPage checkLogin={this.chechLogin} />}
+                            : <LoginPage redirectUri={window.location.pathname.replace('/pbr', '')} checkLogin={this.chechLogin} />}
                     </Route>
                     <Route path={["/reset-password", "/resetpassword.html"]}>
                         {this.state.isLoggedIn
                             ? <Redirect to=""/>
                             : <ResetPasswordPage checkLogin={this.chechLogin} />}
                     </Route>
-                    <PrivateRoute auth={this.state.isLoggedIn} wasInitialized={this.state.wasInitialized} exact component={() => <PageContainer checkLogin={this.chechLogin} profile={this.state.profile}/>} path="*"/>
+                    <PrivateRoute auth={this.state.isLoggedIn} wasInitialized={this.state.wasInitialized} exact path='*' component={() => <PageContainer checkLogin={this.chechLogin} profile={this.state.profile}/>} />
+
                     <Route path="*">
-                        <Redirect to=""/>
+                        {this.state.url? 
+                            window.location.assign(this.state.url)
+                        :
+                            <Redirect to=""/>
+                        }
                     </Route>
+                    
+
                 </Switch>
             </BrowserRouter>
         );

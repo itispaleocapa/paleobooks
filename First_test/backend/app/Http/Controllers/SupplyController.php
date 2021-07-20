@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Models\Book;
 use App\Models\Supply;
 use App\Models\SchoolClass;
+use App\Mail\SupplyMail;
+use Illuminate\Support\Facades\Mail;
+
 
 class SupplyController extends Controller {
     public function index(Request $request) {
@@ -80,12 +83,14 @@ class SupplyController extends Controller {
         }
 
         $request->merge(['user_id' => $request->auth->id]);
+        $class = new SupplyController();
+        // $supply = Supply::create($request->all());
+        $class->sendmail($request, $book->id);
 
-        $supply = Supply::create($request->all());
+        // return response()->json([
+        //     'success' => 'Supply created successfully'
+        // ], 201);     
 
-        return response()->json([
-            'success' => 'Supply created successfully'
-        ], 201);
     }
 
     public function update(Request $request, $id) {
@@ -199,4 +204,21 @@ class SupplyController extends Controller {
             'success' => 'Supply deleted successfully'
         ], 201);
     }
+
+    public function sendmail(Request $request, $id) {
+
+
+        $book = new BookController;
+
+        $demand = new DemandController;
+
+        foreach ($book->getBookDemands($id) as $data) {
+            $info = $demand->show($request, $data->id);
+            Mail::to($info->user->email)->send(new SupplyMail($id, $request->all()));
+        }
+
+        return false;
+
+    }
+
 }
