@@ -49,8 +49,7 @@ class SupplyMail extends Mailable
     public function build()
     {
 
-        return $this->view('Mail.new_supply');
+        return $this->subject('Nuova offerta per un libro che stai cercando')->view('Mail.new_supply');
 
-        
     }
 }

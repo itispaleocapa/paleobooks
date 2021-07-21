@@ -21,7 +21,7 @@ class FindBooksPage extends React.Component {
     handleQueryChange = (e) => {
         this.setState({loading: true});
         let query = e.target.value;
-        if (query.length < 4 || (query.substr(0, 4) === '9788' && query.length !== 13)) {
+        if (query.trim().length < 4 || (query.trim().substr(0, 4) === '9788' && query.trim().length !== 13)) {
             clearTimeout(this.state.timer);
             this.setState({
                 timer: setTimeout(() => {
@@ -32,7 +32,7 @@ class FindBooksPage extends React.Component {
             clearTimeout(this.state.timer);
             this.setState({
                 timer: setTimeout(() => {
-                    this.updateBooksList(query);
+                    this.updateBooksList(query.trim());
                 }, 300)
             });
             this.setState({tooShort: false});

@@ -101,6 +101,9 @@ class BookInformationDialog extends React.Component {
     loadDemands = () => {
         this.getItems()
 
+        this.setState({img: [], imgUp: [], images: this.props.book?.info?.img? this.props.book.info.img : [], currentImage: this.props.book.photo})
+
+
         api.request('/books/' + this.props.book.id + '/demands').then((res) => {
             this.setState({
                 demands: res.filter((s) => {
@@ -190,14 +193,26 @@ class BookInformationDialog extends React.Component {
             price: parseFloat(this.state.price),
             img: this.state.imgUp,
             info: JSON.stringify({
-                img: this.state.img.splice(null),
                 pen: this.state.pen,
                 cover: this.state.cover,
                 penState: this.state.penState,
                 description: this.state.description
             })
-            
+
         })).then(() => {
+
+            this.props.update(JSON.stringify({
+                book_id: this.props.book.id,
+                price: parseFloat(this.state.price),
+                img: this.state.imgUp,
+                info: JSON.stringify({
+                    pen: this.state.pen,
+                    cover: this.state.cover,
+                    penState: this.state.penState,
+                    description: this.state.description
+                })
+            }));
+
             this.setState({
                 snackBarOpen: true,
                 snackBarSeverity: 'success',
@@ -248,7 +263,6 @@ class BookInformationDialog extends React.Component {
         supply.price = this.state.price;
         supply.img = this.state.imgUp;
         supply.info = {
-            img: this.state.img.splice(null),
             pen: this.state.pen,
             cover: this.state.cover,
             penState: this.state.penState,
@@ -347,14 +361,8 @@ class BookInformationDialog extends React.Component {
 
             if (event.target.files[i].size/977 <= 10415 && prevState.img.length + event.target.files.length - i <= 3) {
                 this.getBase64(event.target.files[i]);
-                let val = prevState.img[prevState.img.length-1];
-                val = (val)? parseInt(val.split('-')[2].split('.')[0])+1 : 1
                 prevState = {
                     ...prevState,
-                    img: [
-                        ...prevState.img,
-                        parseInt(localStorage.getItem('user_id')) + '-' + this.props.book.id + '-' + val + '.jpeg'
-                    ],
                     images: [
                         ...prevState.images,
                         URL.createObjectURL(event.target.files[i]),
@@ -375,6 +383,7 @@ class BookInformationDialog extends React.Component {
     }
 
     removeImage = (event) => {
+
         let newImg = this.state.img
         let newImgUp = this.state.imgUp
         let newImages = this.state.images
@@ -384,12 +393,37 @@ class BookInformationDialog extends React.Component {
         newImages.splice(key, 1)
         newImg.splice(key, 1)
 
-        this.setState({
-            currentImage: this.props.book.photo,
-            img: newImg,
-            imgUp: newImgUp,
-            images: newImages
-        });
+        if(!this.state.currentImage.includes('blob')){
+            var urlParts = this.state.currentImage.split('/')
+            api.request('/supplies/img/' + this.state.userSupply.id, 'DELETE', JSON.stringify({
+                img: urlParts[urlParts.length-1]
+            })).then(() => {
+                this.setState({
+                    snackBarOpen: true,
+                    snackBarSeverity: 'success',
+                    snackBarMessage: 'Immagine elliminata correttamente!',
+                    currentImage: this.props.book.photo,
+                    img: newImg,
+                    imgUp: newImgUp,
+                    images: newImages
+                });
+
+            }).catch((res) => {
+                this.setState({snackBarOpen: true, snackBarSeverity: 'error', snackBarMessage: res.error});
+                return
+            });
+        }else{
+            this.setState({
+                snackBarOpen: true,
+                snackBarSeverity: 'success',
+                snackBarMessage: 'Immagine elliminata correttamente!',
+                currentImage: this.props.book.photo,
+                img: newImg,
+                imgUp: newImgUp,
+                images: newImages
+            });
+        }   
+
     }
 
     imgName = name => {
@@ -429,7 +463,7 @@ class BookInformationDialog extends React.Component {
                                     <div style={{display: 'flex', flexFlow: 'column', gap: '20px'}}>
                                         <img src={this.props.book.photo} style={Object.assign({}, {maxWidth: '50px', marginTop: '10px', borderRadius: '5px', cursor: 'pointer', transition: 'all .1s ease'}, (this.props.book.photo === this.state.currentImage)? {border: 'solid 2px #3f51b5', boxShadow: '0 0 7px 2px #3f51b5'} : {border: 'solid 2px #dedede'})} onClick={this.imgShow} alt=""/>
 
-                                        {this.state.images.map(image => {
+                                        {this.state.images?.map(image => {
                                             const thisImage = (image.includes("blob"))? image : process.env.REACT_APP_IMAGES_URL + '/' + image;
                                             
                                             return <img src={thisImage} style={(thisImage === this.state.currentImage)? {
