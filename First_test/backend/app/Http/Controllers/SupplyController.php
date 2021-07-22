@@ -61,7 +61,7 @@ class SupplyController extends Controller {
             if ($value['encode']) {
                 $image = substr(explode(";", $value['encode'])[1], 7);
                 $name = bin2hex(random_bytes(10)) . '-' . $request->auth->id . '.jpeg';
-                file_put_contents('../../../img/' . $name, base64_decode($image));
+                file_put_contents(base_path() . '/' . env('IMG_DIR') . '/'  . $name, base64_decode($image));
                 array_push($info['img'], $name);
             }
         }
@@ -153,7 +153,7 @@ class SupplyController extends Controller {
                 $image = substr(explode(";", $value['encode'])[1], 7);
                 $name = bin2hex(random_bytes(10)) . '-' . $request->auth->id . '.jpeg';
                 array_push($info['img'], $name);
-                file_put_contents('../../../img/' . $name, base64_decode($image));
+                file_put_contents(base_path() . '/' . env('IMG_DIR') . '/'  . $name, base64_decode($image));
             }
         }
 
@@ -212,17 +212,22 @@ class SupplyController extends Controller {
 
         $tmpSupply = $supply;
         $info = json_decode($supply->info, true);
-        $info['img'] = json_decode(json_encode(array_diff($info['img'], [$request->input('img')])), true);
+
+        $imageId = array_search($request->input('img'), $info['img']);
+        if ($imageId !== null) {
+            if (file_exists(base_path() . '/' . env('IMG_DIR') . '/'  . $request->input('img'))) {
+                unlink(base_path() . '/' . env('IMG_DIR') . '/'  . $request->input('img'));
+            }
+            unset($info['img'][$imageId]);
+        }
+
+        $info['img'] = array_values($info['img']);
+
         $request->merge(['info' => json_encode($info)]);
         $supply->info = $request->info;
 
-
-
         try {
             $supply->save();
-            if(file_exists('../../../img/' . $request->input('img'))){
-                unlink('../../../img/' . $request->input('img'));
-            }
         } catch (Exception $e) {
             return response()->json([
                 'error' => 'An error while updating up.' // To get the error message use this: $e->getMessage()
@@ -261,7 +266,7 @@ class SupplyController extends Controller {
 
         foreach ($book->getBookDemands($id) as $data) {
             $user = User::find($data->user_id);
-            
+
             if ($user->NewSupply && $request->auth->id != $user->id) {
                 Mail::to($user->email)->send(new SupplyMail($id, $request->all()));
             }

@@ -419,7 +419,7 @@ class BookInformationDialog extends React.Component {
                 imgUp: newImgUp,
                 images: newImages
             });
-        }   
+        }
 
     }
 
