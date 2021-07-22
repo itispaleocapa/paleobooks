@@ -61,12 +61,12 @@ class SupplyController extends Controller {
             if ($value['encode']) {
                 $image = substr(explode(";", $value['encode'])[1], 7);
                 $name = bin2hex(random_bytes(10)) . '-' . $request->auth->id . '.jpeg';
-                array_push($info['img'], $name);
                 file_put_contents('../../../img/' . $name, base64_decode($image));
+                array_push($info['img'], $name);
             }
         }
 
-        if(!$book) {
+        if (!$book) {
             return response()->json([
                 'error' => 'Provided book doesn\'t exist.'
             ], 400);
@@ -83,7 +83,10 @@ class SupplyController extends Controller {
             ], 400);
         }
 
-        $request->merge(['user_id' => $request->auth->id]);
+        $requestData = json_decode($request->info, true);
+        $requestData['img'] = $info['img'];
+        $request->merge(['user_id' => $request->auth->id, 'info' => json_encode($requestData)]);
+
         $class = new SupplyController();
         $supply = Supply::create($request->all());
         $class->sendmail($request, $book->id);
@@ -140,7 +143,11 @@ class SupplyController extends Controller {
         // Check and validate the updated price
         $price = $request->input('price');
         $info = $request->input('info');
-        $info['img'] = [];
+        if(array_key_exists('img', json_decode($supply->info, true))){
+            $info['img'] = json_decode($supply->info, true)['img'];
+        }else{
+            $info['img'] = [];
+        }
         foreach ($request->input('img') as $key => $value) {
             if ($value['encode']) {
                 $image = substr(explode(";", $value['encode'])[1], 7);
@@ -149,6 +156,10 @@ class SupplyController extends Controller {
                 file_put_contents('../../../img/' . $name, base64_decode($image));
             }
         }
+
+        $requestData = $request->input('info');
+        $requestData['img'] = $info['img'];
+        $request->merge(['user_id' => $request->auth->id, 'info' => json_encode($requestData)]);
 
         if ($price || $info) {
             if ($supply->isDirty()) {
@@ -186,6 +197,44 @@ class SupplyController extends Controller {
         ], 201);
     }
 
+    public function deleteImage(Request $request, $id) {
+        $supply = Supply::find($id);
+
+        if (!$supply) {
+            Response()->json([], 404);
+        }
+
+        if ($request->auth->id != $supply->user_id) {
+            return response()->json([
+                'error' => 'You are not authorized to edit this supply.'
+            ], 400);
+        }
+
+        $tmpSupply = $supply;
+        $info = json_decode($supply->info, true);
+        $info['img'] = json_decode(json_encode(array_diff($info['img'], [$request->input('img')])), true);
+        $request->merge(['info' => json_encode($info)]);
+        $supply->info = $request->info;
+
+
+
+        try {
+            $supply->save();
+            if(file_exists('../../../img/' . $request->input('img'))){
+                unlink('../../../img/' . $request->input('img'));
+            }
+        } catch (Exception $e) {
+            return response()->json([
+                'error' => 'An error while updating up.' // To get the error message use this: $e->getMessage()
+            ], 400);
+        }
+
+        return response()->json([
+            'success' => 'Immagine rimossa con successo.'
+        ], 201);
+
+    }
+
     public function destroy(Request $request, $id) {
         $supply = Supply::find($id);
 
@@ -208,15 +257,12 @@ class SupplyController extends Controller {
 
     public function sendmail(Request $request, $id) {
 
-
         $book = new BookController;
 
-        $demand = new DemandController;
-
         foreach ($book->getBookDemands($id) as $data) {
-            $info = $demand->show($request, $data->id);
-            $user = User::find($info->user->id);
-            if($user->NewSupply && $request->auth->id != $user->id){
+            $user = User::find($data->user_id);
+            
+            if ($user->NewSupply && $request->auth->id != $user->id) {
                 Mail::to($user->email)->send(new SupplyMail($id, $request->all()));
             }
 
