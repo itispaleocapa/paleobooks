@@ -43,7 +43,7 @@ class SupplyController extends Controller {
     public function show(Request $request, $id) {
         $supply = Supply::find($id);
 
-        return $supply ? Supply::with(['book:id,title,isbn,price,photo', 'user'])->where('id', $supply->id)->first() : Response()->json([], 404);
+        return $supply ? Supply::with(['book:id,title,isbn,price,photo', 'user'])->where('id', $supply->id)->first() : Response()->json(['error' => 'Supply not found'], 404);
     }
 
     public function create(Request $request) {
@@ -90,7 +90,7 @@ class SupplyController extends Controller {
 
         return response()->json([
             'success' => 'Supply created successfully'
-        ], 201);     
+        ], 201);
 
     }
 

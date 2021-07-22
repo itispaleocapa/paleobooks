@@ -51,16 +51,14 @@ class App extends React.Component {
                             ? <Redirect to=""/>
                             : <ResetPasswordPage checkLogin={this.checkLogin} />}
                     </Route>
-                    <PrivateRoute auth={this.state.isLoggedIn} wasInitialized={this.state.wasInitialized} exact path='*' component={() => <PageContainer checkLogin={this.checkLogin} profile={this.state.profile}/>} />
 
-                    <Route path="*">
-                        {this.state.url? 
-                            window.location.assign(this.state.url)
-                        :
-                            <Redirect to=""/>
-                        }
-                    </Route>
-                    
+                    {this.state.url && (
+                        <Route path='/' exact>
+                            <Redirect to={this.state.url} />
+                        </Route>
+                    )}
+
+                    <PrivateRoute auth={this.state.isLoggedIn} wasInitialized={this.state.wasInitialized} exact path='*' component={() => <PageContainer checkLogin={this.checkLogin} profile={this.state.profile}/>} />
 
                 </Switch>
             </BrowserRouter>

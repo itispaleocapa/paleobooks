@@ -37,40 +37,27 @@ class HomePage extends React.Component {
         this.props.checkLogin();
     }
 
-    handleClose = () => {this.setState({open: false})}
+    handleClose = () => {
+        this.setState({open: false});
+        this.props.history.push('/');
+    }
 
     checkSupply = (id) => {
-        api.request('/supplies/').then((res) => {
-
-            if(res.lenght < 0) {
-                this.setState({loading: false})
-                return
+        api.request('/supplies/' + id).then((res) => {
+            this.setState({result: true, book: {
+                    ...res.book,
+                    info: res.info,
+                    userPrice: res.price,
+                    email: res.user.email
+                }}, function() {
+                this.setState({loading: false, error: false})
+            });
+        }).catch((res) => {
+            if (res.error === 'Supply not found') {
+                this.setState({snackBarOpen: true, snackBarSeverity: 'error', snackBarMessage: "Impossibile trovare l'offerta", loading: false})
+                this.props.history.push('/')
             }
-
-            for (var i = 0; i < res.length; i++) {
-                var element = res[i]
-                if(parseInt(element.id) === parseInt(id)) {
-
-                    api.request('/supplies/' + id).then((res) => {
-                        this.setState({result: true, book: {
-                                ...res.book,
-                                info: res.info,
-                                userPrice: res.price,
-                                email: res.user.email
-                            }}, function() {
-                            this.setState({loading: false, error: false})
-                        });
-                    })
-                    return
-
-                } else {
-                    if (i === res.length-1){
-                        this.setState({snackBarOpen: true, snackBarSeverity: 'error', snackBarMessage: "Impossibile trovare l'offerta", loading: false})
-                        this.props.history.push('/')
-                    }
-                }
-            }
-        });       
+        })
     }
 
     render() {

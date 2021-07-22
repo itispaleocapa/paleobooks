@@ -63,7 +63,7 @@ class BookInformationDialog extends React.Component {
         super(props);
         this.state = {loading: true, userSupply: false, cover: false, pen: false, penState: '', price: 0, description: '', img: [], imgUp: [], images: this.props.book?.info?.img? this.props.book.info.img : [], currentImage: this.props.book.photo};
         this.inputRef = React.createRef();
-    }  
+    }
 
     getItems = (loading = true) => {
         this.setState({loading: loading});
@@ -79,13 +79,10 @@ class BookInformationDialog extends React.Component {
                         }
                     }
                 )
-
+                //debugger;
                 let average = (Prices.length === 1? Prices[0] : 0)
-
                 if (Prices.length > 1) {
-                    average = Prices.reduce((a, b) => a + b)/Prices.length
-                    let averageDeciaml = String(average).split(parseInt(average) + ".")[1]
-                    average = (parseInt(averageDeciaml.length > 1? averageDeciaml : averageDeciaml + '0') < 50)? parseInt(average) + '.00' : parseInt(average) + '.50'
+                    average = Math.round((Prices.reduce((a, b) => a + b)/Prices.length) * 2) / 2;
                 }
 
                 this.setState({
@@ -154,7 +151,7 @@ class BookInformationDialog extends React.Component {
 
                 let newArray = [];
                 let newImgArray = this.state.images;
-                for (let val of this.state.img) {          
+                for (let val of this.state.img) {
                     newArray = [...newArray, {'encode' : false}]
                     if (!newImgArray.includes(val)) {
                         newImgArray = [...newImgArray, val]
@@ -175,7 +172,7 @@ class BookInformationDialog extends React.Component {
             });
             return;
         }
-        
+
         if (parseFloat(this.state.price) > this.props.book.price) {
             this.setState({
                 snackBarOpen: true,
@@ -196,7 +193,7 @@ class BookInformationDialog extends React.Component {
                 penState: this.state.penState,
                 description: this.state.description
             })
-            
+
         })).then(() => {
             this.setState({
                 snackBarOpen: true,
@@ -207,16 +204,16 @@ class BookInformationDialog extends React.Component {
             this.props.handleClose();
             this.loadDemands();
 
-            
+
         }).catch((res) => {
-            
+
             if (res.error === "You already have a supply for this book.") {
                 res.error = "Hai già un annuncio di vendita per questo libro."
             }
-            
+
             this.setState({snackBarOpen: true, snackBarSeverity: 'error', snackBarMessage: res.error});
             this.props.handleClose();
-            
+
         });
     }
 
@@ -298,9 +295,9 @@ class BookInformationDialog extends React.Component {
 
     handleChange = name => (event) => {
         this.setState({[name]: event.target.checked});
-        
+
         if (name === 'pen' && !event.target.checked) this.setState({penState: ''});
-    } 
+    }
 
     handleKeyPress = (event) => {
         if (event.key === 'Enter') {
@@ -326,12 +323,12 @@ class BookInformationDialog extends React.Component {
                     type: file.type.split('/')[1]
                 });
 
-                resolve(reader.result);          
+                resolve(reader.result);
             };
         });
     }
 
-    handleImg = (event) => {      
+    handleImg = (event) => {
         let prevState = this.state;
 
         for (let i = 0; i < event.target.files.length; i++) {
@@ -358,7 +355,7 @@ class BookInformationDialog extends React.Component {
                     images: [
                         ...prevState.images,
                         URL.createObjectURL(event.target.files[i]),
-                    ]  
+                    ]
                 }
 
             } else {
@@ -409,7 +406,7 @@ class BookInformationDialog extends React.Component {
     render() {
         return (
             <>
-                <Dialog onEnter={() => this.loadDemands()} open={this.props.open} TransitionComponent={Transition} maxWidth={false} className="book-info-dialog"> 
+                <Dialog onEnter={() => this.loadDemands()} open={this.props.open} TransitionComponent={Transition} maxWidth={false} className="book-info-dialog">
                     <AppBar className="dialog-title-text-ellipsis" style={{position: 'relative'}}>
                         <Toolbar style={{maxWidth: '817px'}} className="book-info-dialog-header">
                             <IconButton edge="start" color="inherit" onClick={this.props.handleClose} aria-label="close">
@@ -418,9 +415,9 @@ class BookInformationDialog extends React.Component {
                             <Typography variant="h6" noWrap>{this.props.book.title}</Typography>
                         </Toolbar>
                     </AppBar>
-                    
+
                     <DialogContent style={{display: 'flex', flexWrap: 'none', gap: '20px'}} className="book-info-dialog-content">
-                        
+
                         {(this.props.owner && this.state.loading)? (
                             <div style={{margin: '20px auto', width: 'fit-content'}}><CircularProgress/></div>
                         ) : (
@@ -431,7 +428,7 @@ class BookInformationDialog extends React.Component {
 
                                         {this.state.images.map(image => {
                                             const thisImage = (image.includes("blob"))? image : process.env.REACT_APP_IMAGES_URL + '/' + image;
-                                            
+
                                             return <img src={thisImage} style={(thisImage === this.state.currentImage)? {
                                                 maxWidth: '50px',
                                                 borderRadius: '5px',
@@ -511,8 +508,8 @@ class BookInformationDialog extends React.Component {
                                                 <input ref={this.inputRef} accept="image/png, image/jpeg" type="file" style={{display: 'none'}} multiple onChange={this.handleImg}/>
                                             </FormControl>
                                         </>
-                                    : 
-                                        <div style={{width: '400px', height: '96%', maxWidth: '90vw', display: 'flex', flexDirection: 'column'}}>  
+                                    :
+                                        <div style={{width: '400px', height: '96%', maxWidth: '90vw', display: 'flex', flexDirection: 'column'}}>
                                             <div style={{display: 'flex'}}>
                                                 <div>
                                                     <span style={{display: 'inline', verticalAlign: 'middle', fontSize: '17px', textDecoration: 'line-through'}}>€{this.props.book.price}</span><br/>
@@ -569,20 +566,20 @@ class BookInformationDialog extends React.Component {
                             </>
                         )}
                     </DialogContent>
-                    
+
                     <DialogActions>
                         {this.props.owner?
                             <>
                                 {(this.state.userSupply === null)?
                                     <Button autoFocus onClick={this.createSupply} color="primary">Crea annuncio </Button>
-                                : 
+                                :
                                     <>
                                         <Button onClick={this.deleteSupply} color="secondary">Elimina annuncio</Button>
                                         <Button autoFocus onClick={this.updateSupply} color="primary">Salva annuncio</Button>
                                     </>
                                 }
                             </> : null}
-                        
+
                         <Button onClick={this.props.handleClose} color="primary">Chiudi</Button>
                     </DialogActions>
                 </Dialog>
