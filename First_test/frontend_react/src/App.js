@@ -52,10 +52,12 @@ class App extends React.Component {
                             : <ResetPasswordPage checkLogin={this.checkLogin} />}
                     </Route>
 
-                    {this.state.url && (
-                        <Route path='/' exact>
-                            <Redirect to={this.state.url} />
-                        </Route>
+                    {this.state.url && this.state.url !== '/' &&  (
+                        <Route path='/' exact render={() => {
+                                const redirectUrl = this.state.url;
+                                this.setState({url: null});
+                                return (<Redirect to={redirectUrl} />);
+                            }} />
                     )}
 
                     <PrivateRoute auth={this.state.isLoggedIn} wasInitialized={this.state.wasInitialized} exact path='*' component={() => <PageContainer checkLogin={this.checkLogin} profile={this.state.profile}/>} />
