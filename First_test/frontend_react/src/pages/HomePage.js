@@ -67,7 +67,7 @@ class HomePage extends React.Component {
                 <Paper elevation={3} style={{
                     margin: '10px auto 5px',
                     padding: '15px',
-                    maxWidth: '1000px',
+                    maxWidth: '1200px',
                     width: 'fit-content',
                     textAlign: 'center'
                 }}>
