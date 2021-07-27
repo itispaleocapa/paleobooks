@@ -16,6 +16,14 @@ class UserController extends Controller
     public function update(Request $request) {
         $user = User::find($request->auth->id);
 
+        if($user->supply_notifications !== $request->supply_notifications && $user->password === "paleoid"){
+            $user->supply_notifications = $request->supply_notifications;
+            $user->save();
+            return response()->json([
+                'success' => 'User updated successfully.'
+            ], 201);
+        }
+
         $user->supply_notifications = $request->supply_notifications;
 
         if ($user->password === "paleoid") {
