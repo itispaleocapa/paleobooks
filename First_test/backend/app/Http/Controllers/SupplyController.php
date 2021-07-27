@@ -87,9 +87,9 @@ class SupplyController extends Controller {
         $requestData['img'] = $info['img'];
         $request->merge(['user_id' => $request->auth->id, 'info' => json_encode($requestData)]);
 
-        // $class = new SupplyController();
+        $class = new SupplyController();
         $supply = Supply::create($request->all());
-        // $class->sendmail($request, $book->id);
+        $class->sendmail($request, $book->id);
 
         return response()->json([
             'success' => 'Supply created successfully'
@@ -263,15 +263,21 @@ class SupplyController extends Controller {
     public function sendmail(Request $request, $id) {
 
         $book = new BookController;
+        $mailArray = array(); 
 
         foreach ($book->getBookDemands($id) as $data) {
             $user = User::find($data->user_id);
-
-            if ($user->NewSupply && $request->auth->id != $user->id) {
-                Mail::to($user->email)->send(new SupplyMail($id, $request->all()));
+            if ($user->supply_notifications && $request->auth->id != $user->id) {
+                array_push($mailArray, $user->email);
             }
-
         }
+
+        //TODO: invio a massimo 100 destinatari nel cc 
+
+        if (count($mailArray) > 0 ) {
+            Mail::to('noreply@palebooks.it')->cc($mailArray)->send(new SupplyMail($id, $request->all()));
+        }
+
     }
 
 }

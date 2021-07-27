@@ -24,7 +24,7 @@ class ProfilePage extends React.Component {
             password_confirm: '',
             emailmd5: '',
             snackBarOpen: false,
-            NewSupply: false
+            supply_notifications: false
         };
     }
 
@@ -40,7 +40,7 @@ class ProfilePage extends React.Component {
                 paleoid: res.paleoid,
                 name: res.name,
                 email: res.email,
-                NewSupply: res.NewSupply,
+                supply_notifications: res.supply_notifications,
                 emailmd5: md5(res.email.toLowerCase())
             });
             this.props.updateProfile();
@@ -61,12 +61,11 @@ class ProfilePage extends React.Component {
             return
         }
         let password = this.state.password.length > 0 ? this.state.password : null;
-        console.log(this.state.NewSupply? 1 : 0)
         api.request('/users', 'PUT', JSON.stringify({
             name: this.state.name,
             email: this.state.email,
             password: password,
-            NewSupply: this.state.NewSupply? 1 : 0
+            supply_notifications: this.state.supply_notifications? 1 : 0
         })).then(res => {
             this.setState({
                 snackBarOpen: true,
@@ -92,7 +91,7 @@ class ProfilePage extends React.Component {
     }
 
     handleCheckBoxChange = (name) => {
-        this.setState({[name]: !this.state.NewSupply});
+        this.setState({[name]: !this.state.supply_notifications});
         if (this.state.paleoid) {
             this.setState({password_confirm: this.state.password}, function() {
                 this.handleSave()   
@@ -134,9 +133,9 @@ class ProfilePage extends React.Component {
                                            onKeyPress={this.handleKeyPress}
                                            type='password' disabled={this.state.paleoid}/>
                                 <Checkbox
-                                    checked={this.state.NewSupply}
-                                    value="NewSupply"
-                                    onChange={(e) => this.handleCheckBoxChange('NewSupply', e)}
+                                    checked={this.state.supply_notifications}
+                                    value="supply_notifications"
+                                    onChange={(e) => this.handleCheckBoxChange('supply_notifications', e)}
                                     color="primary"
                                     inputProps={{ 'aria-label': 'Checkbox A' }}
                                 />

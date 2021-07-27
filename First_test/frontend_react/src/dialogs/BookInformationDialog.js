@@ -440,7 +440,7 @@ class BookInformationDialog extends React.Component {
     render() {
         return (
             <>
-                <Dialog onEnter={() => this.loadDemands()} open={this.props.open} TransitionComponent={Transition} maxWidth={false} className="book-info-dialog">
+                <Dialog onClose={this.props.handleClose} onEnter={() => this.loadDemands()} open={this.props.open} TransitionComponent={Transition} maxWidth={false} className="book-info-dialog">
                     <AppBar className="dialog-title-text-ellipsis" style={{position: 'relative'}}>
                         <Toolbar style={{maxWidth: '817px'}} className="book-info-dialog-header">
                             <IconButton edge="start" color="inherit" onClick={this.props.handleClose} aria-label="close">
@@ -602,6 +602,8 @@ class BookInformationDialog extends React.Component {
                     </DialogContent>
 
                     <DialogActions>
+                        <Button onClick={this.props.handleClose} color="primary">Chiudi</Button>
+
                         {this.props.owner?
                             <>
                                 {(this.state.userSupply === null)?
@@ -614,7 +616,6 @@ class BookInformationDialog extends React.Component {
                                 }
                             </> : null}
 
-                        <Button onClick={this.props.handleClose} color="primary">Chiudi</Button>
                     </DialogActions>
                 </Dialog>
 

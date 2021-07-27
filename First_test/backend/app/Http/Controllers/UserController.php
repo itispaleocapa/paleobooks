@@ -16,7 +16,7 @@ class UserController extends Controller
     public function update(Request $request) {
         $user = User::find($request->auth->id);
 
-        $user->NewSupply = $request->NewSupply;
+        $user->supply_notifications = $request->supply_notifications;
 
         if ($user->password === "paleoid") {
             return response()->json([
@@ -85,7 +85,7 @@ class UserController extends Controller
         }
 
         return response()->json([
-            'success' => $request->NewSupply
+            'success' => 'User updated successfully.'
         ], 201);
     }
 }
