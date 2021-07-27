@@ -7,7 +7,6 @@ import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
 import CreateDemandDialog from "../dialogs/CreateDemandDialog";
 import BookInformationDialog from "../dialogs/BookInformationDialog";
-import Link from "@material-ui/core/Link";
 
 class DemandSupplyCard extends React.Component {
     constructor(props) {
@@ -26,7 +25,7 @@ class DemandSupplyCard extends React.Component {
 
     update = (newSupply) => {
         Object.keys(newSupply).forEach(val => {
-            if ( Object.keys(this.state.book).includes(val) && val !== 'price' && val != 'id') {
+            if ( Object.keys(this.state.book).includes(val) && val !== 'price' && val !== 'id') {
                 this.setState({[val]: newSupply.val})
             }
         });
