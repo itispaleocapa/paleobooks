@@ -1,20 +1,15 @@
 import React from "react";
-import Typography from "@material-ui/core/Typography";
 import api from "../api";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import DemandsSuppliesList from "../components/DemandsSuppliesList";
 import Alert from "@material-ui/lab/Alert";
 import {NavLink} from "react-router-dom";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Switch from "@material-ui/core/Switch";
-import TextField from "@material-ui/core/TextField";
-import FormControl from "@material-ui/core/FormControl";
 import AlertTitle from "@material-ui/lab/AlertTitle";
+import { Checkbox, FormControl, TextField, Switch, FormControlLabel, CircularProgress, Typography} from "@material-ui/core";
 
 class DemandsSuppliesPage extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {loading: true, items: [], itemsFiltered: [], query: '', showAllUsers: false, tooShort: false};
+        this.state = {loading: true, items: [], itemsFiltered: [], query: '', showAllUsers: false, tooShort: false, pen: false, cover: false, filter: false, coverFilter: false, penFilter: false};
     }
 
     componentDidMount = () => {
@@ -70,14 +65,46 @@ class DemandsSuppliesPage extends React.Component {
     updateBooksList = (query = this.state.query) => {
         if (this.state.showAllUsers === true) {
             api.request('/' + this.props.type + '?search=' + query).then((res) => {
-                this.setState({itemsFiltered: res, loading: false});
+                
+                let newArray = [...res]
+
+
+                if (this.props.type === 'supplies' && this.state.filtri) {
+
+                    newArray = []
+
+                    res.forEach(val => {
+                        let resInfo = JSON.parse(val.info)
+                        if (resInfo.cover === this.state.cover && this.state.filtri && resInfo.pen === this.state.pen && this.state.filtri) {
+                            newArray = [...newArray, val]
+                        }
+                    });                   
+                }
+
+                this.setState({itemsFiltered: newArray, loading: false});
+
             })
+
         } else {
+
             let books = this.state.items.filter((b) => {
                 return b.book.title.toLowerCase().includes(query.toLowerCase()) || b.book.isbn === query;
             })
+            
             this.setState({itemsFiltered: books, loading: false})
         }
+    }
+
+    handleSwitchFilter = name => (event) => {
+
+        this.setState({[name]: event.target.checked})
+        this.handleSwitchChange(this.state.showAllUsers)
+
+    }
+
+    handleCheckbox = name => (event) => {
+        this.setState({[name]: event.target.checked})
+        this.handleSwitchChange(this.state.showAllUsers)
     }
 
     render() {
@@ -104,8 +131,49 @@ class DemandsSuppliesPage extends React.Component {
                                       label={'tutte le ' + (this.props.type === 'demands' ? 'domande' : 'offerte')}
                     />
                     <FormControl style={{display: 'block', marginTop: '6px'}}>
-                        <TextField id="standard-basic" label="Filtra per titolo o ISBN"
-                                   onChange={this.handleQueryChange} variant='outlined'/>
+                        
+                        {this.props.type === 'supplies'? 
+                            <>
+                                {this.state.showAllUsers?
+                                    <>
+                                    <span><Checkbox color="primary" onChange={this.handleCheckbox('filtri')} inputProps={{ 'aria-label': 'uncontrolled-checkbox' }} />Filtri</span>
+
+
+                                    {this.state.filtri?
+                                        <>
+
+                                            <br />                        
+
+                                            <TextField id="standard-basic" label="Filtra per titolo o ISBN" onChange={this.handleQueryChange} variant='outlined'/>
+
+                                            <br/>
+                                            
+                                            <Switch
+                                                checked={this.state.cover}
+                                                onChange={this.handleSwitchFilter('cover')}
+                                                name="cover"
+                                                color="primary"
+                                            />
+
+                                            <label>copertina</label>
+
+                                            <br/>
+
+                                            <Switch
+                                                checked={this.state.pen}
+                                                onChange={this.handleSwitchFilter('pen')}
+                                                name="cover"
+                                                color="primary"
+                                            />
+
+                                            <label>Scrittura in penna / evidenziature</label>
+                                        </>
+                                    : null}
+                                    </>
+                                : null}
+                            
+                            </> 
+                        : <TextField id="standard-basic" label="Filtra per titolo o ISBN" onChange={this.handleQueryChange} variant='outlined'/>}
                     </FormControl>
                 </div>
                 {(this.state.tooShort && this.state.loading === false && (this.state.showAllUsers !== false || this.state.items.length !== this.state.itemsFiltered.length)) ?

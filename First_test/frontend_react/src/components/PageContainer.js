@@ -70,7 +70,6 @@ function PageContainer(props) {
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [profile, setProfile] = React.useState(props.profile);
-
     function handleDrawerToggle() {
         setMobileOpen(!mobileOpen)
     }
@@ -81,7 +80,7 @@ function PageContainer(props) {
         })
     }
 
-    function closeDrawer() {
+    function closeDrawer() {        
         setMobileOpen(false);
     }
 
@@ -127,7 +126,7 @@ function PageContainer(props) {
             </div>
             <Divider variant="middle" style={{margin: '0'}}/>
             <List>
-                <ListItem button key="/" component={NavLink} exact to="/" activeClassName="Mui-selected"
+                <ListItem button key="/" component={NavLink} exact to='/' activeClassName="Mui-selected"
                           onClick={closeDrawer}>
                     <ListItemText primary="Home"/>
                 </ListItem>
@@ -212,13 +211,14 @@ function PageContainer(props) {
                     <Switch>
                         <Route exact path="/">
                             <HomePage checkLogin={props.checkLogin}/>
-                        </Route>
+                        </Route>      
                         <Route path="/profile">
                             <ProfilePage updateProfile={updateProfile}/>
                         </Route>
                         <Route path="/demands">
                             <DemandsSuppliesPage type='demands' />
                         </Route>
+                        <Route path="/supply/:id" render={(props) => <HomePage type='supplies' {...props}/>} />
                         <Route path="/supplies">
                             <DemandsSuppliesPage type='supplies' />
                         </Route>
@@ -226,7 +226,7 @@ function PageContainer(props) {
                             <FindBooksPage/>
                         </Route>
                         <Route path="/class-books">
-                            <FindClassBooksPage/>
+                            <FindClassBooksPage profile={profile}/>
                         </Route>
                         <Route path="/about-us">
                             <AboutUsPage/>

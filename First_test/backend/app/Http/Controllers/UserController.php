@@ -16,6 +16,8 @@ class UserController extends Controller
     public function update(Request $request) {
         $user = User::find($request->auth->id);
 
+        $user->supply_notifications = $request->supply_notifications;
+
         if ($user->password === "paleoid") {
             return response()->json([
                 'error' => 'Authentication managed by PaleoID.'

@@ -11,11 +11,11 @@ import ResetPasswordPage from "./pages/ResetPasswordPage";
 class App extends React.Component {
     constructor() {
         super();
-        this.state = {error: false, isLoggedIn: null, wasInitialized: false}
+        this.state = {error: false, isLoggedIn: null, wasInitialized: false, url: false}
     }
 
     componentDidMount = () => {
-        this.chechLogin();
+        this.checkLogin();
         setTimeout(() => {
             if (this.state.isLoggedIn === null) {
                 this.setState({error: true})
@@ -23,7 +23,11 @@ class App extends React.Component {
         }, 5000);
     }
 
-    chechLogin = () => {
+    checkLogin = (props = false) => {
+        if(props){
+            this.setState({url: props})
+        }
+
         api.isLoggedIn().then((res) => {
             this.setState({isLoggedIn: true, wasInitialized: true, profile: res});
         }).catch(() => {
@@ -40,17 +44,24 @@ class App extends React.Component {
                     <Route exact path="/login">
                         {this.state.isLoggedIn
                             ? <Redirect to=""/>
-                            : <LoginPage checkLogin={this.chechLogin} />}
+                            : <LoginPage redirectUri={window.location.pathname.replace('/pbr', '')} checkLogin={this.checkLogin} />}
                     </Route>
                     <Route path={["/reset-password", "/resetpassword.html"]}>
                         {this.state.isLoggedIn
                             ? <Redirect to=""/>
-                            : <ResetPasswordPage checkLogin={this.chechLogin} />}
+                            : <ResetPasswordPage checkLogin={this.checkLogin} />}
                     </Route>
-                    <PrivateRoute auth={this.state.isLoggedIn} wasInitialized={this.state.wasInitialized} exact component={() => <PageContainer checkLogin={this.chechLogin} profile={this.state.profile}/>} path="*"/>
-                    <Route path="*">
-                        <Redirect to=""/>
-                    </Route>
+
+                    {this.state.url && this.state.url !== '/' &&  (
+                        <Route path='/' exact render={() => {
+                                const redirectUrl = this.state.url;
+                                this.setState({url: null});
+                                return (<Redirect to={redirectUrl} />);
+                            }} />
+                    )}
+
+                    <PrivateRoute auth={this.state.isLoggedIn} wasInitialized={this.state.wasInitialized} exact path='*' component={() => <PageContainer checkLogin={this.checkLogin} profile={this.state.profile}/>} />
+
                 </Switch>
             </BrowserRouter>
         );

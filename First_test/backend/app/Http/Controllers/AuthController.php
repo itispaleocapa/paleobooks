@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Firebase\JWT\ExpiredException;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\Mailer;
+use App\Mail\Reset;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
 class AuthController extends BaseController {
@@ -413,6 +413,6 @@ class AuthController extends BaseController {
 
         //$reset_token = str_replace(".", "_", $reset_token);
 
-        Mail::to($email)->send(new Mailer($reset_token));
+        Mail::to($email)->send(new Reset($reset_token));
     }
 }

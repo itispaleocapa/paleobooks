@@ -11,7 +11,7 @@ import CreateSupplyDialog from "../dialogs/CreateSupplyDialog";
 class BookCard extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {demandDialogOpen: false, supplyDialogOpen: false};
+        this.state = {demandDialogOpen: false, supplyDialogOpen: false, book: this.props.book};
     }
 
     handleDemandOpen = () => {
@@ -28,6 +28,14 @@ class BookCard extends React.Component {
 
     handleSupplyClose = () => {
         this.setState({supplyDialogOpen: false});
+    }
+
+    update = (newSupply) => {
+        Object.keys(newSupply).forEach(val => {
+            if ( Object.keys(this.state.book).includes(val) && val !== 'price' && val !== 'id') {
+                this.setState({[val]: newSupply.val})
+            }
+        });
     }
 
     render() {
@@ -61,7 +69,7 @@ class BookCard extends React.Component {
                     </Button>
                 </CardActions>
                 <CreateDemandDialog book={this.props.book} open={this.state.demandDialogOpen} handleClose={this.handleDemandClose} />
-                <CreateSupplyDialog book={this.props.book} open={this.state.supplyDialogOpen} handleClose={this.handleSupplyClose} />
+                <CreateSupplyDialog owner={true} update={this.update} book={this.state.book} open={this.state.supplyDialogOpen} handleClose={this.handleSupplyClose} />
             </Card>
         );
     }
