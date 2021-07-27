@@ -275,7 +275,7 @@ class SupplyController extends Controller {
         //TODO: invio a massimo 100 destinatari nel cc 
 
         if (count($mailArray) > 0 ) {
-            Mail::to('noreply@palebooks.it')->cc($mailArray)->send(new SupplyMail($id, $request->all()));
+            Mail::to('noreply@palebooks.it')->bcc($mailArray)->send(new SupplyMail($id, $request->all()));
         }
 
     }
