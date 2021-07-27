@@ -87,9 +87,9 @@ class SupplyController extends Controller {
         $requestData['img'] = $info['img'];
         $request->merge(['user_id' => $request->auth->id, 'info' => json_encode($requestData)]);
 
-        $class = new SupplyController();
+        // $class = new SupplyController();
         $supply = Supply::create($request->all());
-        $class->sendmail($request, $book->id);
+        // $class->sendmail($request, $book->id);
 
         return response()->json([
             'success' => 'Supply created successfully'
