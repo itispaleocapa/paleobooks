@@ -12,16 +12,12 @@ import Divider from "@material-ui/core/Divider";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from '@material-ui/lab/Alert';
 import DemandSupplyUsers from "../components/DemandSupplyUsers";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import InputLabel from "@material-ui/core/InputLabel";
-import FormControl from "@material-ui/core/FormControl";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
-
+import BookInformationDialog from "../dialogs/BookInformationDialog";
 
 class CreateSupplyDialog extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {loading: true, demands: [], userSupply: false, price: 0, snackBarOpen: false};
+        this.state = {loading: true, demands: [], userSupply: false, price: 0, snackBarOpen: false, supplyDialogOpen: false};
     }
 
     loadDemands = () => {
@@ -43,79 +39,6 @@ class CreateSupplyDialog extends React.Component {
                 this.setState({loading: false});
             })
         })
-    }
-
-    createSupply = () => {
-        if (parseFloat(this.state.price) < 0) {
-            this.setState({
-                snackBarOpen: true,
-                snackBarSeverity: 'warning',
-                snackBarMessage: 'Il prezzo non può essere inferiore a 0'
-            });
-            return;
-        }
-        if (parseFloat(this.state.price) > this.props.book.price) {
-            this.setState({
-                snackBarOpen: true,
-                snackBarSeverity: 'warning',
-                snackBarMessage: 'Il prezzo non può essere superiore a €' + this.props.book.price
-            });
-            return;
-        }
-        api.request('/supplies', 'POST', JSON.stringify({
-            book_id: this.props.book.id,
-            price: parseFloat(this.state.price)
-        })).then(() => {
-            this.setState({
-                snackBarOpen: true,
-                snackBarSeverity: 'success',
-                snackBarMessage: 'Annuncio creato correttamente!'
-            });
-            this.handleClose();
-            this.loadDemands();
-        }).catch((res) => {
-            if (res.error === "You already have a supply for this book.") {
-                res.error = "Hai già un annuncio di vendita per questo libro."
-            }
-            this.setState({snackBarOpen: true, snackBarSeverity: 'error', snackBarMessage: res.error});
-            this.handleClose();
-        });
-    }
-
-    updateSupply = () => {
-        if (parseFloat(this.state.price) < 0) {
-            this.setState({
-                snackBarOpen: true,
-                snackBarSeverity: 'warning',
-                snackBarMessage: 'Il prezzo non può essere inferiore a 0'
-            });
-            return;
-        }
-        if (parseFloat(this.state.price) > this.props.book.price) {
-            this.setState({
-                snackBarOpen: true,
-                snackBarSeverity: 'warning',
-                snackBarMessage: 'Il prezzo non può essere superiore a €' + this.props.book.price
-            });
-            return;
-        }
-        if (this.state.userSupply === null) {
-            return;
-        }
-        let supply = this.state.userSupply;
-        supply.price = this.state.price;
-        api.request('/supplies/' + this.state.userSupply.id, 'PUT', JSON.stringify(supply)).then(() => {
-            this.setState({
-                snackBarOpen: true,
-                snackBarSeverity: 'success',
-                snackBarMessage: 'Annuncio modificato correttamente!',
-            });
-            this.handleClose();
-            this.loadDemands();
-        }).catch((res) => {
-            this.setState({snackBarOpen: true, snackBarSeverity: 'error', snackBarMessage: res.error});
-            this.handleClose();
-        });
     }
 
     deleteSupply = () => {
@@ -156,6 +79,14 @@ class CreateSupplyDialog extends React.Component {
                 this.updateSupply();
             }
         }
+    }
+    handleSupplyOpen = () => {
+        this.setState({supplyDialogOpen: true});
+    }
+
+    handleSupplyClose = () => {
+        this.setState({supplyDialogOpen: false});
+        this.handleClose();
     }
 
     render() {
@@ -210,43 +141,32 @@ class CreateSupplyDialog extends React.Component {
                                                 prezzo di
                                                 vendita oppure se {this.state.demands.length > 0 ? 'l\'hai già venduto' : 'hai già venduto il libro'} puoi cliccare sul pulsante qui sotto
                                                 per
-                                                eliminare l'annunco.
+                                                eliminare l'annuncio.
                                             </Typography>)
                                         : null}
                                 </>)
                         }
-                        {this.state.userSupply !== false ?
-                            <FormControl fullWidth variant="outlined" style={{marginTop: '8px'}}>
-                                <InputLabel htmlFor="outlined-adornment-amount">Prezzo di vendita</InputLabel>
-                                <OutlinedInput id="outlined-adornment-amount"
-                                               onChange={(e) => this.handlePriceChange(e)}
-                                               type="number"
-                                               defaultValue={(this.state.userSupply !== null) ? this.state.userSupply.price : 0}
-                                               startAdornment={<InputAdornment position="start">€</InputAdornment>}
-                                               labelWidth={125}
-                                               onKeyPress={this.handleKeyPress}
-                                />
-                            </FormControl> : null}
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.handleClose} color="primary">
                             Chiudi
                         </Button>
                         {(this.state.userSupply === null || this.state.userSupply === false) && this.props.type !== 'supply' ?
-                            <Button autoFocus onClick={this.createSupply} color="primary">
-                                Crea annuncio
+                            <Button autoFocus onClick={this.handleSupplyOpen} color="primary">
+                                Crea Offerta
                             </Button> : (<>
                                 <Button onClick={this.deleteSupply} color="secondary">
-                                    Elimina annuncio
+                                    Elimina Offerta
                                 </Button>
-                                <Button autoFocus onClick={this.updateSupply} color="primary">
-                                    Salva annuncio
+                                <Button autoFocus onClick={this.handleSupplyOpen} color="primary">
+                                    Modifica Offerta
                                 </Button>
                             </>)
                         }
                     </DialogActions>
 
                 </Dialog>
+                <BookInformationDialog update={this.props.update} owner={this.props.owner} book={this.props.book} open={this.state.supplyDialogOpen} handleClose={this.handleSupplyClose} />
                 <Snackbar open={this.state.snackBarOpen} autoHideDuration={6000} onClose={this.handleSnackbarClose}>
                     <Alert onClose={this.handleSnackbarClose} severity={this.state.snackBarSeverity}>
                         {this.state.snackBarMessage}

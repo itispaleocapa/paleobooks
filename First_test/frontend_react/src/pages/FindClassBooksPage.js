@@ -43,9 +43,9 @@ class FindClassBooksPage extends React.Component {
             return c.name === _className;
         }).map((c) => {
             return c.school_year;
-        })
-        this.setState({years: years, year: years[0]})
-        this.updateBooksList(_className, years[0]);
+        }).sort();
+        this.setState({years: years, year: years[years.length - 1]})
+        this.updateBooksList(_className, years[years.length - 1]);
     }
 
     updateBooksList = (_className, year) => {

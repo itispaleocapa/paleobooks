@@ -90,6 +90,7 @@ $router->group(
             $router->post('/', 'SupplyController@create');
             $router->put('/{id}', 'SupplyController@update');
             $router->delete('/{id}', 'SupplyController@destroy');
+            $router->delete('/img/{id}', 'SupplyController@deleteImage');
         });
 
         $router->group(['prefix' => 'demands'], function () use ($router) {

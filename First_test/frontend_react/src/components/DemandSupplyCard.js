@@ -6,13 +6,12 @@ import Typography from "@material-ui/core/Typography";
 import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
 import CreateDemandDialog from "../dialogs/CreateDemandDialog";
-import CreateSupplyDialog from "../dialogs/CreateSupplyDialog";
-import Link from "@material-ui/core/Link";
+import BookInformationDialog from "../dialogs/BookInformationDialog";
 
 class DemandSupplyCard extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {demandDialogOpen: false, supplyDialogOpen: false};
+        this.state = {demandDialogOpen: false, supplyDialogOpen: false, book: {...this.props.item.book, email: this.props.item.user?.email, userPrice: this.props.item.price, info: this.props.type === 'supply'? this.props.item.info: false}};
     }
 
     handleOpen = () => {
@@ -22,6 +21,14 @@ class DemandSupplyCard extends React.Component {
     handeClose = () => {
         this.setState({[this.props.type === 'demands' ? 'demandDialogOpen' : 'supplyDialogOpen']: false});
         this.props.refreshList();
+    }
+
+    update = (newSupply) => {
+        Object.keys(newSupply).forEach(val => {
+            if ( Object.keys(this.state.book).includes(val) && val !== 'price' && val !== 'id') {
+                this.setState({[val]: newSupply.val})
+            }
+        });
     }
 
     render() {
@@ -52,20 +59,13 @@ class DemandSupplyCard extends React.Component {
                     <div style={{float: 'none', clear: 'both'}}/>
                 </CardContent>
                 <CardActions>
-                    {this.props.showAllUsers ?
-                        <div style={{margin: '0 auto', textAlign: 'center'}}>
-                            {this.props.item.user.name}<br/>
-                            <Link href={'mailto:' + this.props.item.user.email} target='_blank'>{this.props.item.user.email}</Link>
-                        </div>
-                        :
-                        <Button size="small" color="primary" style={{margin: '0 auto'}} onClick={this.handleOpen}>
-                            Dettagli
-                        </Button>
-                    }
+                    <Button size="small" color="primary" style={{margin: '0 auto'}} onClick={this.handleOpen}>
+                        Dettagli
+                    </Button>
                 </CardActions>
                 <CreateDemandDialog book={this.props.item.book} open={this.state.demandDialogOpen}
                                     handleClose={this.handeClose} type='demand'/>
-                <CreateSupplyDialog book={this.props.item.book} open={this.state.supplyDialogOpen}
+                <BookInformationDialog update={this.update} owner={!this.props.showAllUsers} book={this.state.book} open={this.state.supplyDialogOpen}
                                     handleClose={this.handeClose} type='supply'/>
             </Card>
         );

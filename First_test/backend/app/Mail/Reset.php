@@ -7,11 +7,13 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class Mailer extends Mailable
+class Reset extends Mailable
 {
     use Queueable, SerializesModels;
 
     public $reset_token;
+
+
 
     /**
     * Create a new message instance.
@@ -30,7 +32,8 @@ class Mailer extends Mailable
     */
     public function build()
     {
-        return $this->subject('Ripristino password')
-            ->view('Mail.password_reset');
+        return $this->subject('Ripristino password')->view('Mail.password_reset');
+
+        
     }
 }
