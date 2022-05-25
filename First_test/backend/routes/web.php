@@ -61,11 +61,6 @@ $router->group(
         // PALEObooks app info
         $router->get('/app/info', 'AppController@getInfo');
 
-        // Automatic update database with Laravel migrations
-        $router->group(['prefix' => 'database'], function () use ($router){
-            $router->get('/update', 'DatabaseController@update');
-        });
-
         $router->group(['prefix' => 'users'], function () use ($router) {
             $router->get('/profile', 'UserController@show');
             $router->put('/', 'UserController@update');
@@ -108,3 +103,8 @@ $router->group(
         });
     }
 );
+
+// Automatic update database with Laravel migrations
+$router->group(['prefix' => 'database'], function () use ($router){
+    $router->get('/update', 'DatabaseController@update');
+});
