@@ -41,7 +41,7 @@ class BookTableRow extends React.Component {
                 <TableCell align="center"><img src={this.props.book.photo} height='100px' alt='book cover'
                     onError={({ currentTarget }) => {
                         currentTarget.onerror = null; // prevents looping
-                        currentTarget.src = "../assets/image_error_cover.jpeg";
+                        currentTarget.src = "https://i.imgur.com/D8XndSO.jpg";
                     }}
                 /></TableCell>
                 <TableCell align="left">{this.props.book.title}</TableCell>
