@@ -8,29 +8,29 @@ import CreateSupplyDialog from "../dialogs/CreateSupplyDialog";
 class BookTableRow extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {demandDialogOpen: false, supplyDialogOpen: false, book: this.props.book};
+        this.state = { demandDialogOpen: false, supplyDialogOpen: false, book: this.props.book };
     }
 
     handleDemandOpen = () => {
-        this.setState({demandDialogOpen: true});
+        this.setState({ demandDialogOpen: true });
     }
 
     handleDemandClose = () => {
-        this.setState({demandDialogOpen: false});
+        this.setState({ demandDialogOpen: false });
     }
 
     handleSupplyOpen = () => {
-        this.setState({supplyDialogOpen: true});
+        this.setState({ supplyDialogOpen: true });
     }
 
     handleSupplyClose = () => {
-        this.setState({supplyDialogOpen: false});
+        this.setState({ supplyDialogOpen: false });
     }
 
     update = (newSupply) => {
         Object.keys(newSupply).forEach(val => {
-            if ( Object.keys(this.state.book).includes(val) && val !== 'price' && val !== 'id') {
-                this.setState({[val]: newSupply.val})
+            if (Object.keys(this.state.book).includes(val) && val !== 'price' && val !== 'id') {
+                this.setState({ [val]: newSupply.val })
             }
         });
     }
@@ -38,15 +38,20 @@ class BookTableRow extends React.Component {
     render() {
         return (
             <TableRow key={this.props.book.id}>
-                <TableCell align="center"><img src={this.props.book.photo} height='100px' alt='book cover'/></TableCell>
+                <TableCell align="center"><img src={this.props.book.photo} height='100px' alt='book cover'
+                    onError={({ currentTarget }) => {
+                        currentTarget.onerror = null; // prevents looping
+                        currentTarget.src = "../assets/image_error_cover.jpeg";
+                    }}
+                /></TableCell>
                 <TableCell align="left">{this.props.book.title}</TableCell>
                 <TableCell align="left">{this.props.book.isbn}</TableCell>
                 <TableCell align="left">€{this.props.book.price}</TableCell>
                 <TableCell align="center">
-                    <Button variant="outlined" color="primary" style={{margin: '4px'}} onClick={this.handleDemandOpen}>
+                    <Button variant="outlined" color="primary" style={{ margin: '4px' }} onClick={this.handleDemandOpen}>
                         Cerca
                     </Button>
-                    <Button variant="outlined" color="primary" style={{margin: '4px'}} onClick={this.handleSupplyOpen}>
+                    <Button variant="outlined" color="primary" style={{ margin: '4px' }} onClick={this.handleSupplyOpen}>
                         Offri
                     </Button>
                 </TableCell>
