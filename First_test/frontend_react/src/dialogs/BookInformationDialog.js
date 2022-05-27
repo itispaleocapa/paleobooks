@@ -458,7 +458,12 @@ class BookInformationDialog extends React.Component {
                             <>
                                 <div style={{display: 'flex'}}>
                                     <div style={{display: 'flex', flexFlow: 'column', gap: '20px'}}>
-                                        <img src={this.props.book.photo} style={Object.assign({}, {maxWidth: '50px', marginTop: '10px', borderRadius: '5px', cursor: 'pointer', transition: 'all .1s ease'}, (this.props.book.photo === this.state.currentImage)? {border: 'solid 2px #3f51b5', boxShadow: '0 0 7px 2px #3f51b5'} : {border: 'solid 2px #dedede'})} onClick={this.imgShow} alt=""/>
+                                        <img src={this.props.book.photo} style={Object.assign({}, {maxWidth: '50px', marginTop: '10px', borderRadius: '5px', cursor: 'pointer', transition: 'all .1s ease'}, (this.props.book.photo === this.state.currentImage)? {border: 'solid 2px #3f51b5', boxShadow: '0 0 7px 2px #3f51b5'} : {border: 'solid 2px #dedede'})} onClick={this.imgShow} alt=""
+                                         onError={({ currentTarget }) => {
+                                            currentTarget.onerror = null; // prevents looping
+                                            currentTarget.src = "https://i.imgur.com/D8XndSO.jpg";
+                                        }}
+                                        />
 
                                         {this.state.images?.map(image => {
                                             const thisImage = (image.includes("blob"))? image : process.env.REACT_APP_IMAGES_URL + '/' + image;
@@ -476,7 +481,8 @@ class BookInformationDialog extends React.Component {
                                                 cursor: 'pointer',
                                                 border: 'solid 2px #dedede',
                                                 transition: 'all .1s ease'
-                                            }} onClick={this.imgShow} alt=""/>
+                                            }} onClick={this.imgShow} alt=""
+                                            />
                                         })}
 
                                         {(this.state.images.length < 3 && this.props.owner)? <svg onClick={() => this.inputRef.current.click()} style={{width: '40px', cursor: 'pointer', alignSelf: 'center'}} class="MuiSvgIcon-root jss79" focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"></path></svg> : null}
@@ -489,7 +495,12 @@ class BookInformationDialog extends React.Component {
                                         : null
                                     }
 
-                                        <img style={{maxHeight: '350px', maxWidth: '300px', position: 'relative', top: '50%', transform: 'translateY(-50%)'}} src={this.state.currentImage} alt="img"/>
+                                        <img style={{maxHeight: '350px', maxWidth: '300px', position: 'relative', top: '50%', transform: 'translateY(-50%)'}} src={this.state.currentImage} alt="img"
+                                         onError={({ currentTarget }) => {
+                                            currentTarget.onerror = null; // prevents looping
+                                            currentTarget.src = "https://i.imgur.com/D8XndSO.jpg";
+                                        }}
+                                        />
                                     </div>
                                 </div>
 
