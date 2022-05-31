@@ -34,7 +34,7 @@ class DemandSupplyTableRow extends React.Component {
     render() {
         return (
             <TableRow key={this.props.item.book.id}>
-                <TableCell align="center"><img src={this.props.item.book.photo} height='100px' alt='book cover'
+                <TableCell align="center"><img src={this.props.item.book.photo?this.props.item.book.photo:"https://i.imgur.com/D8XndSO.jpg"} height='100px' alt='book cover'
                  onError={({ currentTarget }) => {
                     currentTarget.onerror = null; // prevents looping
                     currentTarget.src = "https://i.imgur.com/D8XndSO.jpg";

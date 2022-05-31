@@ -458,7 +458,7 @@ class BookInformationDialog extends React.Component {
                             <>
                                 <div style={{display: 'flex'}}>
                                     <div style={{display: 'flex', flexFlow: 'column', gap: '20px'}}>
-                                        <img src={this.props.book.photo} style={Object.assign({}, {maxWidth: '50px', marginTop: '10px', borderRadius: '5px', cursor: 'pointer', transition: 'all .1s ease'}, (this.props.book.photo === this.state.currentImage)? {border: 'solid 2px #3f51b5', boxShadow: '0 0 7px 2px #3f51b5'} : {border: 'solid 2px #dedede'})} onClick={this.imgShow} alt=""
+                                        <img src={this.props.book.photo ? this.props.book.photo : "https://i.imgur.com/D8XndSO.jpg" } style={Object.assign({}, {maxWidth: '50px', marginTop: '10px', borderRadius: '5px', cursor: 'pointer', transition: 'all .1s ease'}, (this.props.book.photo === this.state.currentImage)? {border: 'solid 2px #3f51b5', boxShadow: '0 0 7px 2px #3f51b5'} : {border: 'solid 2px #dedede'})} onClick={this.imgShow} alt=""
                                          onError={({ currentTarget }) => {
                                             currentTarget.onerror = null; // prevents looping
                                             currentTarget.src = "https://i.imgur.com/D8XndSO.jpg";
@@ -495,7 +495,7 @@ class BookInformationDialog extends React.Component {
                                         : null
                                     }
 
-                                        <img style={{maxHeight: '350px', maxWidth: '300px', position: 'relative', top: '50%', transform: 'translateY(-50%)'}} src={this.state.currentImage} alt="img"
+                                        <img style={{maxHeight: '350px', maxWidth: '300px', position: 'relative', top: '50%', transform: 'translateY(-50%)'}} src={this.state.currentImage?this.state.currentImage:"https://i.imgur.com/D8XndSO.jpg"} alt="img"
                                          onError={({ currentTarget }) => {
                                             currentTarget.onerror = null; // prevents looping
                                             currentTarget.src = "https://i.imgur.com/D8XndSO.jpg";
