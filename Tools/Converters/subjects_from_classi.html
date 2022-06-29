@@ -135,7 +135,7 @@
       }
 
       // the name of these functions must match the field they get (eq. the title function, get the field: title)
-      function name(obj, _){ try{ return subjectConvert( obj.DISCIPLINA.toLowerCase() ); }catch(e){ return null; } }
+      function name(obj, _){ try{ return subjectConvert( obj.DESC_DISCIPLINA.toLowerCase() ); }catch(e){ return null; } }
       function course(_, name){ 
         try{
           switch( name.substring(1,2) ){

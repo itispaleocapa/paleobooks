@@ -8,7 +8,7 @@ If you your provider offers you a dynamic IP, you need to reboot your router.
 
 If you have a static IP address, you can use a VPN, such as [ProtonVPN](https://protonvpn.com/it/) (free) or [NordVPN](https://nordvpn.com/it/) (paid), and change the server every time you need a new IP.
 
-Sections of the first two years of the branch 'SISTEMA MODA' are usually combined with sections of another branch. In the school years 2019/2020 and 2020/2021 it was 'INFORMATICA E TELECOMUNICAZIONI'. The section names were 1TI and 2TI. If this changes, you would like to check end edit line 55 of `scraper.php`.
+Sections of the first two years of the branch 'SISTEMA MODA' are usually combined with sections of another branch. In the school years 2019/2020 and 2020/2021 it was 'INFORMATICA E TELECOMUNICAZIONI'. The section names were 1TI and 2TI. If this changes, you would like to check end edit line 58 of `scraper.php`. In school year 2021/2022 this choice was irrelevant, as Amazon API provided the full name of the sections.
 
 The script is meant to be run from the command line, not from a web server.  
 Tested and working on PHP 7.4.16.
