@@ -30,7 +30,7 @@ $router->group(['prefix' => 'auth'], function () use ($router) {
         $router->post(
             'paleoid', ['uses' => 'AuthController@authenticatePaleoID']
         );
-        $router->post(
+        $router->get(
             'telegram_bot', ['uses' => 'AuthController@authenticateTelBot']
         );
 
