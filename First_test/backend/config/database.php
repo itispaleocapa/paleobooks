@@ -2,7 +2,7 @@
 
 return [
 
-   'default' => 'accounts',
+   'default' => 'mysql',
 
    'connections' => [
         'mysql' => [
@@ -32,4 +32,4 @@ return [
         ],
     ],
 ];
-?>
+?> 
