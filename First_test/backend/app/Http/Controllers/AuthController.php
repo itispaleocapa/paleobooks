@@ -13,7 +13,8 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\Reset;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
-class AuthController extends BaseController {
+class AuthController extends BaseController
+{
     /**
      * The request instance.
      *
@@ -27,7 +28,8 @@ class AuthController extends BaseController {
      * @param \Illuminate\Http\Request $request
      * @return void
      */
-    public function __construct(Request $request) {
+    public function __construct(Request $request)
+    {
         $this->request = $request;
     }
 
@@ -37,7 +39,8 @@ class AuthController extends BaseController {
      * @param \App\User $user
      * @return string
      */
-    protected function jwt(User $user, $expires) {
+    protected function jwt(User $user, $expires)
+    {
         $payload = [
             'iss' => "lumen-jwt", // Issuer of the token
             'sub' => $user->id, // Subject of the token
@@ -56,12 +59,13 @@ class AuthController extends BaseController {
      * @param $reset_token
      * @return bool
      */
-    public function decodeResetToken($reset_token) {
+    public function decodeResetToken($reset_token)
+    {
         try {
             JWT::decode($reset_token, env('JWT_SECRET'), ['HS256']);
-        } catch(ExpiredException $e) {
+        } catch (ExpiredException $e) {
             return false;
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
         return true;
@@ -73,7 +77,8 @@ class AuthController extends BaseController {
      * @param \App\User $user
      * @return mixed
      */
-    public function authenticate(User $user) {
+    public function authenticate(User $user)
+    {
         $this->validate($this->request, [
             'email' => 'required|email',
             'password' => 'required'
@@ -100,14 +105,14 @@ class AuthController extends BaseController {
                 $user->refresh_token = $refresh_token;
                 $user->save();
             } else {
-				if ($this->decodeResetToken($user->refresh_token)) {
-					$refresh_token = $user->refresh_token;
-				} else {
-					$refresh_token = $this->jwt($user, 60 * 60 * 24 * 30);
+                if ($this->decodeResetToken($user->refresh_token)) {
+                    $refresh_token = $user->refresh_token;
+                } else {
+                    $refresh_token = $this->jwt($user, 60 * 60 * 24 * 30);
 
-					$user->refresh_token = $refresh_token;
-					$user->save();
-				}
+                    $user->refresh_token = $refresh_token;
+                    $user->save();
+                }
             }
 
             return response()->json([
@@ -129,7 +134,8 @@ class AuthController extends BaseController {
      * @param  //username, email, password
      * @return mixed
      */
-    public function register(Request $request) {
+    public function register(Request $request)
+    {
         $this->validate($this->request, [
             'name' => 'required',
             'email' => 'required|email',
@@ -169,7 +175,8 @@ class AuthController extends BaseController {
         ], 201);
     }
 
-    public function authenticatePaleoID(Request $request) {
+    public function authenticatePaleoID(Request $request)
+    {
         $this->validate($this->request, [
             'code' => 'required'
         ]);
@@ -220,8 +227,7 @@ class AuthController extends BaseController {
         if ($response['tipo'] == "studente") {
             $matricola = $response['info_studente']['matricola'];
             $user = User::where('matricola', $matricola)->first();
-        }
-        else {
+        } else {
             $user = User::where('email', $response['email'])->first();
         }
 
@@ -259,13 +265,124 @@ class AuthController extends BaseController {
         ], 200);
     }
 
+    public function authenticateTelBot(Request $request)
+    {
+        $this->validate($this->request, [
+            'code' => 'required',
+            'state' => 'required'
+        ]);
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, env('PALEOID_BASEURL') . "/oauth/token");
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(array("grant_type" => "authorization_code", "code" => $request->input('code'), "redirect_uri" => (strlen($request->input('redirect_uri')) > 0 ? $request->input('redirect_uri') : env('PALEOID_REDIRECT_URI')), "client_id" => env('PALEOID_CLIENT_ID'), "client_secret" => env('PALEOID_CLIENT_SECRET'))));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $serverOutput = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        if ($httpCode != 200) {
+            return response()->json([
+                'error' => 'PaleoID authentication failed.'
+            ], 401);
+        }
+        $serverOutput = json_decode($serverOutput, true);
+        $token = $serverOutput['access_token'];
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, env('PALEOID_BASEURL') . "/api/user");
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json", "Authorization: Bearer " . $token));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $serverOutput = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        if ($httpCode != 200) {
+            return response()->json([
+                'error' => 'PaleoID authentication failed.'
+            ], 401);
+        }
+        $response = json_decode($serverOutput, true);
+
+        /*  TODO: vogliamo restringere l'accesso solo agli studenti?
+        if ($response['tipo'] != "studente") {
+            return response()->json([
+                'error' => 'Only for students.'
+            ], 401);
+        }*/
+
+        $class = '';
+        $matricola = 0;
+
+        if (isset($response['info_studente']['classe'])) {
+            $class = $response['info_studente']['classe'];
+        }
+
+        if ($response['tipo'] == "studente") {
+            $matricola = $response['info_studente']['matricola'];
+            $user = User::where('matricola', $matricola)->first();
+        } else {
+            $user = User::where('email', $response['email'])->first();
+        }
+
+        if (!$user) {
+            $user = new User;
+            $user->password = 'paleoid';
+            $user->matricola = $matricola;
+        }
+
+        $user->name = $response['nome'] . " " . $response['cognome'];
+
+        $userEmail = User::where('email', $response['email'])->first();
+        if ($userEmail && $userEmail->password !== "paleoid") {
+            return response()->json([
+                'error' => 'Email already exists.'
+            ], 400);
+        }
+
+        $user->email = $response['email'];
+        $user->save();
+
+        if (!$user->refresh_token) {
+            $refresh_token = $this->jwt($user, 60 * 60 * 24 * 30);
+
+            $user->refresh_token = $refresh_token;
+            $user->save();
+        } else {
+            $refresh_token = $user->refresh_token;
+        }
+
+        /*  return response()->json([
+            'access_token' => $this->jwt($user, 60 * 60),
+            'refresh_token' => $refresh_token,
+            'state' => base64_decode($request['state'])
+        ], 200);*/
+
+        $user_id = base64_decode($request['state']);
+
+        $result = app('db')->connection('telegram')->select('SELECT user_id from users WHERE user_id = ?', [$user_id]);
+
+        if ($result) {
+            $res = app('db')->connection('telegram')->update('update users set refresh_token = ? where user_id = ?', [$refresh_token, $user_id]);
+        } else {
+            $res = app('db')->connection('telegram')->insert('insert into users (user_id, access_token, refresh_token) values (?, ?, ?)', [$user_id, $this->jwt($user, 60 * 60), $refresh_token]);
+        }
+
+        if ($res == 1) {
+            return redirect('https://t.me/Paleobooks_bot?start=success');
+        } else {
+            return response()->json([
+                'error' => 'Login failed'
+            ], 400);
+        }
+    }
+
+
     /**
      * Logout and delete the refresh_token
      *
      * @param \App\User $user
      * @return mixed
      */
-    public function logout(Request $request) {
+    public function logout(Request $request)
+    {
         $user = $request->auth;
 
         $user->refresh_token = null;
@@ -289,7 +406,8 @@ class AuthController extends BaseController {
      * @param \App\User $user
      * @return mixed
      */
-    public function refreshToken(Request $request) {
+    public function refreshToken(Request $request)
+    {
         $user = $request->auth;
 
         return response()->json([
@@ -303,7 +421,8 @@ class AuthController extends BaseController {
      * @param $email, $reset_token, $new_password
      * @return mixed
      */
-    public function sendResetPassword(Request $request) {
+    public function sendResetPassword(Request $request)
+    {
         $this->validate($this->request, [
             'email' => 'required|email'
         ]);
@@ -339,7 +458,7 @@ class AuthController extends BaseController {
         }
 
         // Create a valid url using the reset token
-        $reset_token = urlencode( base64_encode( $reset_token ) );
+        $reset_token = urlencode(base64_encode($reset_token));
 
         $this->sendEmail($email, $reset_token);
 
@@ -354,7 +473,8 @@ class AuthController extends BaseController {
      * @param \App\User $user
      * @return mixed
      */
-    public function resetPassword(Request $request, $token) {
+    public function resetPassword(Request $request, $token)
+    {
         if (!$token) {
             return response()->json([
                 'error' => 'Reset token is required.'
@@ -364,7 +484,7 @@ class AuthController extends BaseController {
         /*$reset_token[36] = '.';
         $reset_token[120] = '.';*/
 
-        $reset_token = base64_decode( urldecode( $token ) );
+        $reset_token = base64_decode(urldecode($token));
 
         $password_reset = PasswordReset::where('reset_token', $reset_token)->first();
 
@@ -406,7 +526,8 @@ class AuthController extends BaseController {
         ], 200);
     }
 
-    public function sendEmail($email, $reset_token) {
+    public function sendEmail($email, $reset_token)
+    {
         // Replace the '.' in token with the '_', to create a valid url using the JWT token
         /*$reset_token[36] = '_';
         $reset_token[120] = '_';*/
