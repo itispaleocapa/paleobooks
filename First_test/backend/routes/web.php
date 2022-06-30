@@ -30,6 +30,9 @@ $router->group(['prefix' => 'auth'], function () use ($router) {
         $router->post(
             'paleoid', ['uses' => 'AuthController@authenticatePaleoID']
         );
+        $router->post(
+            'telegram_bot', ['uses' => 'AuthController@authenticateTelBot']
+        );
 
         $router->group(['prefix' => 'password-reset'], function () use ($router) {
             $router->post(
