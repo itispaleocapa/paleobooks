@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\Reset;
 use Laravel\Lumen\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends BaseController
 {
@@ -275,31 +276,32 @@ class AuthController extends BaseController
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, env('PALEOID_BASEURL') . "/oauth/token");
         curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(array("grant_type" => "authorization_code", "code" => $request->input('code'), "redirect_uri" => (strlen($request->input('redirect_uri')) > 0 ? $request->input('redirect_uri') : env('PALEOID_REDIRECT_URI')), "client_id" => env('PALEOID_CLIENT_ID'), "client_secret" => env('PALEOID_CLIENT_SECRET'))));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(array("grant_type" => "authorization_code", "code" => $request->input('code'), "redirect_uri" => (strlen($request->input('redirect_uri')) > 0 ? $request->input('redirect_uri') : env('TELEGRAM_PALEOID_REDIRECT_URI')), "client_id" => env('PALEOID_CLIENT_ID'), "client_secret" => env('PALEOID_CLIENT_SECRET'))));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $serverOutput = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
         if ($httpCode != 200) {
-            return response()->json([
-                'error' => 'PaleoID authentication failed.'
+           return response()->json([
+                'error' => 'PaleoID authentication failed. (1)'
             ], 401);
         }
         $serverOutput = json_decode($serverOutput, true);
         $token = $serverOutput['access_token'];
-        $ch = curl_init();
+
+		$ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, env('PALEOID_BASEURL') . "/api/user");
         curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json", "Authorization: Bearer " . $token));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $serverOutput = curl_exec($ch);
+		$serverOutput = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
         if ($httpCode != 200) {
             return response()->json([
-                'error' => 'PaleoID authentication failed.'
+                'error' => 'PaleoID authentication failed. (2)'
             ], 401);
         }
-        $response = json_decode($serverOutput, true);
+        $response = json_decode($serverOutput,true);
 
         /*  TODO: vogliamo restringere l'accesso solo agli studenti?
         if ($response['tipo'] != "studente") {
@@ -314,20 +316,17 @@ class AuthController extends BaseController
         if (isset($response['info_studente']['classe'])) {
             $class = $response['info_studente']['classe'];
         }
-
         if ($response['tipo'] == "studente") {
             $matricola = $response['info_studente']['matricola'];
             $user = User::where('matricola', $matricola)->first();
         } else {
             $user = User::where('email', $response['email'])->first();
         }
-
         if (!$user) {
             $user = new User;
             $user->password = 'paleoid';
             $user->matricola = $matricola;
         }
-
         $user->name = $response['nome'] . " " . $response['cognome'];
 
         $userEmail = User::where('email', $response['email'])->first();
@@ -355,23 +354,14 @@ class AuthController extends BaseController
             'state' => base64_decode($request['state'])
         ], 200);*/
 
-        $user_id = base64_decode($request['state']);
-
-        $result = app('db')->connection('telegram')->select('SELECT user_id from users WHERE user_id = ?', [$user_id]);
-
-        if ($result) {
-            $res = app('db')->connection('telegram')->update('update users set refresh_token = ? where user_id = ?', [$refresh_token, $user_id]);
-        } else {
-            $res = app('db')->connection('telegram')->insert('insert into users (user_id, access_token, refresh_token) values (?, ?, ?)', [$user_id, $this->jwt($user, 60 * 60), $refresh_token]);
-        }
-
-        if ($res == 1) {
-            return redirect('https://t.me/Paleobooks_bot?start=success');
-        } else {
-            return response()->json([
-                'error' => 'Login failed'
-            ], 400);
-        }
+        $user_id = $request['state'];
+        $ch = curl_init();
+        $params = array('user_id' => $user_id, 'access_token' => $this->jwt($user, 60 * 60), 'refresh_token' => $refresh_token);
+        $url = "http://51.68.230.28/paleoid?" . http_build_query($params);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        $serverOutput = curl_exec($ch);
+        curl_close($ch);
+        
     }
 
 

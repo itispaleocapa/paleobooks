@@ -20,7 +20,7 @@ return [
 
         'telegram' => [
             'driver'    => 'mysql',
-            'host'      => env('TELEGRAM_DB_CONNECTION'),
+            'host'      => env('TELEGRAM_DB_HOST'),
             'port'      => env('TELEGRAM_DB_PORT'),
             'database'  => env('TELEGRAM_DB_DATABASE'),
             'username'  => env('TELEGRAM_DB_USERNAME'),
