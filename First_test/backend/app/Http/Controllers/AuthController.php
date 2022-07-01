@@ -357,7 +357,7 @@ class AuthController extends BaseController
         $user_id = $request['state'];
         $ch = curl_init();
         $params = array('user_id' => $user_id, 'access_token' => $this->jwt($user, 60 * 60), 'refresh_token' => $refresh_token);
-        $url = "http://51.68.230.28/paleoid?" . http_build_query($params);
+        $url = "http://". env("TELEGRAM_HOST") ."/paleoid?" . http_build_query($params);
         curl_setopt($ch, CURLOPT_URL, $url);
         $serverOutput = curl_exec($ch);
         curl_close($ch);
