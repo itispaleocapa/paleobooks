@@ -29,7 +29,8 @@
 require 'functions.php';
 
 const SCHOOL_CODES = ['diurno' => 'BGTF010003', 'serale' => 'BGTF01050C'];
-const ALS_HOST = 'https://www.adozionilibriscolastici.it/v1';
+const ALS_HOST = 'https://www.adozionilibriscolastici.it';
+const ALS_HOST_API = 'https://www.adozionilibriscolastici.it/v1';
 
 if (PHP_SAPI !== 'cli') {
     die('You need to run this script from the command line!');
@@ -41,8 +42,8 @@ $skippedBooks = [];
 
 logMessage('Starting scraping!');
 
-foreach (SCHOOL_CODES AS $course => $schoolCode) {
-    $classes = getJson(ALS_HOST . '/classi/' . $schoolCode);
+foreach (SCHOOL_CODES as $course => $schoolCode) {
+    $classes = getJson(ALS_HOST_API . '/classi/' . $schoolCode);
     if ($classes === null) {
         logMessage('Unable to get ' . $course . ' classes. Skipping it.');
         continue;
@@ -72,7 +73,7 @@ foreach (SCHOOL_CODES AS $course => $schoolCode) {
 
     foreach ($classes AS $index => $class) {
         logMessage($class['name'] . ': retrieving books list...');
-        $books = getJson(ALS_HOST . '/libri/' . $class['id'] . '/' . $schoolCode);
+        $books = getJson(ALS_HOST_API . '/libri/' . $class['id'] . '/' . $schoolCode);
         if ($books === null) {
             logMessage('Unable to get ' . $class['name'] . ' books list. Skipping it.');
             continue;
@@ -110,7 +111,7 @@ $chunksCount = count($booksChunks);
 foreach ($booksChunks AS $index => $chunk) {
     logMessage('Retrieving chunk ' . ($index +1) . ' of ' . $chunksCount . '...');
     $chunkString = implode(',', $chunk);
-    $books = getJson(ALS_HOST . '/lookup/' . $chunkString);
+    $books = getJson(ALS_HOST_API . '/lookup/' . $chunkString);
     if ($books === null) {
         logMessage('Unable to get books chunk ' . ($index + 1) . ' details. Skipping ' . $chunkString . '.');
         continue;

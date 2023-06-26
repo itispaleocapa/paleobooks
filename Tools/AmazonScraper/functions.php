@@ -8,9 +8,25 @@
 */
 
 $ignoreSslErrors = false;
+$cookiesFile = null;
 
-function getJson($url, $attempt = 1) {
-    global $ignoreSslErrors;
+// Starting from 2023, Amazon API doesn't reply properly if the CloudFront cookies are missing from the request.
+// Before making API requests, we perform a GET request to the homepage (ALS_HOST) to retrieve the needed cookies
+// and we save them in a temporary file, to use them for all the next requests.
+function createAmazonSession() {
+    global $cookiesFile;
+
+    $cookiesFile = tempnam(sys_get_temp_dir(), 'amazon_scraper_cookies');
+    getJson(ALS_HOST, 1, true);
+}
+
+function getJson($url, $attempt = 1, $ignoreResponse = false) {
+    global $ignoreSslErrors, $cookiesFile;
+
+    if (!$cookiesFile) {
+        createAmazonSession();
+    }
+
     sleep(rand(1, 3));
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
@@ -20,15 +36,18 @@ function getJson($url, $attempt = 1) {
     curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
     curl_setopt($ch, CURLOPT_TIMEOUT, 60);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, !$ignoreSslErrors);
+    curl_setopt($ch, CURLOPT_COOKIEJAR, $cookiesFile);
+    curl_setopt($ch, CURLOPT_COOKIEFILE, $cookiesFile);
 
     $result = curl_exec($ch);
 
-    if (curl_errno($ch) || curl_getinfo($ch, CURLINFO_HTTP_CODE) !== 200 || json_decode($result) === null) {
+    if (!$ignoreResponse && (curl_errno($ch) || curl_getinfo($ch, CURLINFO_HTTP_CODE) !== 200 || json_decode($result) === null)) {
         logMessage('API request failed, attempt ' . (($attempt - 1) % 3 + 1) . ' of 3.');
         if (curl_errno($ch) === 60) {
             askCertificateCheck();
         }
         if ($attempt % 3 === 0) {
+            $cookiesFile = null;    // this is not necessary, but it sounded good to clear the cookies when changing IP, to prevent tracking
             $retry = askNewIp($attempt > 3);
             if (!$retry) {
                 return null;
@@ -62,7 +81,7 @@ function askNewIp($suggestSkip = false) {
 
 function askCertificateCheck() {
     global $ignoreSslErrors;
-    logMessage('There seems to be an issue with the SSL certificate of '. ALS_HOST . '. Please check that it is valid, and press enter to continue anyway.', false);
+    logMessage('There seems to be an issue with the SSL certificate of ' . ALS_HOST_API . '. Please check that it is valid, and press enter to continue anyway.', false);
     readline();
     $ignoreSslErrors = true;
 }
