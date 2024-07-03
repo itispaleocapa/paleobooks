@@ -9,19 +9,41 @@
 
 $ignoreSslErrors = false;
 $cookiesFile = null;
+$signature = null;
+$securcode = null;
 
 // Starting from 2023, Amazon API doesn't reply properly if the CloudFront cookies are missing from the request.
 // Before making API requests, we perform a GET request to the homepage (ALS_HOST) to retrieve the needed cookies
 // and we save them in a temporary file, to use them for all the next requests.
+// Starting from 2024, Amazon also requires the Atk-Signature and Atk-Securcode headers to be set, these values are
+// first sent to the client as the `Atk-Signature` and `Atk-Securcode` cookies when it requests the homepage.
+// The cookies are saved in a file, which on Linux is in the "Netscape HTTP Cookie File" format, which we have to parse.
 function createAmazonSession() {
-    global $cookiesFile;
+    global $cookiesFile, $signature, $securcode;
 
     $cookiesFile = tempnam(sys_get_temp_dir(), 'amazon_scraper_cookies');
-    getJson(ALS_HOST, 1, true);
+
+    getJson(ALS_HOST, 1, true, true);
+    $cookies = explode(PHP_EOL, file_get_contents($cookiesFile)); 
+    $cookies = array_slice($cookies, 4);
+
+    foreach ($cookies as $cookie) {
+        $cookie = explode(' ', preg_replace('/\s+/', ' ', $cookie));
+
+        if ($cookie[5] === 'Atk-Signature') {
+            $signature = $cookie[6];
+        } elseif ($cookie[5] === 'Atk-Securcode') {
+            $securcode = $cookie[6];
+        }
+
+        if ($signature && $securcode) {
+            break;
+        }
+    }
 }
 
-function getJson($url, $attempt = 1, $ignoreResponse = false) {
-    global $ignoreSslErrors, $cookiesFile;
+function getJson($url, $attempt = 1, $ignoreResponse = false, $savecookie = false) {
+    global $ignoreSslErrors, $cookiesFile, $signature, $securcode;
 
     if (!$cookiesFile) {
         createAmazonSession();
@@ -36,8 +58,20 @@ function getJson($url, $attempt = 1, $ignoreResponse = false) {
     curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
     curl_setopt($ch, CURLOPT_TIMEOUT, 60);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, !$ignoreSslErrors);
-    curl_setopt($ch, CURLOPT_COOKIEJAR, $cookiesFile);
+
+    // Not sure if this is necessary, but it works
+    if ($savecookie) {
+        curl_setopt($ch, CURLOPT_COOKIEJAR, $cookiesFile);
+    }
+
     curl_setopt($ch, CURLOPT_COOKIEFILE, $cookiesFile);
+
+    if ($signature && $securcode) {
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Atk-Signature: ' . $signature,
+            'Atk-Securcode: ' . $securcode
+        ]);
+    }
 
     $result = curl_exec($ch);
 
@@ -48,13 +82,15 @@ function getJson($url, $attempt = 1, $ignoreResponse = false) {
         }
         if ($attempt % 3 === 0) {
             $cookiesFile = null;    // this is not necessary, but it sounded good to clear the cookies when changing IP, to prevent tracking
+            $signature = null;
+            $securcode = null;
             $retry = askNewIp($attempt > 3);
             if (!$retry) {
                 return null;
             }
             logMessage('Retrying...');
         }
-        sleep(5);
+        sleep(5); // Why is this necessary?
         return getJson($url, $attempt + 1);
     }
 
